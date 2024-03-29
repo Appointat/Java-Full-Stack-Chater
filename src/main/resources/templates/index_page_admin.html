@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Admin</title>
+    <title>Admin Page</title>
     <link href="https://cdn.metroui.org.ua/current/metro.css" rel="stylesheet">
 
     <style>
@@ -23,6 +23,7 @@
             position: absolute;
             top: 0;
             width: 100%;
+            height: 60px; /* 设置高度 */
         }
 
         footer {
@@ -33,6 +34,7 @@
             position: absolute;
             bottom: 0;
             width: 100%;
+            height: 60px; /* 设置高度 */
         }
 
         aside {
@@ -54,16 +56,38 @@
             flex-direction: column-reverse; /* 让消息从底部开始显示 */
         }
 
-        .content {
-            flex: 1;
+        .chat-container {
             display: flex;
-            height: calc(100% - 120px); /* 减去header和footer的高度 */
+            flex-direction: column;
+            height: calc(100% - 60px); /* 设置高度以填充父元素 */
+            margin-left: 20%; /* 与侧边栏宽度相同 */
+            padding: 10px;
+            overflow-y: auto; /* 内容超出时允许滚动 */
+            background-color: #e2c4bd; /* 背景色 */
         }
 
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
+        /* 单个消息的样式 */
+        .message {
+            margin-bottom: 10px;
+            padding: 5px 10px;
+            border-radius: 10px;
+            max-width: 80%; /* 消息最大宽度 */
         }
+
+        /* 发送者的消息样式 */
+        .sent {
+            align-self: flex-end; /* 将发送者消息靠右对齐 */
+            background-color: #007bff; /* 背景色 */
+            color: white; /* 文字颜色 */
+        }
+
+        /* 接收者的消息样式 */
+        .received {
+            align-self: flex-start; /* 将接收者消息靠左对齐 */
+            background-color: #e9ecef; /* 背景色 */
+            color: #333; /* 文字颜色 */
+        }
+
 
         /* 媒体查询用于适应不同屏幕尺寸 */
         @media (max-width: 768px) {
@@ -91,6 +115,19 @@
 <header>Header - Admin Dashboard</header>
 <!--<nav>Nav - Manage Users, Manage Forums</nav>-->
 <main>Main - Content area where details are displayed and managed</main>
+<div class="chat-container">
+    <div class="message received">
+        Hello, this is a received message.
+    </div>
+    <div class="message sent">
+        Hi, this is my message.
+    </div>
+    <div class="message received">
+        Another received message.
+    </div>
+    <!-- More info -->
+</div>
+
 <aside>Aside - Admin information and controls</aside>
 <footer>Footer - Java Full-Stack Chatter 2024 | Your Name</footer>
 </body>
