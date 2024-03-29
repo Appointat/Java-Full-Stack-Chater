@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Admin</title>
+    <link href="https://cdn.metroui.org.ua/current/metro.css" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            background-color: #c2642d;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        nav {
+            background-color: #525389;
+            padding: 1rem;
+            width: 200px;
+            height: 100vh;
+            box-sizing: border-box;
+            float: left;
+        }
+        main {
+            margin-left: 200px;
+            padding: 1rem;
+        }
+        aside {
+            background-color: #c2642d;
+            padding: 1rem;
+            box-sizing: border-box;
+            float: right;
+            width: 200px;
+            height: calc(100vh - 100px); /* Adjust height considering header and footer */
+        }
+        footer {
+            background-color: #333;
+            color: #525389;
+            padding: 1rem;
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+    </style>
+
+</head>
+<body>
+
+<header>Header - Admin Dashboard</header>
+<nav>Nav - Manage Users, Manage Forums</nav>
+<main>Main - Content area where details are displayed and managed</main>
+<aside>Aside - Admin information and controls</aside>
+<footer>Footer - Java Full-Stack Chatter 2024 | Your Name</footer>
+</body>
+<script src="https://cdn.metroui.org.ua/current/metro.js"></script>
+</html>
