@@ -1,4 +1,4 @@
-package java.full.stack.chatter.model;
+package full.stack.chatter.model;
 
 import java.util.List;
 

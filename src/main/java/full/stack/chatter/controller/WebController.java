@@ -1,4 +1,4 @@
-package java.full.stack.chatter.controller;
+package full.stack.chatter.controller;
 
 
 import org.springframework.stereotype.Controller;

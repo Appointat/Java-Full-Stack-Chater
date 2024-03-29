@@ -1,4 +1,4 @@
-package java.full.stack.chatter;
+package full.stack.chatter;
 
 
 import org.springframework.boot.SpringApplication;
@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
-@EntityScan(basePackages = "java.full.stack.chatter")
+@EntityScan(basePackages = "full.stack.chatter")
 public class Application {
 
     public static void main(String[] args) {
