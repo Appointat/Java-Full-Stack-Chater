@@ -1,4 +1,4 @@
-package fr.utc.sr03.model;
+package java.full.stack.chatter.model;
 
 import java.util.List;
 

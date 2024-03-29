@@ -1,4 +1,4 @@
-package fr.utc.sr03.controller;
+package java.full.stack.chatter.controller;
 
 
 import org.springframework.stereotype.Controller;
