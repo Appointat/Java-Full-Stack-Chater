@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Admin Page</title>
+    <link href="https://cdn.metroui.org.ua/current/metro.css" rel="stylesheet">
+
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: #525389;
+            color: #ffffff;
+            padding: 1rem;
+            text-align: center;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 60px; /* 设置高度 */
+        }
+
+        footer {
+            background-color: #525389;
+            color: #ffffff;
+            padding: 1rem;
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60px; /* 设置高度 */
+        }
+
+        aside {
+            background-color: #c2642d;
+            color: #ffffff;
+            padding: 1rem;
+            position: absolute;
+            top: 60px; /* 与header高度相同 */
+            width: 20%; /* 可以根据需要调整宽度 */
+            height: calc(100% - 120px); /* 减去header和footer的高度 */
+        }
+
+        main {
+            background: #e2c4bd;
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto; /* 当内容超出时显示滚动条 */
+            display: flex;
+            flex-direction: column-reverse; /* 让消息从底部开始显示 */
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 60px); /* 设置高度以填充父元素 */
+            margin-left: 20%; /* 与侧边栏宽度相同 */
+            padding: 10px;
+            overflow-y: auto; /* 内容超出时允许滚动 */
+            background-color: #e2c4bd; /* 背景色 */
+        }
+
+        /* 单个消息的样式 */
+        .message {
+            margin-bottom: 10px;
+            padding: 5px 10px;
+            border-radius: 10px;
+            max-width: 80%; /* 消息最大宽度 */
+        }
+
+        /* 发送者的消息样式 */
+        .sent {
+            align-self: flex-end; /* 将发送者消息靠右对齐 */
+            background-color: #007bff; /* 背景色 */
+            color: white; /* 文字颜色 */
+        }
+
+        /* 接收者的消息样式 */
+        .received {
+            align-self: flex-start; /* 将接收者消息靠左对齐 */
+            background-color: #e9ecef; /* 背景色 */
+            color: #333; /* 文字颜色 */
+        }
+
+
+        /* 媒体查询用于适应不同屏幕尺寸 */
+        @media (max-width: 768px) {
+            aside {
+                width: 100%; /* 在小屏幕上，侧边栏变为全宽 */
+                height: 100px; /* 设置侧边栏高度 */
+                order: -1; /* 把侧边栏移动到顶部 */
+            }
+
+            .content {
+                height: calc(100% - 220px); /* 减去header、footer和aside的高度 */
+                flex-direction: column;
+            }
+
+            main {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>Header - Chat Room Name</header>
+<!--<nav>Nav - Manage Users, Manage Forums</nav>-->
+<main>Main - Content area where details are displayed and managed</main>
+<div class="chat-container">
+    <div class="message received">
+        Hello, this is a received message.
+    </div>
+    <div class="message sent">
+        Hi, this is my message.
+    </div>
+    <div class="message received">
+        Another received message.
+    </div>
+    <!-- More info -->
+</div>
+
+<aside>Aside - List of Chat Rooms and Controls</aside>
+<footer>Footer - Java Full-Stack Chatter 2024 | CHEN Zikang HOU Longhao</footer>
+</body>
+<script src="https://cdn.metroui.org.ua/current/metro.js"></script>
+</html>
