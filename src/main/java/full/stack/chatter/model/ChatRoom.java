@@ -1,6 +1,7 @@
 package full.stack.chatter.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChatRoom {
@@ -30,7 +31,7 @@ public class ChatRoom {
     }
 
     public List<User> getUser_list() {
-        return user_list;
+        return !this.user_list.isEmpty() ? user_list : null;
     }
 
     public int getDuration() {
@@ -44,4 +45,24 @@ public class ChatRoom {
     public LocalDateTime getExpireDate() {
         return expireDate;
     }
+
+
+    public ChatRoom(){}
+
+    public ChatRoom(String title, String description, User creator, LocalDateTime createDate,LocalDateTime expireDate, long id){
+        this.title=title;
+        this.description=description;
+        this.creator=creator;
+        this.createDate=createDate;
+        this.expireDate=expireDate;
+        this.id=id;
+    }
+
+    public void addUser(User user){
+        if (this.user_list.isEmpty()){
+            this.user_list= new ArrayList<>();
+        }
+        this.user_list.add(user);
+    }
+
 }

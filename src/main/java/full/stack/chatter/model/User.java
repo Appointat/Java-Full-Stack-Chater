@@ -4,7 +4,6 @@ import java.util.List;
 
 
 public class User {
-    private long id;
 
     public static class UserName {
         public String first_name;
@@ -16,12 +15,13 @@ public class User {
         }
     }
 
+    private long id;
     private UserName name;
     private String email;
     private String password;
     private List<Long> createdChatRoom;
     private List<Long> invitedChatRoom;
-
+    private Boolean isActive;
 
     public long getId() {
         return id;
@@ -44,11 +44,22 @@ public class User {
     }
 
     public List<Long> getCreatedChatRoom() {
-        return createdChatRoom;
+        return !this.createdChatRoom.isEmpty() ? createdChatRoom : null;
     }
 
     public List<Long> getInvitedChatRoom() {
-        return invitedChatRoom;
+        return !this.invitedChatRoom.isEmpty() ? invitedChatRoom : null;
     }
 
+    public Boolean getIsActive(){ return this.isActive; }
+
+    public User(){}
+
+    public User(UserName name, String email, String password, Boolean isActive, long id ){
+        this.name=name;
+        this.email=email;
+        this.password=password;
+        this.isActive=isActive;
+        this.id=id;
+    }
 }
