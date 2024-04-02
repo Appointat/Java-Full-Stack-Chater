@@ -77,17 +77,42 @@
         /* 发送者的消息样式 */
         .sent {
             align-self: flex-end; /* 将发送者消息靠右对齐 */
+            margin-right: 20px; /* 与侧边栏的距离 */
             background-color: #007bff; /* 背景色 */
             color: white; /* 文字颜色 */
+        }
+
+        .sent::after {
+            content: ""; /* 必须设置，即使没有内容 */
+            position: absolute; /* 相对于其父元素定位 */
+            right: -25px; /* 在消息右边显示 */
+            top: 50%; /* 垂直居中 */
+            transform: translateY(-50%); /* 确保完全居中 */
+            width: 20px; /* 头像的宽度 */
+            height: 20px; /* 头像的高度 */
+            background-color: mediumorchid; /* 头像颜色 */
+            border-radius: 100%; /* 圆形头像 */
         }
 
         /* 接收者的消息样式 */
         .received {
             align-self: flex-start; /* 将接收者消息靠左对齐 */
+            margin-left: 20px; /* 与侧边栏的距离 */
             background-color: #e9ecef; /* 背景色 */
             color: #333; /* 文字颜色 */
         }
 
+        .received::before {
+            content: ""; /* 必须设置，即使没有内容 */
+            position: absolute; /* 相对于其父元素定位 */
+            left: -25px; /* 在消息左边显示 */
+            top: 50%; /* 垂直居中 */
+            transform: translateY(-50%); /* 确保完全居中 */
+            width: 20px; /* 头像的宽度 */
+            height: 20px; /* 头像的高度 */
+            background-color: mediumorchid; /* 头像颜色 */
+            border-radius: 100%; /* 圆形头像 */
+        }
 
         /* 媒体查询用于适应不同屏幕尺寸 */
         @media (max-width: 768px) {
