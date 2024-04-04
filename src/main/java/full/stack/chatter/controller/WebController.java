@@ -9,7 +9,7 @@ public class WebController {
 
     @RequestMapping(value = "/")
     public String index() {
-        return "index_page_admin";
+        return "page_signin";
     }
     
 }

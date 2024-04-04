@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signup</title>
+
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .signup-container {
+            background-color: #f7f7f7;
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .btn:hover {
+            background-color: #fdf2e9;
+        }
+
+    </style>
+
+</head>
+<body>
+<div class="signup-container">
+    <h2>Sign Up</h2>
+    <form id="signupForm">
+        <div class="mb-3">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+" placeholder="First name" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+" placeholder="Last name" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Password"
+                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,}" required>
+            <button class="btn" id="generatePassword">Generate Random Password</button>
+        </div>
+
+        <div class="mb-3">
+            <label for="passwordConfirm">Confirm Password:</label>
+            <input type="password" id="passwordConfirm" name="passwordConfirm" placeholder="Confirm password" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+    </form>
+</div>
+</body>
+
+<script>
+    document.getElementById('signupForm').addEventListener('submit', function(event) {
+        let password = document.getElementById('password').value;
+        let passwordConfirm = document.getElementById('passwordConfirm').value;
+        if (password !== passwordConfirm) {
+            alert("Passwords do not match.");
+            event.preventDefault();
+            return false;
+        }
+    });
+
+    document.getElementById('generatePassword').addEventListener('click', function() {
+        let psw = randomPassword(8);
+        document.getElementById('password').value = psw;
+        document.getElementById('passwordConfirm').value = psw;
+    });
+
+
+    function randomPassword(length) {
+        var chars = "abcdefghijklmnopqrstuvwxyz!@#$%^&*()-+<>ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        var pass = "";
+        pass += getRandomChar("abcdefghijklmnopqrstuvwxyz");
+        pass += getRandomChar("!@#$%^&*()-+<>");
+        pass += getRandomChar("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        pass += getRandomChar("1234567890");
+        for (var x = 4; x < length; x++) {
+            pass += getRandomChar(chars);
+        }
+        return pass;
+    }
+    function getRandomChar(charSet) {
+        return charSet.charAt(Math.floor(Math.random() * charSet.length));
+    }
+
+</script>
+
+</html>
