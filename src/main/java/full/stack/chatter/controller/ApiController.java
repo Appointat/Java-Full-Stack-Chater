@@ -32,7 +32,6 @@ public class ApiController {
     public void createAdminUser() {
         AdminUser admin_user = new AdminUser();
         admin_user.setUser("Cédric", "Martinet", "bcdf@pp.com", "1234", false);
-        System.out.println(admin_user.getEmail());
         servicesRequest.addAdminUser(admin_user);
     }
 
