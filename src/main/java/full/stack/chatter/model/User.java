@@ -1,38 +1,49 @@
 package full.stack.chatter.model;
 
-import java.util.List;
+import jakarta.persistence.*;
 
 
+@MappedSuperclass
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-    public static class UserName {
-        public String first_name;
-        public String last_name;
+    @Column(name = "first_name")
+    private String first_name;
 
-        UserName(String first_name, String last_name) {
-            this.first_name = first_name;
-            this.last_name = last_name;
-        }
-    }
+    @Column(name = "last_name")
+    private String last_name;
 
-    private long id;
-    private UserName name;
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "password")
     private String password;
-    private List<Long> createdChatRoom;
-    private List<Long> invitedChatRoom;
-    private Boolean isActive;
 
-    public long getId() {
+//    @Transient
+//    private List<Long> createdChatRoom;
+
+//    @Transient
+//    private List<Long> invitedChatRoom;
+
+    @Column(name = "is_active")
+    private Boolean is_active;
+
+    public User() {
+    }
+
+    public User(String first_name, String last_name, String email, String password, Boolean is_active) {
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.email = email;
+        this.password = password;
+        this.is_active = is_active;
+    }
+
+    public Long getId() {
         return id;
-    }
-
-    public String getFirstName() {
-        return name.first_name;
-    }
-
-    public String getLastName() {
-        return name.last_name;
     }
 
     public String getEmail() {
@@ -43,23 +54,31 @@ public class User {
         return password;
     }
 
-    public List<Long> getCreatedChatRoom() {
-        return !this.createdChatRoom.isEmpty() ? createdChatRoom : null;
+//    public List<Long> getCreatedChatRoom() {
+//        return !this.createdChatRoom.isEmpty() ? createdChatRoom : null;
+//    }
+
+//    public List<Long> getInvitedChatRoom() {
+//        return !this.invitedChatRoom.isEmpty() ? invitedChatRoom : null;
+//    }
+
+    public String getFirstName() {
+        return this.first_name;
     }
 
-    public List<Long> getInvitedChatRoom() {
-        return !this.invitedChatRoom.isEmpty() ? invitedChatRoom : null;
+    public String getLastName() {
+        return this.last_name;
     }
 
-    public Boolean getIsActive(){ return this.isActive; }
+    public Boolean getIsActive() {
+        return this.is_active;
+    }
 
-    public User(){}
-
-    public User(UserName name, String email, String password, Boolean isActive, long id ){
-        this.name=name;
-        this.email=email;
-        this.password=password;
-        this.isActive=isActive;
-        this.id=id;
+    public void setUser(String first_name, String last_name, String email, String password, Boolean is_active) {
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.email = email;
+        this.password = password;
+        this.is_active = is_active;
     }
 }
