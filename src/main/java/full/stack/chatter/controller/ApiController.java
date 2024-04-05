@@ -15,14 +15,14 @@ public class ApiController {
     @Resource
     private ServicesRequest servicesRequest;
 
-    @PostMapping(value = "/create")
+    @PostMapping(value = "/create-normal-user")
     public void createNormalUser() {
         NormalUser normal_user = new NormalUser();
         normal_user.setUser("Cédric", "Martinet", "aa@pp.com", "1234", false);
         servicesRequest.addUser(normal_user);
     }
 
-    @GetMapping(value = "/liste")
+    @GetMapping(value = "/list-normal-users")
     public List<NormalUser> getNormalUsers() {
         return servicesRequest.getNormalUsers();
     }
