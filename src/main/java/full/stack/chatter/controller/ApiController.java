@@ -40,4 +40,12 @@ public class ApiController {
     public List<AdminUser> getAdminUsers() {
         return servicesRequest.getAdminUsers();
     }
+
+    /*
+    APIs for ChatRoom
+     */
+    @PostMapping(value = "/create-chat-room")
+    public void createChatRoom() {
+        //TODO
+    }
 }
