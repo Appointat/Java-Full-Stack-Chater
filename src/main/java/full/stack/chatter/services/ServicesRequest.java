@@ -34,7 +34,7 @@ public class ServicesRequest {
         return em.find(NormalUser.class, id);
     }
 
-    public void removeOneUser(int id) {
+    public void removeOneUser(Long id) {
         em.remove(em.find(NormalUser.class, id));
     }
 

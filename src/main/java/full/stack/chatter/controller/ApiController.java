@@ -27,6 +27,19 @@ public class ApiController {
         servicesRequest.addNormalUser(normal_user);
     }
 
+    @PostMapping(value = "/remove-normal-user") // TODO: to be tested
+    public void removeNormalUser() {
+        NormalUser normal_user = servicesRequest.getOneUser(1L);
+
+        // Remove all the created chat rooms
+        for (Long chat_room_id : normal_user.getCreatedChatRoom()) {
+            ChatRoom chat_room = servicesRequest.getOneChatRoom(chat_room_id);
+            this.removeChatRoom(); // input: chat_room_id // it removes user from the invited users firstly
+        }
+
+        servicesRequest.removeOneUser(normal_user.getId());
+    }
+
     @GetMapping(value = "/list-normal-users")
     public List<NormalUser> getNormalUsers() {
         return servicesRequest.getNormalUsers();
@@ -40,6 +53,19 @@ public class ApiController {
         AdminUser admin_user = new AdminUser();
         admin_user.setUser("Cédric", "Martinet", "bcdf@pp.com", "1234", false);
         servicesRequest.addAdminUser(admin_user);
+    }
+
+    @PostMapping(value = "/remove-admin-user") // TODO: to be tested
+    public void removeAdminUser() {
+        AdminUser admin_user = servicesRequest.getOneAdminUser(1L);
+
+        // Remove all the created chat rooms
+        for (Long chat_room_id : admin_user.getCreatedChatRoom()) {
+            ChatRoom chat_room = servicesRequest.getOneChatRoom(chat_room_id);
+            this.removeChatRoom(); // input: chat_room_id // it removes user from the invited users firstly
+        }
+
+        servicesRequest.removeAdminUser(admin_user);
     }
 
     @GetMapping(value = "/list-admin-users")
