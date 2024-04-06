@@ -20,8 +20,13 @@ public class ChatRoom {
     @Column(name = "description")
     private String description;
 
-    @Transient
-    private User creator;
+    @ManyToOne
+    @JoinColumn(name = "admin_creator")
+    private AdminUser admin_creator;
+
+    @ManyToOne
+    @JoinColumn(name = "normal_creator")
+    private NormalUser normal_creator;
 
     @Transient
     private List<User> user_list = new ArrayList<>();
@@ -36,26 +41,26 @@ public class ChatRoom {
     private LocalDateTime expire_date;
 
     public long getId() {
-        return id;
+        return this.id;
     }
 
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public User getCreator() {
-        return creator;
+        return this.admin_creator != null ? this.admin_creator : this.normal_creator;
     }
 
     public ChatRoom() {
     }
 
     public int getDuration() {
-        return duration;
+        return this.duration;
     }
 
     public List<User> getUser_list() {
@@ -73,14 +78,28 @@ public class ChatRoom {
     public void setChatRoom(String title, String description, User creator, LocalDateTime createDate, LocalDateTime expireDate) {
         this.title = title;
         this.description = description;
-        this.creator = creator;
+        if (creator instanceof AdminUser) { // ensure their mutual exclusivity
+            this.admin_creator = (AdminUser) creator; // safe to cast
+            this.normal_creator = null;
+        } else {
+            this.normal_creator = (NormalUser) creator; // safe to cast
+            this.admin_creator = null;
+        }
         this.create_date = createDate;
         this.expire_date = expireDate;
         this.duration = (int) (expireDate.getSecond() - createDate.getSecond());
     }
 
+    @PrePersist
+    @PreUpdate
+    // ChatRoom must have a creator, and it must be either an AdminUser or a NormalUser, but not both
+    private void validateCreator() {
+        if (this.admin_creator != null && this.normal_creator != null) {
+            throw new IllegalStateException("ChatRoom cannot have both AdminUser and NormalUser as creator");
+        }
+    }
+
     public void addUser(User user) {
         this.user_list.add(user);
     }
-
 }
