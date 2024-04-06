@@ -3,6 +3,7 @@ package full.stack.chatter.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class ChatRoom {
     private List<NormalUser> normal_users_list = new ArrayList<>();
 
     @Column(name = "duration")
-    private int duration;
+    private int duration; // in seconds
 
     @Column(name = "create_date")
     private LocalDateTime create_date;
@@ -104,8 +105,7 @@ public class ChatRoom {
         }
         this.create_date = createDate;
         this.expire_date = expireDate;
-        // calculate duration
-        this.duration = (int) (expireDate.toEpochSecond(null) - createDate.toEpochSecond(null));
+        this.duration = (int) ChronoUnit.SECONDS.between(createDate, expireDate); // duration in seconds
     }
 
     @PrePersist
