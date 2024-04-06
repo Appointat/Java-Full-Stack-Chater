@@ -60,6 +60,9 @@ public class ApiController {
         chat_room.setChatRoom("ChatRoom1", "Description1", normalUser, create_date, expire_date);
 
         servicesRequest.addChatRoom(chat_room);
+
+        normalUser.addCreatedChatRoom(chat_room.getId());
+        servicesRequest.updateUser(normalUser);
     }
 
     @GetMapping(value = "/list-chat-rooms")
@@ -76,7 +79,7 @@ public class ApiController {
         chat_room.addUser(normal_user);
         servicesRequest.updateChatRoom(chat_room);
 
-        normal_user.addCreatedChatRoom(chat_room.getId());
+        normal_user.addInvitedChatRoom(chat_room.getId());
         servicesRequest.updateUser(normal_user);
     }
 
@@ -89,7 +92,7 @@ public class ApiController {
         chat_room.removeUser(normal_user);
         servicesRequest.updateChatRoom(chat_room);
 
-        normal_user.removeCreatedChatRoom(chat_room.getId());
+        normal_user.removeInvitedChatRoom(chat_room.getId());
         servicesRequest.updateUser(normal_user);
     }
 }

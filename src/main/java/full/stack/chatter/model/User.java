@@ -105,4 +105,20 @@ public abstract class User {
         }
         this.created_chat_rooms.remove(chat_room_id);
     }
+
+    public void addInvitedChatRoom(Long chat_room_id) {
+        if (this.invited_chat_rooms.contains(chat_room_id)) {
+            System.out.println("Chat room already invited to this user");
+            return;
+        }
+        this.invited_chat_rooms.add(chat_room_id);
+    }
+
+    public void removeInvitedChatRoom(Long chat_room_id) {
+        if (!this.invited_chat_rooms.contains(chat_room_id)) {
+            System.out.println("Chat room not invited to this user");
+            return;
+        }
+        this.invited_chat_rooms.remove(chat_room_id);
+    }
 }
