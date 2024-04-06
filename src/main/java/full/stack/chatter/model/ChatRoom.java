@@ -134,4 +134,22 @@ public class ChatRoom {
             this.normal_users_list.add((NormalUser) user);
         }
     }
+
+    public void removeUser(User user) {
+        if (user instanceof AdminUser) {
+            if (!this.admin_users_list.contains(user)) {
+//                throw new IllegalStateException("User does not exist in the chat room");
+                System.out.println("User does not exist in the chat room");
+                return;
+            }
+            this.admin_users_list.remove((AdminUser) user);
+        } else {
+            if (!this.normal_users_list.contains(user)) {
+//                throw new IllegalStateException("User does not exist in the chat room");
+                System.out.println("User does not exist in the chat room");
+                return;
+            }
+            this.normal_users_list.remove((NormalUser) user);
+        }
+    }
 }
