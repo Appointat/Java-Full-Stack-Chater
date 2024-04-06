@@ -7,7 +7,7 @@ import java.util.List;
 
 
 @MappedSuperclass
-public class User {
+public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -42,15 +42,15 @@ public class User {
     }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     public List<Long> getCreatedChatRoom() {
