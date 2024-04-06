@@ -27,19 +27,14 @@ public class ServicesRequest {
     }
 
     public void updateUser(NormalUser user) {
-        // TODO
         em.merge(user);
     }
 
-    public NormalUser getOneUser(int id) {
-        // TODO
-        //return un user via la clé primaire
+    public NormalUser getOneUser(Long id) {
         return em.find(NormalUser.class, id);
     }
 
     public void deleteOneUser(int id) {
-        // TODO
-        //return un user via la clé primaire
         em.remove(em.find(NormalUser.class, id));
     }
 
@@ -53,6 +48,10 @@ public class ServicesRequest {
      */
     public void addAdminUser(AdminUser admin_user) {
         em.persist(admin_user);
+    }
+
+    public AdminUser getOneAdminUser(Long id) {
+        return em.find(AdminUser.class, id);
     }
 
     public void deleteAdminUser(NormalUser normal_user) {
@@ -75,5 +74,9 @@ public class ServicesRequest {
     public List<ChatRoom> getChatRooms() {
         Query q = em.createQuery("select cr from ChatRoom cr");
         return q.getResultList();
+    }
+
+    public ChatRoom getOneChatRoom(Long id) {
+        return em.find(ChatRoom.class, id);
     }
 }
