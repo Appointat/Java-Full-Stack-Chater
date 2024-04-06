@@ -88,5 +88,8 @@ public class ApiController {
 
         chat_room.removeUser(normal_user);
         servicesRequest.updateChatRoom(chat_room);
+
+        normal_user.removeCreatedChatRoom(chat_room.getId());
+        servicesRequest.updateUser(normal_user);
     }
 }

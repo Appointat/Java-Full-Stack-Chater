@@ -93,4 +93,8 @@ public abstract class User {
     public void addCreatedChatRoom(Long chat_room_id) {
         this.created_chat_rooms.add(chat_room_id);
     }
+
+    public void removeCreatedChatRoom(Long chat_room_id) {
+        this.created_chat_rooms.remove(chat_room_id);
+    }
 }
