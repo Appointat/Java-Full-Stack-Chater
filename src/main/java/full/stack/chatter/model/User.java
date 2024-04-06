@@ -89,4 +89,8 @@ public abstract class User {
         this.invited_chat_rooms.add(3L);
         this.invited_chat_rooms.add(4L);
     }
+
+    public void addCreatedChatRoom(Long chat_room_id) {
+        this.created_chat_rooms.add(chat_room_id);
+    }
 }

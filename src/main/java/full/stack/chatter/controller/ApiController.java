@@ -75,6 +75,9 @@ public class ApiController {
 
         chat_room.addUser(normal_user);
         servicesRequest.updateChatRoom(chat_room);
+
+        normal_user.addCreatedChatRoom(chat_room.getId());
+        servicesRequest.updateUser(normal_user);
     }
 
     @PostMapping(value = "/remove-user-from-chat-room")
