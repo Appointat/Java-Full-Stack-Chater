@@ -27,10 +27,12 @@ public class User {
 
     @ElementCollection
     @CollectionTable(name = "created_chat_rooms", joinColumns = @JoinColumn(name = "id"))
-    @Column(name = "chat_room_id")
+    @Column(name = "created_chat_room_id")
     private List<Long> created_chat_rooms = new ArrayList<>();
 
-    @Transient
+    @ElementCollection
+    @CollectionTable(name = "invited_chat_rooms", joinColumns = @JoinColumn(name = "id"))
+    @Column(name = "invited_chat_room_id")
     private List<Long> invited_chat_rooms = new ArrayList<>();
 
     @Column(name = "is_active")
@@ -78,8 +80,13 @@ public class User {
         this.password = password;
         this.is_active = is_active;
 
+        // TODO: used for test of postgreSQL
         this.created_chat_rooms = new ArrayList<>();
         this.created_chat_rooms.add(1L);
         this.created_chat_rooms.add(2L);
+
+        this.invited_chat_rooms = new ArrayList<>();
+        this.invited_chat_rooms.add(3L);
+        this.invited_chat_rooms.add(4L);
     }
 }
