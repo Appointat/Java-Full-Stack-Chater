@@ -91,6 +91,10 @@ public abstract class User {
     }
 
     public void addCreatedChatRoom(Long chat_room_id) {
+        if (this.created_chat_rooms.contains(chat_room_id)) {
+            System.out.println("Chat room already created by this user");
+            return;
+        }
         this.created_chat_rooms.add(chat_room_id);
     }
 
