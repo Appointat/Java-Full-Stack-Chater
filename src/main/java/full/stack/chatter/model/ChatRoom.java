@@ -119,8 +119,14 @@ public class ChatRoom {
 
     public void addUser(User user) {
         if (user instanceof AdminUser) {
+            if (this.admin_users_list.contains(user)) {
+                throw new IllegalStateException("User already exists in the chat room");
+            }
             this.admin_users_list.add((AdminUser) user);
         } else {
+            if (this.normal_users_list.contains(user)) {
+                throw new IllegalStateException("User already exists in the chat room");
+            }
             this.normal_users_list.add((NormalUser) user);
         }
     }
