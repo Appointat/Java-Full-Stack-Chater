@@ -2,6 +2,7 @@ package full.stack.chatter.services;
 
 
 import full.stack.chatter.model.AdminUser;
+import full.stack.chatter.model.ChatRoom;
 import full.stack.chatter.model.NormalUser;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -60,7 +61,19 @@ public class ServicesRequest {
     }
 
     public List<AdminUser> getAdminUsers() {
-        Query q = em.createQuery("select nu from AdminUser nu");
+        Query q = em.createQuery("select au from AdminUser au");
+        return q.getResultList();
+    }
+
+    /*
+    APIs for ChatRoom
+     */
+    public void addChatRoom(ChatRoom chat_room) {
+        em.persist(chat_room);
+    }
+
+    public List<ChatRoom> getChatRooms() {
+        Query q = em.createQuery("select cr from ChatRoom cr");
         return q.getResultList();
     }
 }

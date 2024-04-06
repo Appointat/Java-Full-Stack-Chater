@@ -2,6 +2,7 @@ package full.stack.chatter.controller;
 
 
 import full.stack.chatter.model.AdminUser;
+import full.stack.chatter.model.ChatRoom;
 import full.stack.chatter.model.NormalUser;
 import full.stack.chatter.services.ServicesRequest;
 import jakarta.annotation.Resource;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -16,6 +18,9 @@ public class ApiController {
     @Resource
     private ServicesRequest servicesRequest;
 
+    /*
+    APIs for NormalUser
+     */
     @PostMapping(value = "/create-normal-user")
     public void createNormalUser() {
         NormalUser normal_user = new NormalUser();
@@ -28,6 +33,9 @@ public class ApiController {
         return servicesRequest.getNormalUsers();
     }
 
+    /*
+    APIs for AdminUser
+     */
     @PostMapping(value = "/create-admin-user")
     public void createAdminUser() {
         AdminUser admin_user = new AdminUser();
@@ -45,6 +53,17 @@ public class ApiController {
      */
     @PostMapping(value = "/create-chat-room")
     public void createChatRoom() {
-        //TODO
+        ChatRoom chat_room = new ChatRoom();
+        AdminUser admin_user = new AdminUser();
+        admin_user.setUser("Cédric", "Martinet", "fasa@pp.com", "1234", false);
+        LocalDateTime create_date = LocalDateTime.now();
+        LocalDateTime expire_date = create_date.plusDays(1);
+        chat_room.setChatRoom("ChatRoom1", "Description1", admin_user, create_date, expire_date);
+        servicesRequest.addChatRoom(chat_room);
+    }
+
+    @GetMapping(value = "/list-chat-rooms")
+    public List<ChatRoom> getChatRooms() {
+        return servicesRequest.getChatRooms();
     }
 }
