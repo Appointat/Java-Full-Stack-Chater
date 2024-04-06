@@ -66,4 +66,13 @@ public class ApiController {
     public List<ChatRoom> getChatRooms() {
         return servicesRequest.getChatRooms();
     }
+
+    @PostMapping(value = "/invite-user-to-chat-room")
+    public void inviteUserToChatRoom() {
+        NormalUser normal_user = servicesRequest.getOneUser(1L);
+        ChatRoom chat_room = servicesRequest.getOneChatRoom(3L);
+
+        chat_room.addUser(normal_user);
+        servicesRequest.updateChatRoom(chat_room);
+    }
 }

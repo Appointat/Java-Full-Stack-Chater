@@ -54,9 +54,8 @@ public class ServicesRequest {
         return em.find(AdminUser.class, id);
     }
 
-    public void deleteAdminUser(NormalUser normal_user) {
-        // TODO
-        em.remove(normal_user);
+    public void deleteAdminUser(AdminUser admin_user) {
+        em.remove(em.find(AdminUser.class, admin_user.getId()));
     }
 
     public List<AdminUser> getAdminUsers() {
@@ -71,6 +70,10 @@ public class ServicesRequest {
         em.persist(chat_room);
     }
 
+    public void updateChatRoom(ChatRoom chat_room) {
+        em.merge(chat_room);
+    }
+
     public List<ChatRoom> getChatRooms() {
         Query q = em.createQuery("select cr from ChatRoom cr");
         return q.getResultList();
@@ -79,4 +82,5 @@ public class ServicesRequest {
     public ChatRoom getOneChatRoom(Long id) {
         return em.find(ChatRoom.class, id);
     }
+
 }
