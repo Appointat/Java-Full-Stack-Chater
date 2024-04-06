@@ -76,4 +76,14 @@ public class ApiController {
         chat_room.addUser(normal_user);
         servicesRequest.updateChatRoom(chat_room);
     }
+
+    @PostMapping(value = "/remove-user-from-chat-room")
+    public void removeUserFromChatRoom() {
+        // TODO: just used for the test of postgreSQL
+        NormalUser normal_user = servicesRequest.getOneUser(1L);
+        ChatRoom chat_room = servicesRequest.getOneChatRoom(3L);
+
+        chat_room.removeUser(normal_user);
+        servicesRequest.updateChatRoom(chat_room);
+    }
 }
