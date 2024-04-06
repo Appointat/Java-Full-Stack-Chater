@@ -28,8 +28,21 @@ public class ChatRoom {
     @JoinColumn(name = "normal_creator")
     private NormalUser normal_creator;
 
-    @Transient
-    private List<User> user_list = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "chat_room_admin_users",
+            joinColumns = @JoinColumn(name = "chat_room_id"),
+            inverseJoinColumns = @JoinColumn(name = "admin_user_id")
+    )
+    private List<AdminUser> admin_users_list = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "chat_room_normal_users",
+            joinColumns = @JoinColumn(name = "chat_room_id"),
+            inverseJoinColumns = @JoinColumn(name = "normal_user_id")
+    )
+    private List<NormalUser> normal_users_list = new ArrayList<>();
 
     @Column(name = "duration")
     private int duration;
@@ -63,8 +76,12 @@ public class ChatRoom {
         return this.duration;
     }
 
-    public List<User> getUser_list() {
-        return !this.user_list.isEmpty() ? this.user_list : null;
+    public List<AdminUser> getAdminUsers() {
+        return this.admin_users_list;
+    }
+
+    public List<NormalUser> getNormalUsers() {
+        return this.normal_users_list;
     }
 
     public LocalDateTime getCreateDate() {
@@ -87,7 +104,8 @@ public class ChatRoom {
         }
         this.create_date = createDate;
         this.expire_date = expireDate;
-        this.duration = (int) (expireDate.getSecond() - createDate.getSecond());
+        // calculate duration
+        this.duration = (int) (expireDate.toEpochSecond(null) - createDate.toEpochSecond(null));
     }
 
     @PrePersist
@@ -100,6 +118,10 @@ public class ChatRoom {
     }
 
     public void addUser(User user) {
-        this.user_list.add(user);
+        if (user instanceof AdminUser) {
+            this.admin_users_list.add((AdminUser) user);
+        } else {
+            this.normal_users_list.add((NormalUser) user);
+        }
     }
 }
