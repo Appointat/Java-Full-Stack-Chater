@@ -1,6 +1,5 @@
 package full.stack.chatter.controller;
 
-
 import full.stack.chatter.model.AdminUser;
 import full.stack.chatter.model.ChatRoom;
 import full.stack.chatter.model.NormalUser;
@@ -53,12 +52,13 @@ public class ApiController {
      */
     @PostMapping(value = "/create-chat-room")
     public void createChatRoom() {
+        NormalUser normalUser = servicesRequest.getOneUser(1L);
+
         ChatRoom chat_room = new ChatRoom();
-        AdminUser admin_user = new AdminUser();
-        admin_user.setUser("Cédric", "Martinet", "fasa@pp.com", "1234", false);
         LocalDateTime create_date = LocalDateTime.now();
         LocalDateTime expire_date = create_date.plusDays(1);
-        chat_room.setChatRoom("ChatRoom1", "Description1", admin_user, create_date, expire_date);
+        chat_room.setChatRoom("ChatRoom1", "Description1", normalUser, create_date, expire_date);
+
         servicesRequest.addChatRoom(chat_room);
     }
 
