@@ -69,6 +69,7 @@ public class ApiController {
 
     @PostMapping(value = "/invite-user-to-chat-room")
     public void inviteUserToChatRoom() {
+        // TODO: just used for the test of postgreSQL
         NormalUser normal_user = servicesRequest.getOneUser(1L);
         ChatRoom chat_room = servicesRequest.getOneChatRoom(3L);
 
