@@ -99,6 +99,10 @@ public abstract class User {
     }
 
     public void removeCreatedChatRoom(Long chat_room_id) {
+        if (!this.created_chat_rooms.contains(chat_room_id)) {
+            System.out.println("Chat room not created by this user");
+            return;
+        }
         this.created_chat_rooms.remove(chat_room_id);
     }
 }
