@@ -34,7 +34,7 @@ public class ServicesRequest {
         return em.find(NormalUser.class, id);
     }
 
-    public void deleteOneUser(int id) {
+    public void removeOneUser(int id) {
         em.remove(em.find(NormalUser.class, id));
     }
 
@@ -54,7 +54,7 @@ public class ServicesRequest {
         return em.find(AdminUser.class, id);
     }
 
-    public void deleteAdminUser(AdminUser admin_user) {
+    public void removeAdminUser(AdminUser admin_user) {
         em.remove(em.find(AdminUser.class, admin_user.getId()));
     }
 
