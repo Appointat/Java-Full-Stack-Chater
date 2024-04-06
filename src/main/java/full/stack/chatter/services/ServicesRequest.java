@@ -1,16 +1,16 @@
 package full.stack.chatter.services;
 
-
 import full.stack.chatter.model.AdminUser;
 import full.stack.chatter.model.ChatRoom;
 import full.stack.chatter.model.NormalUser;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
 
 @Repository
 @Transactional
@@ -39,7 +39,7 @@ public class ServicesRequest {
     }
 
     public List<NormalUser> getNormalUsers() {
-        Query q = em.createQuery("select nu from NormalUser nu");
+        TypedQuery<NormalUser> q = em.createQuery("select nu from NormalUser nu", NormalUser.class);
         return q.getResultList();
     }
 
@@ -63,7 +63,7 @@ public class ServicesRequest {
     }
 
     public List<AdminUser> getAdminUsers() {
-        Query q = em.createQuery("select au from AdminUser au");
+        TypedQuery<AdminUser> q = em.createQuery("select au from AdminUser au", AdminUser.class);
         return q.getResultList();
     }
 
@@ -83,7 +83,7 @@ public class ServicesRequest {
     }
 
     public List<ChatRoom> getChatRooms() {
-        Query q = em.createQuery("select cr from ChatRoom cr");
+        TypedQuery<ChatRoom> q = em.createQuery("select cr from ChatRoom cr", ChatRoom.class);
         return q.getResultList();
     }
 
