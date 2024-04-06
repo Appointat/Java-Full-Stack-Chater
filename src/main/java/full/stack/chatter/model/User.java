@@ -25,7 +25,9 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Transient
+    @ElementCollection
+    @CollectionTable(name = "created_chat_rooms", joinColumns = @JoinColumn(name = "id"))
+    @Column(name = "chat_room_id")
     private List<Long> created_chat_rooms = new ArrayList<>();
 
     @Transient
@@ -75,5 +77,9 @@ public class User {
         this.email = email;
         this.password = password;
         this.is_active = is_active;
+
+        this.created_chat_rooms = new ArrayList<>();
+        this.created_chat_rooms.add(1L);
+        this.created_chat_rooms.add(2L);
     }
 }
