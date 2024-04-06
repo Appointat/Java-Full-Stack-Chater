@@ -48,11 +48,11 @@ public class ChatRoom {
     @Column(name = "duration")
     private int duration; // in seconds
 
-    @Column(name = "create_date")
-    private LocalDateTime create_date;
+    @Column(name = "created_date")
+    private LocalDateTime created_date;
 
-    @Column(name = "expire_date")
-    private LocalDateTime expire_date;
+    @Column(name = "expired_date")
+    private LocalDateTime expired_date;
 
     public long getId() {
         return this.id;
@@ -86,11 +86,11 @@ public class ChatRoom {
     }
 
     public LocalDateTime getCreateDate() {
-        return this.create_date;
+        return this.created_date;
     }
 
     public LocalDateTime getExpireDate() {
-        return this.expire_date;
+        return this.expired_date;
     }
 
     public void setChatRoom(String title, String description, User creator, LocalDateTime createDate, LocalDateTime expireDate) {
@@ -103,8 +103,8 @@ public class ChatRoom {
             this.normal_creator = (NormalUser) creator; // safe to cast
             this.admin_creator = null;
         }
-        this.create_date = createDate;
-        this.expire_date = expireDate;
+        this.created_date = createDate;
+        this.expired_date = expireDate;
         this.duration = (int) ChronoUnit.SECONDS.between(createDate, expireDate); // duration in seconds
     }
 
