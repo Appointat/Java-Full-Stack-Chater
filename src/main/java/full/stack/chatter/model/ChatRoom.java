@@ -125,13 +125,16 @@ public class ChatRoom {
                 return;
             }
             this.admin_users_list.add((AdminUser) user);
-        } else {
+        } else if (user instanceof NormalUser) {
             if (this.normal_users_list.contains(user)) {
 //                throw new IllegalStateException("User already exists in the chat room");
                 System.out.println("User already exists in the chat room");
                 return;
             }
             this.normal_users_list.add((NormalUser) user);
+        } else {
+//            throw new IllegalStateException("User must be either AdminUser or NormalUser");
+            System.out.println("User must be either AdminUser or NormalUser");
         }
     }
 
@@ -143,13 +146,16 @@ public class ChatRoom {
                 return;
             }
             this.admin_users_list.remove((AdminUser) user);
-        } else {
+        } else if (user instanceof NormalUser) {
             if (!this.normal_users_list.contains(user)) {
 //                throw new IllegalStateException("User does not exist in the chat room");
                 System.out.println("User does not exist in the chat room");
                 return;
             }
             this.normal_users_list.remove((NormalUser) user);
+        } else {
+//            throw new IllegalStateException("User must be either AdminUser or NormalUser");
+            System.out.println("User must be either AdminUser or NormalUser");
         }
     }
 }

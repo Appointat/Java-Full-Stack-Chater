@@ -26,7 +26,7 @@ public class ServicesRequest {
         em.persist(normal_user);
     }
 
-    public void updateUser(NormalUser user) {
+    public void updateNormalUser(NormalUser user) {
         em.merge(user);
     }
 
@@ -58,6 +58,10 @@ public class ServicesRequest {
         em.remove(em.find(AdminUser.class, admin_user.getId()));
     }
 
+    public void updateAdminUser(AdminUser admin_user) {
+        em.merge(admin_user);
+    }
+
     public List<AdminUser> getAdminUsers() {
         Query q = em.createQuery("select au from AdminUser au");
         return q.getResultList();
@@ -72,6 +76,10 @@ public class ServicesRequest {
 
     public void updateChatRoom(ChatRoom chat_room) {
         em.merge(chat_room);
+    }
+
+    public void removeChatRoom(ChatRoom chat_room) {
+        em.remove(em.find(ChatRoom.class, chat_room.getId()));
     }
 
     public List<ChatRoom> getChatRooms() {

@@ -62,12 +62,39 @@ public class ApiController {
         servicesRequest.addChatRoom(chat_room);
 
         normalUser.addCreatedChatRoom(chat_room.getId());
-        servicesRequest.updateUser(normalUser);
+        servicesRequest.updateNormalUser(normalUser);
     }
 
     @GetMapping(value = "/list-chat-rooms")
     public List<ChatRoom> getChatRooms() {
         return servicesRequest.getChatRooms();
+    }
+
+    @PostMapping(value = "/remove-chat-room") // TODO: to be tested
+    public void removeChatRoom() {
+        ChatRoom chat_room = servicesRequest.getOneChatRoom(1L);
+
+        // Remove all the invited users
+        for (NormalUser normal_user : chat_room.getNormalUsers()) {
+            normal_user.removeInvitedChatRoom(chat_room.getId());
+            servicesRequest.updateNormalUser(normal_user);
+        }
+        for (AdminUser admin_user : chat_room.getAdminUsers()) {
+            admin_user.removeInvitedChatRoom(chat_room.getId());
+            servicesRequest.updateAdminUser(admin_user);
+        }
+
+        // Remove the creator
+        if (chat_room.getCreator() instanceof NormalUser normal_user) {
+            normal_user.removeCreatedChatRoom(chat_room.getId());
+            servicesRequest.updateNormalUser(normal_user);
+        } else {
+            AdminUser admin_user = (AdminUser) chat_room.getCreator();
+            admin_user.removeCreatedChatRoom(chat_room.getId());
+            servicesRequest.updateAdminUser(admin_user);
+        }
+
+        servicesRequest.removeChatRoom(chat_room);
     }
 
     @PostMapping(value = "/invite-user-to-chat-room")
@@ -80,7 +107,7 @@ public class ApiController {
         servicesRequest.updateChatRoom(chat_room);
 
         normal_user.addInvitedChatRoom(chat_room.getId());
-        servicesRequest.updateUser(normal_user);
+        servicesRequest.updateNormalUser(normal_user);
     }
 
     @PostMapping(value = "/remove-user-from-chat-room")
@@ -93,6 +120,6 @@ public class ApiController {
         servicesRequest.updateChatRoom(chat_room);
 
         normal_user.removeInvitedChatRoom(chat_room.getId());
-        servicesRequest.updateUser(normal_user);
+        servicesRequest.updateNormalUser(normal_user);
     }
 }
