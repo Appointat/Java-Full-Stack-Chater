@@ -53,11 +53,11 @@ public abstract class User {
         return this.password;
     }
 
-    public List<Long> getCreatedChatRoom() {
+    public List<Long> getCreatedChatRooms() {
         return !this.created_chat_rooms.isEmpty() ? this.created_chat_rooms : null;
     }
 
-    public List<Long> getInvitedChatRoom() {
+    public List<Long> getInvitedChatRooms() {
         return !this.invited_chat_rooms.isEmpty() ? this.invited_chat_rooms : null;
     }
 

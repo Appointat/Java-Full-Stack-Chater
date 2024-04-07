@@ -32,7 +32,7 @@ public class ApiController {
         NormalUser normal_user = servicesRequest.getOneUser(1L);
 
         // Remove all the created chat rooms
-        for (Long chat_room_id : normal_user.getCreatedChatRoom()) {
+        for (Long chat_room_id : normal_user.getCreatedChatRooms()) {
             ChatRoom chat_room = servicesRequest.getOneChatRoom(chat_room_id);
             this.removeChatRoom(); // input: chat_room_id // it removes user from the invited users firstly
         }
@@ -60,7 +60,7 @@ public class ApiController {
         AdminUser admin_user = servicesRequest.getOneAdminUser(1L);
 
         // Remove all the created chat rooms
-        for (Long chat_room_id : admin_user.getCreatedChatRoom()) {
+        for (Long chat_room_id : admin_user.getCreatedChatRooms()) {
             ChatRoom chat_room = servicesRequest.getOneChatRoom(chat_room_id);
             this.removeChatRoom(); // input: chat_room_id // it removes user from the invited users firstly
         }
