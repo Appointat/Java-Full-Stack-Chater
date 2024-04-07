@@ -91,7 +91,11 @@ public class ApiController {
                 if (!nu.getIsActive() && Objects.equals(nu.getPassword(), normal_user.getPassword())) {
                     nu.setIsActive(true);
                     servicesRequest.updateNormalUser(nu);
+                } else {
+                    System.out.println("User is already active or password is incorrect");
                 }
+            } else {
+                System.out.println("User not found");
             }
         }
     }
