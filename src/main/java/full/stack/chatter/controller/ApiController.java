@@ -92,7 +92,30 @@ public class ApiController {
                     nu.setIsActive(true);
                     servicesRequest.updateNormalUser(nu);
                 } else {
-                    System.out.println("User is already active or password is incorrect");
+                    System.out.println("User is already login or password is incorrect");
+                }
+            } else {
+                System.out.println("User not found");
+            }
+        }
+    }
+
+    @PostMapping(value = "/log-out-user")
+    public void logOutUser() {
+        NormalUser normal_user = servicesRequest.getOneUser(1L); // input of the api, suppose the login user is a normal user
+//        if (normal_user instanceof NormalUser user) {
+        // TODO: if the user is normal user, deactivate the user in the normal user lists (postgresSQL)
+//        } else {
+        // TODO: if the user is admin user, deactivate the user in the admin user lists (postgresSQL)
+//        }
+        List<NormalUser> normal_users = servicesRequest.getNormalUsers();
+        for (NormalUser nu : normal_users) {
+            if (Objects.equals(nu.getFirstName(), normal_user.getFirstName()) && Objects.equals(nu.getLastName(), normal_user.getLastName()) && Objects.equals(nu.getEmail(), normal_user.getEmail())) {
+                if (nu.getIsActive()) {
+                    nu.setIsActive(false);
+                    servicesRequest.updateNormalUser(nu);
+                } else {
+                    System.out.println("User is already logout");
                 }
             } else {
                 System.out.println("User not found");
