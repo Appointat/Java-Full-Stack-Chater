@@ -54,6 +54,8 @@ public class ChatRoom {
     @Column(name = "expired_date")
     private LocalDateTime expired_date;
 
+    public ChatRoom() {
+    }
     public long getId() {
         return this.id;
     }
@@ -70,9 +72,6 @@ public class ChatRoom {
         return this.admin_creator != null ? this.admin_creator : this.normal_creator;
     }
 
-    public ChatRoom() {
-    }
-
     public int getDuration() {
         return this.duration;
     }
@@ -85,11 +84,11 @@ public class ChatRoom {
         return this.normal_users_list;
     }
 
-    public LocalDateTime getCreateDate() {
+    public LocalDateTime getCreatedDate() {
         return this.created_date;
     }
 
-    public LocalDateTime getExpireDate() {
+    public LocalDateTime getExpiredDate() {
         return this.expired_date;
     }
 
@@ -111,6 +110,7 @@ public class ChatRoom {
     @PrePersist
     @PreUpdate
     // ChatRoom must have a creator, and it must be either an AdminUser or a NormalUser, but not both
+    // Execute this method before persisting or updating the ChatRoom entity
     private void validateCreator() {
         if (this.admin_creator != null && this.normal_creator != null) {
             throw new IllegalStateException("ChatRoom cannot have both AdminUser and NormalUser as creator");

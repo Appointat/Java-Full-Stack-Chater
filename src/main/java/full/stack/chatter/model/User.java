@@ -90,6 +90,10 @@ public abstract class User {
         this.invited_chat_rooms.add(4L);
     }
 
+    public void setIsActive(Boolean is_active) {
+        this.is_active = is_active;
+    }
+
     public void addCreatedChatRoom(Long chat_room_id) {
         if (this.created_chat_rooms.contains(chat_room_id)) {
             System.out.println("Chat room already created by this user");
