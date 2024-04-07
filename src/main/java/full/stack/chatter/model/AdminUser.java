@@ -5,16 +5,18 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "AdminUsers")
-public class AdminUser extends User{
-    public AdminUser(){
+public class AdminUser extends User {
+    public AdminUser() {
         super();
     }
 
-    public void addUser(){}
+    public void addUser() {
+    }
 
-    public void deleteUser(){}
+    public void deleteUser() {
+    }
 
-    public Boolean isUserExisted(String email){
+    public Boolean isUserExisted(String email) {
         return null;
     }
 
