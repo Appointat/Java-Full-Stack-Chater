@@ -126,10 +126,11 @@ public class ApiController {
     @PostMapping(value = "/invite-user-to-chat-room")
     public void inviteUserToChatRoom() {
         // TODO: just used for the test of postgreSQL
+        AdminUser admin_user = servicesRequest.getOneAdminUser(1L);
         NormalUser normal_user = servicesRequest.getOneUser(1L);
         ChatRoom chat_room = servicesRequest.getOneChatRoom(3L);
 
-        chat_room.addUser(normal_user);
+        admin_user.addUserToChatRoom(normal_user, chat_room); // Only admin can invite user
         servicesRequest.updateChatRoom(chat_room);
 
         normal_user.addInvitedChatRoom(chat_room.getId());
@@ -139,10 +140,11 @@ public class ApiController {
     @PostMapping(value = "/remove-user-from-chat-room")
     public void removeUserFromChatRoom() {
         // TODO: just used for the test of postgreSQL
+        AdminUser admin_user = servicesRequest.getOneAdminUser(1L);
         NormalUser normal_user = servicesRequest.getOneUser(1L);
         ChatRoom chat_room = servicesRequest.getOneChatRoom(3L);
 
-        chat_room.removeUser(normal_user);
+        admin_user.removeUserFromChatRoom(normal_user, chat_room); // Only admin can remove user
         servicesRequest.updateChatRoom(chat_room);
 
         normal_user.removeInvitedChatRoom(chat_room.getId());

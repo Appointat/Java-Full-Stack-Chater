@@ -10,10 +10,12 @@ public class AdminUser extends User {
         super();
     }
 
-    public void addUser() {
+    public void addUserToChatRoom(User user, ChatRoom chat_room) {
+        chat_room.addUser(user);
     }
 
-    public void deleteUser() {
+    public void removeUserFromChatRoom(User user, ChatRoom chat_room) {
+        chat_room.removeUser(user);
     }
 
     public Boolean isUserExisted(String email) {
