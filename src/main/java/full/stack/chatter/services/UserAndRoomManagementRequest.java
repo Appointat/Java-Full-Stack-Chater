@@ -14,7 +14,7 @@ import java.util.List;
 
 @Repository
 @Transactional
-public class ServicesRequest {
+public class UserAndRoomManagementRequest {
 
     @PersistenceContext
     EntityManager em;
