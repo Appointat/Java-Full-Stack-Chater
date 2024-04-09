@@ -125,4 +125,8 @@ public abstract class User {
         }
         this.invited_chat_rooms.remove(chat_room_id);
     }
+
+    public void sendMsg(String msg) { // TODO: implement this method
+        System.out.println("Message sent: " + msg);
+    }
 }
