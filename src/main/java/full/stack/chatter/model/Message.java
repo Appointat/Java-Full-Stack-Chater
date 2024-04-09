@@ -28,8 +28,7 @@ public class Message {
     public Message() {
     }
 
-    public Message(Long id, String message, Long sender_id, Long chat_room_id, LocalDateTime created_date) {
-        this.id = id;
+    public void setMessage(String message, Long sender_id, Long chat_room_id, LocalDateTime created_date) {
         this.message = message;
         this.sender_id = sender_id;
         this.chat_room_id = chat_room_id;
@@ -44,8 +43,15 @@ public class Message {
         return this.message;
     }
 
-    public Long getSender_id() {
+    public Long getSenderId() {
         return this.sender_id;
     }
 
+    public Long getChatRoomId() {
+        return this.chat_room_id;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return this.created_date;
+    }
 }
