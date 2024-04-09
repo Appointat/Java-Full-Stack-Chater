@@ -18,7 +18,7 @@ public class AdminUser extends User {
         chat_room.removeUser(user);
     }
 
-    public Boolean isUserExisted(String email) { // TODO: implement this method
+    public Boolean getIsUserExisted(String email) { // TODO: implement this method
         return null;
     }
 
