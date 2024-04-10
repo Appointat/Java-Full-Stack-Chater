@@ -2,6 +2,7 @@ package full.stack.chatter.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,7 +127,9 @@ public abstract class User {
         this.invited_chat_rooms.remove(chat_room_id);
     }
 
-    public void sendMsg(String msg) { // TODO: implement this method
+    public void sendMsg(String msg, Long chat_room_id) { // TODO: implement this method
+        Message message = new Message();
+        message.setMessage(msg, this.id, chat_room_id, LocalDateTime.now());
         System.out.println("Message sent: " + msg);
     }
 }

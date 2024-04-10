@@ -28,8 +28,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         return stompClient;
     }
 
-
-
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic"); // Set the base path for server broadcast messages
@@ -38,7 +36,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/chat").withSockJS(); // Register a WebSocket endpoint, through which clients will connect to the WebSocket server
+        registry.addEndpoint("/chat")
+                .setAllowedOrigins("http://localhost:8080")
+                .withSockJS(); // Register a WebSocket endpoint, through which clients will connect to the WebSocket server
     }
 
 }

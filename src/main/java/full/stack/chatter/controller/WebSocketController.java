@@ -14,10 +14,11 @@ public class WebSocketController {
 
     // Handle messages sent to "/app/send/message",
     // and broadcast the message to all clients subscribed to "/topic/messages"
-    @MessageMapping("/send/message")
-    @SendTo("/topic/messages")
+    @MessageMapping(value = "/send/message")
+    @SendTo(value = "/topic/messages")
     public Message sendMessage(Message message) {
         // Save message to database
+        System.out.println(message.getMessage());
         messageManagementRequest.addMessage(message);
         return message; // Return message will be broadcast to all clients subscribed to "/topic/messages"
     }
