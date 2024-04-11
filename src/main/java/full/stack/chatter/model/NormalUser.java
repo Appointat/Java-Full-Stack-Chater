@@ -9,4 +9,11 @@ public class NormalUser extends User{
     public NormalUser(){
         super();
     }
+    public NormalUser(String first_name, String last_name, String email, String password){
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.email = email;
+        this.password = password;
+        this.is_active = true;
+    }
 }

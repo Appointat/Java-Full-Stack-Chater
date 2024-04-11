@@ -12,35 +12,33 @@ public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    protected Long id;
 
     @Column(name = "first_name")
-    private String first_name;
+    protected String first_name;
 
     @Column(name = "last_name")
-    private String last_name;
+    protected String last_name;
 
     @Column(name = "email")
-    private String email;
+    protected String email;
 
     @Column(name = "password")
-    private String password;
+    protected String password;
 
     @ElementCollection
     @CollectionTable(name = "created_chat_rooms", joinColumns = @JoinColumn(name = "id"))
     @Column(name = "created_chat_room_id")
-    private List<Long> created_chat_rooms = new ArrayList<>();
+    protected List<Long> created_chat_rooms = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(name = "invited_chat_rooms", joinColumns = @JoinColumn(name = "id"))
     @Column(name = "invited_chat_room_id")
-    private List<Long> invited_chat_rooms = new ArrayList<>();
+    protected List<Long> invited_chat_rooms = new ArrayList<>();
 
     @Column(name = "is_active")
-    private Boolean is_active;
+    protected Boolean is_active;
 
-    public User() {
-    }
 
     public Long getId() {
         return this.id;
