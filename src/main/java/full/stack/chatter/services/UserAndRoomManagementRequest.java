@@ -33,8 +33,14 @@ public class UserAndRoomManagementRequest {
         em.merge(user);
     }
 
-    public NormalUser getOneUser(Long id) {
+    public NormalUser getOneNormalUser(Long id) {
         return em.find(NormalUser.class, id);
+    }
+
+    public Long findNormalUserIdByEmail(String email) {
+        TypedQuery<NormalUser> q = em.createQuery("select nu from NormalUser nu where nu.email = :email", NormalUser.class);
+        q.setParameter("email", email);
+        return q.getSingleResult().getId();
     }
 
     public void removeOneUser(Long id) {
@@ -70,6 +76,12 @@ public class UserAndRoomManagementRequest {
 
     public AdminUser getOneAdminUser(Long id) {
         return em.find(AdminUser.class, id);
+    }
+
+    public Long findAdminUserIdByEmail(String email) {
+        TypedQuery<AdminUser> q = em.createQuery("select au from AdminUser au where au.email = :email", AdminUser.class);
+        q.setParameter("email", email);
+        return q.getSingleResult().getId();
     }
 
     public void removeAdminUser(AdminUser admin_user) {

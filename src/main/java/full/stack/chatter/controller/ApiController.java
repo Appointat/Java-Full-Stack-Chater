@@ -38,7 +38,7 @@ public class ApiController {
 
     @PostMapping(value = "/remove-normal-user") // TODO: to be tested
     public void removeNormalUser() {
-        NormalUser normal_user = userAndRoomManagementRequest.getOneUser(1L);
+        NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(1L);
 
         // Remove all the created chat rooms
         for (Long chat_room_id : normal_user.getCreatedChatRooms()) {
@@ -87,7 +87,7 @@ public class ApiController {
      */
     @PostMapping(value = "/log-in-user")
     public void logInUser() {
-        NormalUser normal_user = userAndRoomManagementRequest.getOneUser(1L); // input of the api, suppose the login user is a normal user
+        NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(1L); // input of the api, suppose the login user is a normal user
 //        if (normal_user instanceof NormalUser user) {
 //            // TODO: if the user is normal user, activate the user in the normal user lists (postgresSQL)
 //        } else {
@@ -110,7 +110,7 @@ public class ApiController {
 
     @PostMapping(value = "/log-out-user")
     public void logOutUser() {
-        NormalUser normal_user = userAndRoomManagementRequest.getOneUser(1L); // input of the api, suppose the login user is a normal user
+        NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(1L); // input of the api, suppose the login user is a normal user
 //        if (normal_user instanceof NormalUser user) {
         // TODO: if the user is normal user, deactivate the user in the normal user lists (postgresSQL)
 //        } else {
@@ -136,7 +136,7 @@ public class ApiController {
      */
     @PostMapping(value = "/create-chat-room")
     public void createChatRoom() {
-        NormalUser normalUser = userAndRoomManagementRequest.getOneUser(1L);
+        NormalUser normalUser = userAndRoomManagementRequest.getOneNormalUser(1L);
 
         ChatRoom chat_room = new ChatRoom();
         LocalDateTime create_date = LocalDateTime.now();
@@ -185,7 +185,7 @@ public class ApiController {
     public void inviteUserToChatRoom() {
         // TODO: just used for the test of postgreSQL
         AdminUser admin_user = userAndRoomManagementRequest.getOneAdminUser(1L);
-        NormalUser normal_user = userAndRoomManagementRequest.getOneUser(1L);
+        NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(1L);
         ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(3L);
 
         admin_user.addUserToChatRoom(normal_user, chat_room); // Only admin can invite user
@@ -199,7 +199,7 @@ public class ApiController {
     public void removeUserFromChatRoom() {
         // TODO: just used for the test of postgreSQL
         AdminUser admin_user = userAndRoomManagementRequest.getOneAdminUser(1L);
-        NormalUser normal_user = userAndRoomManagementRequest.getOneUser(1L);
+        NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(1L);
         ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(3L);
 
         admin_user.removeUserFromChatRoom(normal_user, chat_room); // Only admin can remove user

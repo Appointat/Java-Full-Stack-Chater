@@ -31,4 +31,22 @@ public class UserController {
         return "redirect:/signin";
     }
 
+    @RequestMapping("login")
+    public String login(String email, String password, Boolean is_admin) {
+        if (is_admin != null && is_admin) {
+            Long admin_user_id = userAndRoomManagementRequest.findAdminUserIdByEmail(email);
+            AdminUser admin_user = userAndRoomManagementRequest.getOneAdminUser(admin_user_id);
+            if (admin_user != null && admin_user.getPassword().equals(password)) {
+                return "redirect:/admin/dashboard";
+            }
+        } else {
+            Long normal_user_id = userAndRoomManagementRequest.findNormalUserIdByEmail(email);
+            NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(normal_user_id);
+            if (normal_user != null && normal_user.getPassword().equals(password)) {
+                return "redirect:/user/dashboard";
+            }
+        }
+        return "redirect:/signin";
+    }
+
 }
