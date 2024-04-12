@@ -84,6 +84,12 @@ public class UserAndRoomManagementRequest {
         return q.getSingleResult().getId();
     }
 
+    public void activateAdminUser(Long id) {
+        AdminUser admin_user = em.find(AdminUser.class, id);
+        admin_user.setIsActive(true);
+        em.merge(admin_user);
+    }
+
     public void removeAdminUser(AdminUser admin_user) {
         em.remove(em.find(AdminUser.class, admin_user.getId()));
     }
