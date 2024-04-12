@@ -7,6 +7,7 @@ import full.stack.chatter.services.UserAndRoomManagementRequest;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -21,19 +22,18 @@ public class ApiController {
     /*
     APIs for NormalUser
      */
-    @PostMapping(value = "/create-user")
-    public void createNormalUser(String first_name, String last_name, String email, String password, Boolean admin) {
+    @RequestMapping(value = "/create-user")
+    public String createNormalUser(String first_name, String last_name, String email, String password, Boolean admin) {
         if (admin != null && admin) {
             AdminUser admin_user = new AdminUser();
             admin_user.setUser(first_name, last_name, email, password, false);
-            userAndRoomManagementRequest.addAdminUser(admin_user);
             userAndRoomManagementRequest.addAdminUser(admin_user);
         } else {
             NormalUser normal_user = new NormalUser();
             normal_user.setUser(first_name, last_name, email, password, false);
             userAndRoomManagementRequest.addNormalUser(normal_user);
-            userAndRoomManagementRequest.addNormalUser(normal_user);
         }
+        return "redirect:/signin";
     }
 
     @PostMapping(value = "/remove-normal-user") // TODO: to be tested

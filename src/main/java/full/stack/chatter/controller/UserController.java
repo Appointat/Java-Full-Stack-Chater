@@ -26,15 +26,13 @@ public class UserController {
 
     @RequestMapping("signup")
     public String signup(String first_name, String last_name, String email, String password, Boolean admin){
-        System.out.println(admin);
+
         if (admin != null && admin) {
             AdminUser user= new AdminUser(first_name,last_name,email,password);
             userAndRoomManagementRequest.addAdminUser(user);
-            System.out.println("First Name111: " + user.getEmail());
         }else{
             NormalUser user=new NormalUser(first_name,last_name,email,password);
             userAndRoomManagementRequest.addNormalUser(user);
-            System.out.println("First Name222: " + user.getEmail());
         }
         return "redirect:/signin";
     }
