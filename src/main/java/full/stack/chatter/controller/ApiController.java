@@ -21,11 +21,19 @@ public class ApiController {
     /*
     APIs for NormalUser
      */
-    @PostMapping(value = "/create-normal-user")
-    public void createNormalUser() {
-        NormalUser normal_user = new NormalUser();
-        normal_user.setUser("Cédric", "Martinet", "aa@pp.com", "1234", false);
-        userAndRoomManagementRequest.addNormalUser(normal_user);
+    @PostMapping(value = "/create-user")
+    public void createNormalUser(String first_name, String last_name, String email, String password, Boolean admin) {
+        if (admin != null && admin) {
+            AdminUser admin_user = new AdminUser();
+            admin_user.setUser(first_name, last_name, email, password, false);
+            userAndRoomManagementRequest.addAdminUser(admin_user);
+            userAndRoomManagementRequest.addAdminUser(admin_user);
+        } else {
+            NormalUser normal_user = new NormalUser();
+            normal_user.setUser(first_name, last_name, email, password, false);
+            userAndRoomManagementRequest.addNormalUser(normal_user);
+            userAndRoomManagementRequest.addNormalUser(normal_user);
+        }
     }
 
     @PostMapping(value = "/remove-normal-user") // TODO: to be tested
