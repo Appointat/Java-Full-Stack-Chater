@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #chat {
+            margin-top: 20px;
+            border: 1px solid #9f4141;
+            padding: 10px;
+        }
+
+        .message {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<h2>Chat Application</h2>
+<input id="messageInput" placeholder="Type a message..." type="text">
+<button onclick="sendMessage()">Send the message</button>
+
+<div id="chat">
+    <h4>Chat History</h4>
+    <div id="messageArea"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+<script>
+    var stompClient = null;
+    var senderId = 1; // TODO: Replace with the actual sender's ID
+    var chatRoomId = 1; // TODO: Replace with the actual chat room's ID
+
+    // Connect to the WebSocket server
+    function connect() {
+        var socket = new SockJS('http://localhost:8080/chat'); // Update the URL to match the endpoint
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            // Subscribe to the topic
+            stompClient.subscribe('/topic/messages', function (messageOutput) {
+                console.log('Raw message received: ', messageOutput);
+                var message = JSON.parse(messageOutput.body);
+                displayMessage(message.message);
+            }, function (error) {
+                console.log('Error: ', error);
+            });
+        });
+    }
+
+    // Send a message
+    function sendMessage() {
+        var messageContent = document.getElementById('messageInput').value.trim();
+        if (messageContent && stompClient) {
+            var message = {
+                message: messageContent,
+                sender_id: senderId,
+                chat_room_id: chatRoomId
+                // The id and created_date are managed by the server
+            };
+            stompClient.send("/app/send/message", {}, JSON.stringify(message));
+            document.getElementById('messageInput').value = '';
+        }
+    }
+
+    // Display the received message
+    function displayMessage(messageContent) {
+        console.log('Displaying message: ', messageContent);
+
+        var messageArea = document.getElementById('messageArea');
+        var messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+        messageElement.textContent = messageContent; // Display message content
+        messageArea.appendChild(messageElement);
+    }
+
+    // Call connect to establish the connection
+    connect();
+</script>
+</body>
+</html>
