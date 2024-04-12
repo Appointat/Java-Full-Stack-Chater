@@ -24,7 +24,7 @@ public class UserAndRoomManagementRequest {
      */
     public void addNormalUser(NormalUser normal_user) {
         if (isAdminUserCreated(normal_user.getEmail())) {
-            throw new RuntimeException("Admin user already exists");
+            throw new RuntimeException("Normal user already exists");
         }
         em.persist(normal_user);
     }
@@ -49,19 +49,22 @@ public class UserAndRoomManagementRequest {
     public Boolean isNormalUserCreated(String email) {
         TypedQuery<NormalUser> q = em.createQuery("select nu from NormalUser nu where nu.email = :email", NormalUser.class);
         q.setParameter("email", email);
-        return q.getResultList().size() > 0;
+        return !q.getResultList().isEmpty();
     }
 
     public Boolean isAdminUserCreated(String email) {
         TypedQuery<AdminUser> q = em.createQuery("select au from AdminUser au where au.email = :email", AdminUser.class);
         q.setParameter("email", email);
-        return q.getResultList().size() > 0;
+        return !q.getResultList().isEmpty();
     }
 
     /*
     APIs for AdminUser
      */
     public void addAdminUser(AdminUser admin_user) {
+        if (isNormalUserCreated(admin_user.getEmail())) {
+            throw new RuntimeException("Admin user already exists");
+        }
         em.persist(admin_user);
     }
 
