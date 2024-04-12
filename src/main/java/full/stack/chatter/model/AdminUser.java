@@ -6,8 +6,13 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "AdminUsers")
 public class AdminUser extends User {
-    public AdminUser() {
-        super();
+    public AdminUser() {}
+    public AdminUser(String first_name, String last_name, String email, String password){
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.email = email;
+        this.password = password;
+        this.is_active = true;
     }
 
     public void addUserToChatRoom(User user, ChatRoom chat_room) {
