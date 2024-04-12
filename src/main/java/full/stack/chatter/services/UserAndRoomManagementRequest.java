@@ -43,6 +43,12 @@ public class UserAndRoomManagementRequest {
         return q.getResultList();
     }
 
+    public Boolean isNormalUserCreated(String email) {
+        TypedQuery<NormalUser> q = em.createQuery("select nu from NormalUser nu where nu.email = :email", NormalUser.class);
+        q.setParameter("email", email);
+        return q.getResultList().size() > 0;
+    }
+
     /*
     APIs for AdminUser
      */

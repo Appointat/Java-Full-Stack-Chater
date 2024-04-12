@@ -18,7 +18,7 @@ public class WebSocketController {
     @SendTo(value = "/topic/messages")
     public Message sendMessage(Message message) {
         // Save message to database
-        System.out.println(message.getMessage());
+        System.out.println(message.getMessage());   
         messageManagementRequest.addMessage(message);
         return message; // Return message will be broadcast to all clients subscribed to "/topic/messages"
     }
