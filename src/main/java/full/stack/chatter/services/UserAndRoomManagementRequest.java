@@ -23,7 +23,7 @@ public class UserAndRoomManagementRequest {
     APIs for NormalUser
      */
     public void addNormalUser(NormalUser normal_user) {
-        if (isAdminUserCreated(normal_user.getEmail())) {
+        if (isNormalUserCreated(normal_user.getEmail())) {
             throw new RuntimeException("Normal user already exists");
         }
             em.persist(normal_user);
@@ -57,17 +57,11 @@ public class UserAndRoomManagementRequest {
         return !q.getResultList().isEmpty();
     }
 
-    public Boolean isAdminUserCreated(String email) {
-        TypedQuery<AdminUser> q = em.createQuery("select au from AdminUser au where au.email = :email", AdminUser.class);
-        q.setParameter("email", email);
-        return !q.getResultList().isEmpty();
-    }
-
     /*
     APIs for AdminUser
      */
     public void addAdminUser(AdminUser admin_user) {
-        if (isNormalUserCreated(admin_user.getEmail())) {
+        if (isAdminUserCreated(admin_user.getEmail())) {
             throw new RuntimeException("Admin user already exists");
         }
         em.persist(admin_user);
@@ -100,6 +94,13 @@ public class UserAndRoomManagementRequest {
         TypedQuery<AdminUser> q = em.createQuery("select au from AdminUser au", AdminUser.class);
         return q.getResultList();
     }
+
+    public Boolean isAdminUserCreated(String email) {
+        TypedQuery<AdminUser> q = em.createQuery("select au from AdminUser au where au.email = :email", AdminUser.class);
+        q.setParameter("email", email);
+        return !q.getResultList().isEmpty();
+    }
+
 
     /*
     APIs for ChatRoom
