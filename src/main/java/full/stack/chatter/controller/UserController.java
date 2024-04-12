@@ -3,21 +3,15 @@ package full.stack.chatter.controller;
 
 import full.stack.chatter.model.AdminUser;
 import full.stack.chatter.model.NormalUser;
-import full.stack.chatter.model.User;
 import full.stack.chatter.services.UserAndRoomManagementRequest;
-import jakarta.servlet.http.HttpSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("user")
 public class UserController {
-
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
-
+    @Resource
     private UserAndRoomManagementRequest userAndRoomManagementRequest;
 
     public UserController(UserAndRoomManagementRequest userAndRoomManagementRequest){
@@ -25,15 +19,22 @@ public class UserController {
     }
 
     @RequestMapping("signup")
-    public String signup(String first_name, String last_name, String email, String password, Boolean admin){
+    public String signup(String first_name, String last_name, String email, String password, Boolean is_admin) {
 
-        if (admin != null && admin) {
+        if (is_admin != null && is_admin) {
+            if (userAndRoomManagementRequest.isAdminUserCreated(email)) {
+                throw new RuntimeException("Admin user already exists");
+            }
             AdminUser user= new AdminUser(first_name,last_name,email,password);
             userAndRoomManagementRequest.addAdminUser(user);
         }else{
+            if (userAndRoomManagementRequest.isNormalUserCreated(email)) {
+                throw new RuntimeException("Normal user already exists");
+            }
             NormalUser user=new NormalUser(first_name,last_name,email,password);
             userAndRoomManagementRequest.addNormalUser(user);
         }
         return "redirect:/signin";
     }
+
 }
