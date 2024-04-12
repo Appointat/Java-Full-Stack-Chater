@@ -21,13 +21,18 @@ public class UserController {
 
     @RequestMapping("signup")
     public String signup(String first_name, String last_name, String email, String password, Boolean is_admin) {
-
-        if (is_admin != null && is_admin) {
-            AdminUser user= new AdminUser(first_name,last_name,email,password);
-            userAndRoomManagementRequest.addAdminUser(user);
-        }else{
-            NormalUser user=new NormalUser(first_name,last_name,email,password);
-            userAndRoomManagementRequest.addNormalUser(user);
+        try {
+            if (is_admin != null && is_admin) {
+                AdminUser user = new AdminUser(first_name, last_name, email, password);
+                userAndRoomManagementRequest.addAdminUser(user);
+            } else {
+                NormalUser user = new NormalUser(first_name, last_name, email, password);
+                userAndRoomManagementRequest.addNormalUser(user);
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return"redirect:/signup";
         }
         return "redirect:/signin";
     }

@@ -45,7 +45,7 @@
 <body>
 <div class="signup-container mt-3">
     <h2>Sign Up</h2>
-    <form id="signupForm" th:action="@{/create-user}" method="post">
+    <form id="signupForm" th:action="@{/user/signup}" method="post">
         <div class="mb-3 mt-5">
             <label for="firstName">First Name:</label>
             <input type="text" id="firstName" name="first_name" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+" placeholder="First name" required>
