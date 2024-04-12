@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Sign In Page</title>
@@ -35,7 +35,7 @@
 
 <div class="signin-container mt-3">
     <h2>Sign In</h2>
-    <form>
+    <form th:action="@{/user/signin}" method="post">
         <div class="mb-3 mt-3">
             <label for="email">Email:</label>
             <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" required>
@@ -46,6 +46,11 @@
             <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" required>
             <div class="invalid-feedback">Please fill out this field.</div>
         </div>
+        <div class="mb-3">
+            <label for="admin">Admin:</label>
+            <input type="checkbox" id="admin" name="is_admin">
+        </div>
+
         <button type="submit" class="btn btn-primary">Sign In</button>
     </form>
 </div>
