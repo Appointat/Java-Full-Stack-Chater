@@ -22,15 +22,9 @@ public class UserController {
     public String signup(String first_name, String last_name, String email, String password, Boolean is_admin) {
 
         if (is_admin != null && is_admin) {
-            if (userAndRoomManagementRequest.isAdminUserCreated(email)) {
-                throw new RuntimeException("Admin user already exists");
-            }
             AdminUser user= new AdminUser(first_name,last_name,email,password);
             userAndRoomManagementRequest.addAdminUser(user);
         }else{
-            if (userAndRoomManagementRequest.isNormalUserCreated(email)) {
-                throw new RuntimeException("Normal user already exists");
-            }
             NormalUser user=new NormalUser(first_name,last_name,email,password);
             userAndRoomManagementRequest.addNormalUser(user);
         }

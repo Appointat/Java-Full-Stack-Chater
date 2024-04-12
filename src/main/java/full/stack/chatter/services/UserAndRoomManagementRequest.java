@@ -23,6 +23,9 @@ public class UserAndRoomManagementRequest {
     APIs for NormalUser
      */
     public void addNormalUser(NormalUser normal_user) {
+        if (isAdminUserCreated(normal_user.getEmail())) {
+            throw new RuntimeException("Admin user already exists");
+        }
         em.persist(normal_user);
     }
 
