@@ -49,6 +49,12 @@ public class UserAndRoomManagementRequest {
         return q.getResultList().size() > 0;
     }
 
+    public Boolean isAdminUserCreated(String email) {
+        TypedQuery<AdminUser> q = em.createQuery("select au from AdminUser au where au.email = :email", AdminUser.class);
+        q.setParameter("email", email);
+        return q.getResultList().size() > 0;
+    }
+
     /*
     APIs for AdminUser
      */
