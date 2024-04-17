@@ -39,6 +39,7 @@ public class UserController {
 
     @RequestMapping("signin")
     public String signin(String email, String password, Boolean is_admin, HttpSession session) {
+        // TODO: use try-catch
         if (is_admin != null && is_admin) {
             Long admin_user_id = userAndRoomManagementRequest.findAdminUserIdByEmail(email);
             AdminUser admin_user = userAndRoomManagementRequest.getOneAdminUser(admin_user_id);
