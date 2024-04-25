@@ -10,7 +10,7 @@
 <table class="table">
     <tr class="table_header">
         <td>
-            ID
+            User ID
         </td>
         <td>
             Email
@@ -45,23 +45,69 @@
             <span th:text="${normalUser.getIsActive()} ? 'true' : 'false'"></span>
         </td>
         <td>
-<!--            <a href="javascript:;" th:onclick="'deleteEmployee('+${employee.id}+')'">删除</a>-->
-            <!--								<a th:href="@{/employee/detail?id=}+${employee.id}+'&name='+${employee.name}">更新</a>-->
-            <!--								<a th:href="@{/employee/detail(id=${employee.id},name=${employee.name})}">更新</a>-->
-<!--            <a th:href="@{/employee/detail(id=${employee.id})}">更新</a>-->
-
+            <a href="javascript:;" th:data-email="${normalUser.getEmail()}" th:onclick="|deleteNormalAccount(this.getAttribute('data-email'))|">Delete account</a>
         </td>
     </tr>
+
     <script>
-        function deleteEmployee(id){
-            console.log(id);
-            if(window.confirm('确定要删除这条记录吗?')){
-                location.href='[[@{/employee/delete?id=}]]'+id;
+        function deleteNormalAccount(email){
+            if(window.confirm('Are you sure to delete this account ? ')){
+                location.href='[[@{/user/normaldelete?email=}]]'+email;
             }
         }
     </script>
 </table>
 
+<table class="table">
+    <tr class="table_header">
+        <td>
+            Admin ID
+        </td>
+        <td>
+            Email
+        </td>
+        <td>
+            Firstname
+        </td>
+        <td>
+            Lastname
+        </td>
+        <td>
+            Active
+        </td>
+        <td>
+            Action
+        </td>
+    </tr>
+    <tr th:each="adminUser,state:${adminUserList}"  th:class="${state.odd?'row1':'row2'}">
+        <td>
+            <span th:text="${adminUser.getId()}"></span>
+        </td>
+        <td>
+            <span th:text="${adminUser.getEmail()}"></span>
+        </td>
+        <td>
+            <span th:text="${adminUser.getFirstName()}"></span>
+        </td>
+        <td>
+            <span th:text="${adminUser.getLastName()}"></span>
+        </td>
+        <td>
+            <span th:text="${adminUser.getIsActive()} ? 'true' : 'false'"></span>
+        </td>
+        <td>
+            <a href="javascript:;" th:data-email="${adminUser.getEmail()}" th:onclick="|deleteAdminAccount(this.getAttribute('data-email'))|">Delete account</a>
+        </td>
+    </tr>
+    <script>
+        function deleteAdminAccount(email){
+            if(window.confirm('Are you sure to delete this account ? ')){
+                location.href='[[@{/user/admindelete?email=}]]'+email;
+            }
+        }
+    </script>
+</table>
+<a href="/page_admin">return</a>
 
 </body>
 </html>

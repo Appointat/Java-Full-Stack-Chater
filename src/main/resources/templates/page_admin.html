@@ -24,8 +24,10 @@
 </header>
 
 <main class="main">
-    <aside class="aside-info">User information</aside>
-    <section class="main-section">main</section>
+    <aside class="aside-info">
+        <span th:text="${session.user.email}"></span>
+    </aside>
+    <section class="main-section">Room list</section>
 </main>
 
 <footer class="footer">Java Full-Stack Chatter 2024 | CHEN Zikang HOU Longhao</footer>

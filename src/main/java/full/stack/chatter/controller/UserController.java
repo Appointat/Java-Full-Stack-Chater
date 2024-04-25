@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.io.File;
 import java.util.List;
 
 @Controller
@@ -64,13 +65,21 @@ public class UserController {
 
     @RequestMapping("userlist")
     public String userlist(Model model){
-
         List<NormalUser> normalUserList=userAndRoomManagementRequest.getNormalUsers();
         List<AdminUser> adminUserList=userAndRoomManagementRequest.getAdminUsers();
         model.addAttribute("normalUserList", normalUserList);
         model.addAttribute("adminUserList", adminUserList);
-        System.out.println("testtesttesttesttest");
         return "page_userlist";
     }
 
+    @RequestMapping("normaldelete")
+    public String normaldelete(String email){
+        userAndRoomManagementRequest.removeOneUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+        return "redirect:/user/userlist";
+    }
+    @RequestMapping("admindelete")
+    public String admindelete(String email){
+        userAndRoomManagementRequest.removeAdminUser(userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email)));
+        return "redirect:/user/userlist";
+    }
 }
