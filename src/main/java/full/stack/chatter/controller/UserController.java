@@ -43,18 +43,20 @@ public class UserController {
     @RequestMapping("signin")
     public String signin(String email, String password, Boolean is_admin, HttpSession session) {
         // TODO: use try-catch
-        if (is_admin != null && is_admin) {
+        if (is_admin != null && is_admin) { // if the user is an admin
             Long admin_user_id = userAndRoomManagementRequest.findAdminUserIdByEmail(email);
             AdminUser admin_user = userAndRoomManagementRequest.getOneAdminUser(admin_user_id);
-            if (admin_user != null && admin_user.getPassword().equals(password)) {
+
+            if (admin_user != null && admin_user.getPassword().equals(password)) { // if the password is correct
                 session.setAttribute("user", admin_user);
                 return "redirect:/page_admin";
             }
             return"redirect:/signin";
-        } else {
+        } else { // if the user is a normal user
             Long normal_user_id = userAndRoomManagementRequest.findNormalUserIdByEmail(email);
             NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(normal_user_id);
-            if (normal_user != null && normal_user.getPassword().equals(password)) {
+
+            if (normal_user != null && normal_user.getPassword().equals(password)) { // if the password is correct
                 session.setAttribute("user", normal_user);
                 return "redirect:/page_normaluser";
             }
@@ -64,9 +66,9 @@ public class UserController {
 
     @RequestMapping("userlist")
     public String userlist(Model model){
-
         List<NormalUser> normalUserList=userAndRoomManagementRequest.getNormalUsers();
         List<AdminUser> adminUserList=userAndRoomManagementRequest.getAdminUsers();
+
         model.addAttribute("normalUserList", normalUserList);
         model.addAttribute("adminUserList", adminUserList);
         System.out.println("testtesttesttesttest");
