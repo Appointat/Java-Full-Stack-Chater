@@ -5,6 +5,7 @@ import full.stack.chatter.model.AdminUser;
 import full.stack.chatter.model.NormalUser;
 import full.stack.chatter.services.UserAndRoomManagementRequest;
 import jakarta.annotation.Resource;
+import jakarta.persistence.NoResultException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,24 +46,32 @@ public class UserController {
     public String signin(String email, String password, Boolean is_admin, HttpSession session) {
         // TODO: use try-catch
         if (is_admin != null && is_admin) { // if the user is an admin
-            Long admin_user_id = userAndRoomManagementRequest.findAdminUserIdByEmail(email);
-            AdminUser admin_user = userAndRoomManagementRequest.getOneAdminUser(admin_user_id);
-
-            if (admin_user != null && admin_user.getPassword().equals(password)) { // if the password is correct
-                session.setAttribute("user", admin_user);
-                return "redirect:/page_admin";
+            try {
+                Long admin_user_id = userAndRoomManagementRequest.findAdminUserIdByEmail(email);
+                AdminUser admin_user = userAndRoomManagementRequest.getOneAdminUser(admin_user_id);
+                System.out.println(admin_user);
+                if (admin_user != null && admin_user.getPassword().equals(password)) { // if the password is correct
+                    session.setAttribute("user", admin_user);
+                    return "redirect:/page_admin";
+                }
+            }catch(Exception e) {
+                e.printStackTrace();
+                return "redirect:/signin";
             }
-            return"redirect:/signin";
         } else { // if the user is a normal user
-            Long normal_user_id = userAndRoomManagementRequest.findNormalUserIdByEmail(email);
-            NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(normal_user_id);
-
-            if (normal_user != null && normal_user.getPassword().equals(password)) { // if the password is correct
-                session.setAttribute("user", normal_user);
-                return "redirect:/page_normaluser";
+            try {
+                Long normal_user_id = userAndRoomManagementRequest.findNormalUserIdByEmail(email);
+                NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(normal_user_id);
+                if (normal_user != null && normal_user.getPassword().equals(password)) { // if the password is correct
+                    session.setAttribute("user", normal_user);
+                    return "redirect:/page_normaluser";
+                }
+            }catch(Exception e) {
+                e.printStackTrace();
+                return "redirect:/signin";
             }
-            return"redirect:/signin";
         }
+        return "redirect:/signin";
     }
 
     @RequestMapping("userlist")

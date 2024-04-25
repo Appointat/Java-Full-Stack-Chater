@@ -37,6 +37,9 @@ public class UserAndRoomManagementRequest {
     }
 
     public Long findNormalUserIdByEmail(String email) {
+        if (!isNormalUserCreated(email)) {
+            throw new RuntimeException("user not exists");
+        }
         TypedQuery<NormalUser> q = em.createQuery("select nu from NormalUser nu where nu.email = :email", NormalUser.class);
         q.setParameter("email", email);
         return q.getSingleResult().getId();
@@ -71,6 +74,9 @@ public class UserAndRoomManagementRequest {
     }
 
     public Long findAdminUserIdByEmail(String email) {
+        if (!isAdminUserCreated(email)) {
+            throw new RuntimeException("user not exists");
+        }
         TypedQuery<AdminUser> q = em.createQuery("select au from AdminUser au where au.email = :email", AdminUser.class);
         q.setParameter("email", email);
         return q.getSingleResult().getId();
