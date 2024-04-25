@@ -7,7 +7,10 @@ import full.stack.chatter.services.UserAndRoomManagementRequest;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("user")
@@ -57,6 +60,17 @@ public class UserController {
             }
             return"redirect:/signin";
         }
+    }
+
+    @RequestMapping("userlist")
+    public String userlist(Model model){
+
+        List<NormalUser> normalUserList=userAndRoomManagementRequest.getNormalUsers();
+        List<AdminUser> adminUserList=userAndRoomManagementRequest.getAdminUsers();
+        model.addAttribute("normalUserList", normalUserList);
+        model.addAttribute("adminUserList", adminUserList);
+        System.out.println("testtesttesttesttest");
+        return "page_userlist";
     }
 
 }

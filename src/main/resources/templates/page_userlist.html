@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>userlist</title>
+</head>
+
+
+<body>
+<table class="table">
+    <tr class="table_header">
+        <td>
+            ID
+        </td>
+        <td>
+            Email
+        </td>
+        <td>
+            Firstname
+        </td>
+        <td>
+            Lastname
+        </td>
+        <td>
+            Active
+        </td>
+        <td>
+            Action
+        </td>
+    </tr>
+    <tr th:each="normalUser,state:${normalUserList}"  th:class="${state.odd?'row1':'row2'}">
+        <td>
+            <span th:text="${normalUser.getId()}"></span>
+        </td>
+        <td>
+            <span th:text="${normalUser.getEmail()}"></span>
+        </td>
+        <td>
+            <span th:text="${normalUser.getFirstName()}"></span>
+        </td>
+        <td>
+            <span th:text="${normalUser.getLastName()}"></span>
+        </td>
+        <td>
+            <span th:text="${normalUser.getIsActive()} ? 'true' : 'false'"></span>
+        </td>
+        <td>
+<!--            <a href="javascript:;" th:onclick="'deleteEmployee('+${employee.id}+')'">删除</a>-->
+            <!--								<a th:href="@{/employee/detail?id=}+${employee.id}+'&name='+${employee.name}">更新</a>-->
+            <!--								<a th:href="@{/employee/detail(id=${employee.id},name=${employee.name})}">更新</a>-->
+<!--            <a th:href="@{/employee/detail(id=${employee.id})}">更新</a>-->
+
+        </td>
+    </tr>
+    <script>
+        function deleteEmployee(id){
+            console.log(id);
+            if(window.confirm('确定要删除这条记录吗?')){
+                location.href='[[@{/employee/delete?id=}]]'+id;
+            }
+        }
+    </script>
+</table>
+
+
+</body>
+</html>

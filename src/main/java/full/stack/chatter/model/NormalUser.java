@@ -16,4 +16,5 @@ public class NormalUser extends User{
         this.password = password;
         this.is_active = true;
     }
+
 }
