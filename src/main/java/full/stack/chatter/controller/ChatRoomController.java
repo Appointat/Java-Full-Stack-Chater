@@ -3,140 +3,41 @@ package full.stack.chatter.controller;
 import full.stack.chatter.model.AdminUser;
 import full.stack.chatter.model.ChatRoom;
 import full.stack.chatter.model.NormalUser;
+import full.stack.chatter.model.User;
 import full.stack.chatter.services.UserAndRoomManagementRequest;
 import jakarta.annotation.Resource;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
-@RestController
+@Controller
+@RequestMapping(value = "/chat-room")
 public class ChatRoomController {
     @Resource
     private UserAndRoomManagementRequest userAndRoomManagementRequest;
 
-    /*
-    APIs for NormalUser
-     */
-    @RequestMapping(value = "/create-user")
-    public String createNormalUser(String first_name, String last_name, String email, String password, Boolean admin) {
-        if (admin != null && admin) {
-            AdminUser admin_user = new AdminUser();
-            admin_user.setUser(first_name, last_name, email, password, false);
-            userAndRoomManagementRequest.addAdminUser(admin_user);
-        } else {
-            NormalUser normal_user = new NormalUser();
-            normal_user.setUser(first_name, last_name, email, password, false);
-            userAndRoomManagementRequest.addNormalUser(normal_user);
-        }
-        return "redirect:/signin";
-    }
-
-    @PostMapping(value = "/remove-normal-user") // TODO: to be tested
-    public void removeNormalUser() {
-        NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(1L);
-
-        // Remove all the created chat rooms
-        for (Long chat_room_id : normal_user.getCreatedChatRooms()) {
-            ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(chat_room_id);
-            this.removeChatRoom(); // input: chat_room_id // it removes user from the invited users firstly
-        }
-
-        userAndRoomManagementRequest.removeOneUser(normal_user.getId());
-    }
-
-    @GetMapping(value = "/list-normal-users")
-    public List<NormalUser> getNormalUsers() {
-        return userAndRoomManagementRequest.getNormalUsers();
-    }
-
-    /*
-    APIs for AdminUser
-     */
-    @PostMapping(value = "/create-admin-user")
-    public void createAdminUser() {
-        AdminUser admin_user = new AdminUser();
-        admin_user.setUser("Cédric", "Martinet", "bcdf@pp.com", "1234", false);
-        userAndRoomManagementRequest.addAdminUser(admin_user);
-    }
-
-    @PostMapping(value = "/remove-admin-user") // TODO: to be tested
-    public void removeAdminUser() {
-        AdminUser admin_user = userAndRoomManagementRequest.getOneAdminUser(1L);
-
-        // Remove all the created chat rooms
-        for (Long chat_room_id : admin_user.getCreatedChatRooms()) {
-            ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(chat_room_id);
-            this.removeChatRoom(); // input: chat_room_id // it removes user from the invited users firstly
-        }
-
-        userAndRoomManagementRequest.removeAdminUser(admin_user);
-    }
-
-    @GetMapping(value = "/list-admin-users")
-    public List<AdminUser> getAdminUsers() {
-        return userAndRoomManagementRequest.getAdminUsers();
-    }
-
-    /*
-    APIs for NormalUser and AdminUser (User)
-     */
-    @PostMapping(value = "/log-in-user")
-    public void logInUser() {
-        NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(1L); // input of the api, suppose the login user is a normal user
-        List<NormalUser> normal_users = userAndRoomManagementRequest.getNormalUsers();
-        for (NormalUser nu : normal_users) {
-            if (Objects.equals(nu.getFirstName(), normal_user.getFirstName()) && Objects.equals(nu.getLastName(), normal_user.getLastName()) && Objects.equals(nu.getEmail(), normal_user.getEmail())) {
-                if (!nu.getIsActive() && Objects.equals(nu.getPassword(), normal_user.getPassword())) {
-                    nu.setIsActive(true);
-                    userAndRoomManagementRequest.updateNormalUser(nu);
-                } else {
-                    System.out.println("User is already login or password is incorrect");
-                }
-            } else {
-                System.out.println("User not found");
-            }
-        }
-    }
-
-    @PostMapping(value = "/log-out-user")
-    public void logOutUser() {
-        NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(1L); // input of the api, suppose the login user is a normal user
-        List<NormalUser> normal_users = userAndRoomManagementRequest.getNormalUsers();
-        for (NormalUser nu : normal_users) {
-            if (Objects.equals(nu.getFirstName(), normal_user.getFirstName()) && Objects.equals(nu.getLastName(), normal_user.getLastName()) && Objects.equals(nu.getEmail(), normal_user.getEmail())) {
-                if (nu.getIsActive()) {
-                    nu.setIsActive(false);
-                    userAndRoomManagementRequest.updateNormalUser(nu);
-                } else {
-                    System.out.println("User is already logout");
-                }
-            } else {
-                System.out.println("User not found");
-            }
-        }
-    }
-
-    /*
-    APIs for ChatRoom
-     */
-    @PostMapping(value = "/create-chat-room")
-    public void createChatRoom() {
-        NormalUser normalUser = userAndRoomManagementRequest.getOneNormalUser(1L);
-
+    @RequestMapping(value = "/create-chat-room")
+    public void createChatRoom(User creator, String chat_room_name, String description, LocalDateTime create_date, LocalDateTime expire_date) {
+        // Set/create a chat room
         ChatRoom chat_room = new ChatRoom();
-        LocalDateTime create_date = LocalDateTime.now();
-        LocalDateTime expire_date = create_date.plusDays(1);
-        chat_room.setChatRoom("ChatRoom1", "Description1", normalUser, create_date, expire_date);
+        chat_room.setChatRoom("ChatRoom1", "Description1", creator, create_date, expire_date);
 
+        // Update the chat room in the database
         userAndRoomManagementRequest.addChatRoom(chat_room);
 
-        normalUser.addCreatedChatRoom(chat_room.getId());
-        userAndRoomManagementRequest.updateNormalUser(normalUser);
+        // Update the creator, whose `created_chat_rooms` field should be updated
+        creator.addCreatedChatRoom(chat_room.getId());
+        if (creator instanceof NormalUser normal_user) {
+            userAndRoomManagementRequest.updateNormalUser(normal_user);
+        } else if (creator instanceof AdminUser admin_user) {
+            userAndRoomManagementRequest.updateAdminUser((AdminUser) admin_user);
+        } else {
+            throw new RuntimeException("Invalid user type");
+        }
     }
 
     @GetMapping(value = "/list-chat-rooms")
