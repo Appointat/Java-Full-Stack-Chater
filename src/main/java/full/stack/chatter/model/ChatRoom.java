@@ -21,14 +21,18 @@ public class ChatRoom {
     @Column(name = "description")
     private String description;
 
+    // Only one of the following two fields will be non-null (admin_creator or normal_creator)
     @ManyToOne
     @JoinColumn(name = "admin_creator")
     private AdminUser admin_creator;
 
+    // Only one of the following two fields will be non-null (admin_creator or normal_creator)
     @ManyToOne
     @JoinColumn(name = "normal_creator")
     private NormalUser normal_creator;
 
+    // Admin users who are added to the chat room to send messages
+    // Since the admin users and the normal users are different entities, we need to store them in separate lists
     @ManyToMany
     @JoinTable(
             name = "chat_room_admin_users",
@@ -37,6 +41,8 @@ public class ChatRoom {
     )
     private List<AdminUser> admin_users_list = new ArrayList<>();
 
+    // Normal users who are added to the chat room to send messages
+    // Since the admin users and the normal users are different entities, we need to store them in separate lists
     @ManyToMany
     @JoinTable(
             name = "chat_room_normal_users",
@@ -56,6 +62,7 @@ public class ChatRoom {
 
     public ChatRoom() {
     }
+
     public long getId() {
         return this.id;
     }
@@ -69,6 +76,7 @@ public class ChatRoom {
     }
 
     public User getCreator() {
+        // The mutual exclusivity of admin_creator and normal_creator is already ensured by the validateCreator method
         return this.admin_creator != null ? this.admin_creator : this.normal_creator;
     }
 
@@ -95,6 +103,8 @@ public class ChatRoom {
     public void setChatRoom(String title, String description, User creator, LocalDateTime createDate, LocalDateTime expireDate) {
         this.title = title;
         this.description = description;
+
+        // Set the creator
         if (creator instanceof AdminUser) { // ensure their mutual exclusivity
             this.admin_creator = (AdminUser) creator; // safe to cast
             this.normal_creator = null;
@@ -102,6 +112,7 @@ public class ChatRoom {
             this.normal_creator = (NormalUser) creator; // safe to cast
             this.admin_creator = null;
         }
+
         this.created_date = createDate;
         this.expired_date = expireDate;
         this.duration = (int) ChronoUnit.SECONDS.between(createDate, expireDate); // duration in seconds
