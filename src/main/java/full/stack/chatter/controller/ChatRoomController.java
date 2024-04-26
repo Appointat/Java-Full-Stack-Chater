@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-public class ApiController {
+public class ChatRoomController {
     @Resource
     private UserAndRoomManagementRequest userAndRoomManagementRequest;
 
