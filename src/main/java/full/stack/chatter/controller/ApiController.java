@@ -88,11 +88,6 @@ public class ApiController {
     @PostMapping(value = "/log-in-user")
     public void logInUser() {
         NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(1L); // input of the api, suppose the login user is a normal user
-//        if (normal_user instanceof NormalUser user) {
-//            // TODO: if the user is normal user, activate the user in the normal user lists (postgresSQL)
-//        } else {
-//            // TODO: if the user is admin user, activate the user in the admin user lists (postgresSQL)
-//        }
         List<NormalUser> normal_users = userAndRoomManagementRequest.getNormalUsers();
         for (NormalUser nu : normal_users) {
             if (Objects.equals(nu.getFirstName(), normal_user.getFirstName()) && Objects.equals(nu.getLastName(), normal_user.getLastName()) && Objects.equals(nu.getEmail(), normal_user.getEmail())) {
@@ -111,11 +106,6 @@ public class ApiController {
     @PostMapping(value = "/log-out-user")
     public void logOutUser() {
         NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(1L); // input of the api, suppose the login user is a normal user
-//        if (normal_user instanceof NormalUser user) {
-        // TODO: if the user is normal user, deactivate the user in the normal user lists (postgresSQL)
-//        } else {
-        // TODO: if the user is admin user, deactivate the user in the admin user lists (postgresSQL)
-//        }
         List<NormalUser> normal_users = userAndRoomManagementRequest.getNormalUsers();
         for (NormalUser nu : normal_users) {
             if (Objects.equals(nu.getFirstName(), normal_user.getFirstName()) && Objects.equals(nu.getLastName(), normal_user.getLastName()) && Objects.equals(nu.getEmail(), normal_user.getEmail())) {

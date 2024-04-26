@@ -5,13 +5,11 @@ import full.stack.chatter.model.AdminUser;
 import full.stack.chatter.model.NormalUser;
 import full.stack.chatter.services.UserAndRoomManagementRequest;
 import jakarta.annotation.Resource;
-import jakarta.persistence.NoResultException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.io.File;
 import java.util.List;
 
 @Controller
@@ -44,7 +42,6 @@ public class UserController {
 
     @RequestMapping("signin")
     public String signin(String email, String password, Boolean is_admin, HttpSession session) {
-        // TODO: use try-catch
         if (is_admin != null && is_admin) { // if the user is an admin
             try {
                 Long admin_user_id = userAndRoomManagementRequest.findAdminUserIdByEmail(email);
