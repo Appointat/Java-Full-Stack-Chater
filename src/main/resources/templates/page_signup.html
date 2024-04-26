@@ -38,6 +38,20 @@
             color: black;
             background-color: #fdf2e9;
         }
+        .conceal{
+            position: absolute;
+            bottom: 40px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            background-image: url(/img/eye-off-outline.svg);
+            background-size: 100% 100%;
+            cursor: pointer;
+        }
+        .conceal.hide{
+            background-image: url(/img/eye-outline.svg);
+            background-size: 100% 100%;
+        }
 
     </style>
 
@@ -66,6 +80,7 @@
             <input type="password" class="form-control" id="password" name="password" placeholder="Password"
                 pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,}" required>
             <button type="button" class="btn" id="generatePassword">Generate Random Password</button>
+            <div class="conceal" id='conceal'></div>
         </div>
 
         <div class="mb-3">
@@ -81,7 +96,7 @@
 
         <button type="submit" class="btn">Sign Up</button>
         <div class="mt-3">
-            <a href="/signin">Turn to signin</a>
+            <a href="/signin">Turn to Sign In</a>
         </div>
     </form>
 </div>
@@ -120,6 +135,20 @@
     function getRandomChar(charSet) {
         return charSet.charAt(Math.floor(Math.random() * charSet.length));
     }
+
+    //hide password
+    var password = document.getElementById('password');
+    var button = document.getElementById('conceal');
+    button.addEventListener('click',function(){
+        if(password.type==='password')
+        {
+            password.setAttribute('type','text');
+            button.classList.add('hide');
+        }else{
+            password.setAttribute('type','password');
+            button.classList.remove('hide');
+        }
+    })
 
 </script>
 

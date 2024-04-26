@@ -27,7 +27,20 @@
         .btn-primary:hover {
             background-color: #fdf2e9;
         }
-
+        .conceal{
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            background-image: url(/img/eye-off-outline.svg);
+            background-size: 100% 100%;
+            cursor: pointer;
+        }
+        .conceal.hide{
+            background-image: url(/img/eye-outline.svg);
+            background-size: 100% 100%;
+        }
     </style>
 
 </head>
@@ -39,12 +52,11 @@
         <div class="mb-3 mt-3">
             <label for="email">Email:</label>
             <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" required>
-            <div class="invalid-feedback">Please fill out this field.</div>
         </div>
         <div class="mb-3">
             <label for="password">Password:</label>
             <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" required>
-            <div class="invalid-feedback">Please fill out this field.</div>
+            <div class="conceal" id='conceal'></div>
         </div>
         <div class="mb-3">
             <label for="admin">Admin:</label>
@@ -60,4 +72,21 @@
 
 
 </body>
+
+<script>
+    var password = document.getElementById('password');
+    var button = document.getElementById('conceal');
+    button.addEventListener('click',function(){
+        if(password.type==='password')
+        {
+            password.setAttribute('type','text');
+            button.classList.add('hide');
+        }else{
+            password.setAttribute('type','password');
+            button.classList.remove('hide');
+        }
+    })
+</script>
+
+
 </html>
