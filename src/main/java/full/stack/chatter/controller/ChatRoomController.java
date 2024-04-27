@@ -46,7 +46,7 @@ public class ChatRoomController {
     }
 
     @PostMapping(value = "/remove-chat-room") // TODO: to be tested
-    public void removeChatRoom() {
+    public void removeChatRoom() { // TODO: to add the input parameters to identify the chat room
         ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(1L);
 
         // Remove all the invited users
@@ -73,7 +73,7 @@ public class ChatRoomController {
     }
 
     @PostMapping(value = "/invite-user-to-chat-room")
-    public void inviteUserToChatRoom() {
+    public void inviteUserToChatRoom() { // TODO: to add the input parameters to identify the chat room and the user
         // TODO: just used for the test of postgreSQL
         AdminUser admin_user = userAndRoomManagementRequest.getOneAdminUser(1L);
         NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(1L);
