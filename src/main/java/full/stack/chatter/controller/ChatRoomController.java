@@ -24,7 +24,7 @@ public class ChatRoomController {
     public void createChatRoom(User creator, String chat_room_name, String description, LocalDateTime create_date, LocalDateTime expire_date) {
         // Set/create a chat room
         ChatRoom chat_room = new ChatRoom();
-        chat_room.setChatRoom("ChatRoom1", "Description1", creator, create_date, expire_date);
+        chat_room.setChatRoom(chat_room_name, description, creator, create_date, expire_date);
 
         // Update the chat room in the database
         userAndRoomManagementRequest.addChatRoom(chat_room);
