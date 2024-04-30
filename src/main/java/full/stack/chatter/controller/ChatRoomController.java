@@ -22,6 +22,8 @@ public class ChatRoomController {
 
     @RequestMapping(value = "/create-chat-room")
     public void createChatRoom(User creator, String chat_room_name, String description, LocalDateTime create_date, LocalDateTime expire_date) {
+        // The input `creator` can be either an admin user or a normal user
+
         // Set/create a chat room
         ChatRoom chat_room = new ChatRoom();
         chat_room.setChatRoom(chat_room_name, description, creator, create_date, expire_date);
@@ -73,30 +75,39 @@ public class ChatRoomController {
     }
 
     @PostMapping(value = "/invite-user-to-chat-room")
-    public void inviteUserToChatRoom() { // TODO: to add the input parameters to identify the chat room and the user
-        // TODO: just used for the test of postgreSQL
-        AdminUser admin_user = userAndRoomManagementRequest.getOneAdminUser(1L);
-        NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(1L);
-        ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(3L);
+    public void inviteUserToChatRoom(AdminUser invitor, User invited_user, Long chat_room_id) { // TODO: to add the input parameters to identify the chat room and the user
+        // TODO: need to define the rule of who can invite user to chat room?
+        // TODO: the test of postgreSQL
+        ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(chat_room_id);
 
-        admin_user.addUserToChatRoom(normal_user, chat_room); // Only admin can invite user
-        userAndRoomManagementRequest.updateChatRoom(chat_room);
+        invitor.addUserToChatRoom(invited_user, chat_room); // only admin can invite user (is that true?)
+        userAndRoomManagementRequest.updateChatRoom(chat_room); // Update the chat room in the database
 
-        normal_user.addInvitedChatRoom(chat_room.getId());
-        userAndRoomManagementRequest.updateNormalUser(normal_user);
+        // Update the `invited_chat_rooms` field of the invited user, which means the user is invited to the chat room
+        invited_user.addInvitedChatRoom(chat_room.getId());
+        if (invited_user instanceof AdminUser) { // the method `updateAdminUser` is overloaded
+            userAndRoomManagementRequest.updateAdminUser((AdminUser) invited_user);
+        } else {
+            userAndRoomManagementRequest.updateNormalUser((NormalUser) invited_user);
+        }
     }
 
     @PostMapping(value = "/remove-user-from-chat-room")
-    public void removeUserFromChatRoom() {
+    public void removeUserFromChatRoom(AdminUser remover, User removed_user, Long chat_room_id) { // TODO: to add the input parameters to identify the chat room and the user
+        // TODO: need to define the rule of who can remove user from chat room?
+
         // TODO: just used for the test of postgreSQL
-        AdminUser admin_user = userAndRoomManagementRequest.getOneAdminUser(1L);
-        NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(1L);
-        ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(3L);
+        ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(chat_room_id);
 
-        admin_user.removeUserFromChatRoom(normal_user, chat_room); // Only admin can remove user
-        userAndRoomManagementRequest.updateChatRoom(chat_room);
+        remover.removeUserFromChatRoom(removed_user, chat_room); // only admin can remove user (is that true?)
+        userAndRoomManagementRequest.updateChatRoom(chat_room); // update the chat room in the database
 
-        normal_user.removeInvitedChatRoom(chat_room.getId());
-        userAndRoomManagementRequest.updateNormalUser(normal_user);
+        // Update the `invited_chat_rooms` field of the removed user, which means the user is removed from the chat room
+        removed_user.removeInvitedChatRoom(chat_room.getId());
+        if (removed_user instanceof AdminUser) { // the method `updateAdminUser` is overloaded
+            userAndRoomManagementRequest.updateAdminUser((AdminUser) removed_user);
+        } else {
+            userAndRoomManagementRequest.updateNormalUser((NormalUser) removed_user);
+        }
     }
 }
