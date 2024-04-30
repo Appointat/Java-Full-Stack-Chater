@@ -96,7 +96,7 @@ public class ChatRoomController {
     public void removeUserFromChatRoom(AdminUser remover, User removed_user, Long chat_room_id) { // TODO: to add the input parameters to identify the chat room and the user
         // TODO: need to define the rule of who can remove user from chat room?
 
-        // TODO: just used for the test of postgreSQL
+        // TODO: the test of postgreSQL
         ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(chat_room_id);
 
         remover.removeUserFromChatRoom(removed_user, chat_room); // only admin can remove user (is that true?)
