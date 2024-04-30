@@ -52,23 +52,24 @@ public class ChatRoomController {
         ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(chat_room_id);
 
         // Remove all the invited users
-        for (NormalUser normal_user : chat_room.getNormalUsers()) {
-            normal_user.removeInvitedChatRoom(chat_room.getId());
-            userAndRoomManagementRequest.updateNormalUser(normal_user);
+        for (NormalUser _normal_user : chat_room.getNormalUsers()) { // remove the chat room id from the invited user's `invited_chat_rooms` field
+            _normal_user.removeInvitedChatRoom(chat_room_id);
+            userAndRoomManagementRequest.updateNormalUser(_normal_user);
         }
-        for (AdminUser admin_user : chat_room.getAdminUsers()) {
-            admin_user.removeInvitedChatRoom(chat_room.getId());
-            userAndRoomManagementRequest.updateAdminUser(admin_user);
+        for (AdminUser _admin_user : chat_room.getAdminUsers()) { // remove the chat room id from the invited user's `invited_chat_rooms` field
+            _admin_user.removeInvitedChatRoom(chat_room_id);
+            userAndRoomManagementRequest.updateAdminUser(_admin_user);
         }
 
         // Remove the creator
         if (chat_room.getCreator() instanceof NormalUser normal_user) {
             normal_user.removeCreatedChatRoom(chat_room.getId());
             userAndRoomManagementRequest.updateNormalUser(normal_user);
-        } else {
-            AdminUser admin_user = (AdminUser) chat_room.getCreator();
+        } else if (chat_room.getCreator() instanceof AdminUser admin_user) {
             admin_user.removeCreatedChatRoom(chat_room.getId());
             userAndRoomManagementRequest.updateAdminUser(admin_user);
+        } else {
+            throw new RuntimeException("Cannot remove the creator of the chat room");
         }
 
         userAndRoomManagementRequest.removeChatRoom(chat_room);
