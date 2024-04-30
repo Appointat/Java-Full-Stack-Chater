@@ -48,8 +48,8 @@ public class ChatRoomController {
     }
 
     @PostMapping(value = "/remove-chat-room") // TODO: to be tested
-    public void removeChatRoom() { // TODO: to add the input parameters to identify the chat room
-        ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(1L);
+    public void removeChatRoom(Long chat_room_id) { // TODO: to add the input parameters to identify the chat room
+        ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(chat_room_id);
 
         // Remove all the invited users
         for (NormalUser normal_user : chat_room.getNormalUsers()) {
