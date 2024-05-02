@@ -51,7 +51,7 @@ public class ChatRoomController {
     public void removeChatRoom(Long chat_room_id) { // TODO: to add the input parameters to identify the chat room
         ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(chat_room_id);
 
-        // Remove all the invited users
+        // Remove all the invited users in the chat room
         for (NormalUser _normal_user : chat_room.getNormalUsers()) { // remove the chat room id from the invited user's `invited_chat_rooms` field
             _normal_user.removeInvitedChatRoom(chat_room_id);
             userAndRoomManagementRequest.updateNormalUser(_normal_user);
@@ -61,7 +61,7 @@ public class ChatRoomController {
             userAndRoomManagementRequest.updateAdminUser(_admin_user);
         }
 
-        // Remove the creator
+        // Remove the creator who created the chat room
         if (chat_room.getCreator() instanceof NormalUser normal_user) {
             normal_user.removeCreatedChatRoom(chat_room.getId());
             userAndRoomManagementRequest.updateNormalUser(normal_user);
