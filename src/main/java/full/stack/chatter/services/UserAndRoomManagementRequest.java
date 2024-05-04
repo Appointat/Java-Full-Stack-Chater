@@ -26,8 +26,9 @@ public class UserAndRoomManagementRequest {
         if (isNormalUserCreated(normal_user.getEmail())) {
             throw new RuntimeException("Normal user already exists");
         }
-            em.persist(normal_user);
+        em.persist(normal_user);
     }
+
     public void updateNormalUser(NormalUser user) {
         em.merge(user);
     }
@@ -69,6 +70,7 @@ public class UserAndRoomManagementRequest {
         }
         em.persist(admin_user);
     }
+
     public AdminUser getOneAdminUser(Long id) {
         return em.find(AdminUser.class, id);
     }
