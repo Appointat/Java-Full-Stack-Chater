@@ -48,32 +48,56 @@ public class UserController {
 
     @RequestMapping("signin")
     public String signin(String email, String password, Boolean is_admin, HttpSession session) {
-        if (is_admin != null && is_admin) { // if the user is an admin
+        session.removeAttribute("error");
+        if (is_admin != null && is_admin) {
             try {
                 Long admin_user_id = userAndRoomManagementRequest.findAdminUserIdByEmail(email);
                 AdminUser admin_user = userAndRoomManagementRequest.getOneAdminUser(admin_user_id);
                 System.out.println(admin_user);
-                if (admin_user != null && admin_user.getPassword().equals(password)) { // if the password is correct
-                    session.setAttribute("user", admin_user);
-                    return "redirect:/page_admin";
+                if (admin_user != null && admin_user.getIsActive()) {
+                    if (admin_user.getPassword().equals(password)) {
+                        admin_user.setFailed_attempt(0);
+                        userAndRoomManagementRequest.updateAdminUser(admin_user);
+                        session.setAttribute("user", admin_user);
+                        return "redirect:/page_admin";
+                    } else {
+                        int attempts = admin_user.getFailed_attempt() + 1;
+                        admin_user.setFailed_attempt(attempts);
+                        if (attempts >= 3) {
+                            admin_user.setIsActive(false);
+                        }
+                        userAndRoomManagementRequest.updateAdminUser(admin_user);
+                    }
                 }
-            }catch(Exception e) {
+            } catch(Exception e) {
                 e.printStackTrace();
                 return "redirect:/signin";
             }
-        } else { // if the user is a normal user
+        } else {
             try {
                 Long normal_user_id = userAndRoomManagementRequest.findNormalUserIdByEmail(email);
                 NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(normal_user_id);
-                if (normal_user != null && normal_user.getPassword().equals(password)) { // if the password is correct
-                    session.setAttribute("user", normal_user);
-                    return "redirect:/page_normaluser";
+                if (normal_user != null && normal_user.getIsActive()) {
+                    if (normal_user.getPassword().equals(password)) {
+                        normal_user.setFailed_attempt(0);
+                        userAndRoomManagementRequest.updateNormalUser(normal_user);
+                        session.setAttribute("user", normal_user);
+                        return "redirect:/page_normaluser";
+                    } else {
+                        int attempts = normal_user.getFailed_attempt() + 1;
+                        normal_user.setFailed_attempt(attempts);
+                        if (attempts >= 3) {
+                            normal_user.setIsActive(false);
+                        }
+                        userAndRoomManagementRequest.updateNormalUser(normal_user);
+                    }
                 }
-            }catch(Exception e) {
+            } catch(Exception e) {
                 e.printStackTrace();
                 return "redirect:/signin";
             }
         }
+        session.setAttribute("error", "wrong or abnormal account");
         return "redirect:/signin";
     }
 

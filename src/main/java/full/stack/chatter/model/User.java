@@ -1,6 +1,7 @@
 package full.stack.chatter.model;
 
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,6 +40,12 @@ public abstract class User {
     @Column(name = "is_active")
     protected Boolean is_active;
 
+    @Column(name = "failed_attempt")
+    protected Integer failed_attempt;
+
+    public int getFailed_attempt() {return failed_attempt;}
+
+    public void setFailed_attempt(int failed_attempt) {this.failed_attempt = failed_attempt;}
 
     public Long getId() {
         return this.id;
