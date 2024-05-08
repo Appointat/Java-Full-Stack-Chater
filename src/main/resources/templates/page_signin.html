@@ -46,6 +46,19 @@
 </head>
 <body>
 
+
+<div th:if="${session.error != null}" th:text="${session.error}" id="error-message" style="display:none;"></div>
+
+<script>
+    window.onload = function() {
+        var errorMessage = document.getElementById('error-message');
+        if (errorMessage) {
+            alert(errorMessage.textContent);
+        }
+    };
+</script>
+
+
 <div class="signin-container mt-3">
     <h2>Sign In</h2>
     <form th:action="@{/user/signin}" method="post">

@@ -13,6 +13,7 @@ public class AdminUser extends User {
         this.email = email;
         this.password = password;
         this.is_active = true;
+        this.failed_attempt=0;
     }
 
     public void addUserToChatRoom(User user, ChatRoom chat_room) {
