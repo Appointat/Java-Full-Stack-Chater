@@ -3,32 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <title>userlist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .table_header{
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #ddd;
+        }
+
+        td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        .table_header td {
+            font-weight: bold;
+        }
+
+        tr:not(.table_header) {
+            background-color: #ffffff;
+        }
+
+        tr:not(.table_header):hover {
+            background-color: #eef;
+        }
+
+        .btn {
+            background-color: #c2642d;
+            color: #fff;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            color: black;
+            background-color: #fdf2e9;
+        }
+
+        .sortable {
+            cursor: pointer;
+        }
+    </style>
+
+
+
 </head>
 
 
 <body>
-<table class="table">
-    <tr class="table_header">
-        <td>
-            User ID
-        </td>
-        <td>
-            Email
-        </td>
-        <td>
-            Firstname
-        </td>
-        <td>
-            Lastname
-        </td>
-        <td>
-            Active
-        </td>
-        <td>
-            Action
-        </td>
+<a class="btn" href="/page_admin">return</a>
+<table class="table" id="normalUserTable">
+    <tr class="table_header" >
+        <td class="sortable sort-id"> Normal ID </td>
+        <td class="sortable sort-email"> Email </td>
+        <td class="sortable sort-firstname">Firstname</td>
+        <td class="sortable sort-lastname">Lastname</td>
+        <td class="sortable sort-active">Active</td>
+        <td>Action</td>
     </tr>
-    <tr th:each="normalUser,state:${normalUserList}"  th:class="${state.odd?'row1':'row2'}">
+    <tr th:each="normalUser,state:${normalUserList}">
         <td>
             <span th:text="${normalUser.getId()}"></span>
         </td>
@@ -45,8 +89,8 @@
             <span th:text="${normalUser.getIsActive()} ? 'true' : 'false'"></span>
         </td>
         <td>
-            <a href="javascript:;" th:data-email="${normalUser.getEmail()}" th:onclick="|deleteNormalAccount(this.getAttribute('data-email'))|">Delete account</a>
-            <a href="javascript:;" th:data-email="${normalUser.getEmail()}" th:onclick="|normalChangeStatus(this.getAttribute('data-email'))|">Change status</a>
+            <a class="btn" href="javascript:;" th:data-email="${normalUser.getEmail()}" th:onclick="|deleteNormalAccount(this.getAttribute('data-email'))|">Delete account</a>
+            <a class="btn" href="javascript:;" th:data-email="${normalUser.getEmail()}" th:onclick="|normalChangeStatus(this.getAttribute('data-email'))|">Change status</a>
         </td>
     </tr>
 
@@ -62,27 +106,20 @@
 
     </script>
 </table>
+<div id="normalUserPagination" >
+    <button onclick="previousPage('normalUserTable', 'normalUserPageInfo')">Previous</button>
+    <span id="normalUserPageInfo"></span>
+    <button onclick="nextPage('normalUserTable', 'normalUserPageInfo')">Next</button>
+</div>
 
-<table class="table">
+<table class="table" id="adminUserTable">
     <tr class="table_header">
-        <td>
-            Admin ID
-        </td>
-        <td>
-            Email
-        </td>
-        <td>
-            Firstname
-        </td>
-        <td>
-            Lastname
-        </td>
-        <td>
-            Active
-        </td>
-        <td>
-            Action
-        </td>
+        <td class="sortable sort-id"> Admin ID </td>
+        <td class="sortable sort-email"> Email </td>
+        <td class="sortable sort-firstname">Firstname</td>
+        <td class="sortable sort-lastname">Lastname</td>
+        <td class="sortable sort-active">Active</td>
+        <td>Action</td>
     </tr>
     <tr th:each="adminUser,state:${adminUserList}"  th:class="${state.odd?'row1':'row2'}">
         <td>
@@ -101,8 +138,8 @@
             <span th:text="${adminUser.getIsActive()} ? 'true' : 'false'"></span>
         </td>
         <td>
-            <a href="javascript:;" th:data-email="${adminUser.getEmail()}" th:onclick="|deleteAdminAccount(this.getAttribute('data-email'))|">Delete account</a>
-            <a href="javascript:;" th:data-email="${adminUser.getEmail()}" th:onclick="|adminChangeStatus(this.getAttribute('data-email'))|">Change status</a>
+            <a class="btn" href="javascript:;" th:data-email="${adminUser.getEmail()}" th:onclick="|deleteAdminAccount(this.getAttribute('data-email'))|">Delete account</a>
+            <a class="btn" href="javascript:;" th:data-email="${adminUser.getEmail()}" th:onclick="|adminChangeStatus(this.getAttribute('data-email'))|">Change status</a>
         </td>
     </tr>
     <script>
@@ -116,7 +153,95 @@
         }
     </script>
 </table>
-<a href="/page_admin">return</a>
+<div id="adminUserPagination">
+    <button onclick="previousPage('adminUserTable', 'adminUserPageInfo')">Previous</button>
+    <span id="adminUserPageInfo"></span>
+    <button onclick="nextPage('adminUserTable', 'adminUserPageInfo')">Next</button>
+</div>
+
+
 
 </body>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var sortHeaders = document.querySelectorAll('.sortable');
+        sortHeaders.forEach(header => {
+            header.addEventListener('click', function() {
+                var table = header.closest("table");
+                var tableId = table.id;
+                var pageInfoId = tableId === 'normalUserTable' ? 'normalUserPageInfo' : 'adminUserPageInfo';
+                var columnIndex = header.cellIndex;
+                var rows = Array.from(table.querySelectorAll("tr:nth-child(n+2)"));
+                var isNumeric = header.classList.contains('sort-id');
+                var sortAsc = header.getAttribute('data-sort-asc') !== 'true'; // Toggle sort direction
+
+                rows.sort(function(a, b) {
+                    var x = a.cells[columnIndex].textContent.trim();
+                    var y = b.cells[columnIndex].textContent.trim();
+
+                    if (isNumeric) {
+                        x = parseFloat(x) || 0;
+                        y = parseFloat(y) || 0;
+                    }
+
+                    if (sortAsc) {
+                        return x > y ? 1 : (x < y ? -1 : 0);
+                    } else {
+                        return x < y ? 1 : (x > y ? -1 : 0);
+                    }
+                });
+
+                // Append sorted rows back to the table
+                rows.forEach(row => table.appendChild(row));
+                header.setAttribute('data-sort-asc', sortAsc);
+
+                // Re-apply pagination after sorting
+                changePage(tableId, pageInfoId, 1);
+            });
+        });
+    });
+
+    function changePage(tableId, pageInfoId, page) {
+        var table = document.getElementById(tableId);
+        var rows = Array.from(table.querySelectorAll("tr:nth-child(n+2)"));
+        var recordsPerPage = 10;
+        var numPages = Math.ceil(rows.length / recordsPerPage);
+
+        if (page < 1) page = 1;
+        if (page > numPages) page = numPages;
+
+        // Hide all rows, then only display the ones for the current page
+        rows.forEach(row => row.style.display = "none");
+        for (var i = (page-1) * recordsPerPage; i < (page * recordsPerPage) && i < rows.length; i++) {
+            rows[i].style.display = "";
+        }
+        var pageInfo = document.getElementById(pageInfoId);
+        pageInfo.textContent = `Page ${page} of ${numPages}`;
+        pageInfo.setAttribute('data-current-page', page);
+    }
+
+    function nextPage(tableId, pageInfoId) {
+        var currentPage = parseInt(document.getElementById(pageInfoId).getAttribute('data-current-page'), 10) || 1;
+        var numPages = parseInt(document.getElementById(pageInfoId).textContent.split(" of ")[1]);
+        if (currentPage < numPages) {
+            changePage(tableId, pageInfoId, currentPage + 1);
+        }
+    }
+
+    function previousPage(tableId, pageInfoId) {
+        var currentPage = parseInt(document.getElementById(pageInfoId).getAttribute('data-current-page'), 10) || 1;
+        if (currentPage > 1) {
+            changePage(tableId, pageInfoId, currentPage - 1);
+        }
+    }
+
+    window.onload = function() {
+        changePage('normalUserTable', 'normalUserPageInfo', 1);
+        changePage('adminUserTable', 'adminUserPageInfo', 1);
+    };
+
+</script>
+
 </html>
