@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.metroui.org.ua/current/metro.css">
+    <script src="https://cdn.metroui.org.ua/current/metro.js"></script>
+
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .signup-container {
+            background-color: #f7f7f7;
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .btn{
+            display: inline-block;
+            text-decoration: none;
+            border-radius: 9px;
+            transition: all 150ms;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+        }
+        .btn:hover {
+            color: black;
+            background-color: #fdf2e9;
+        }
+        .conceal{
+            position: absolute;
+            bottom: 40px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            background-image: url(/img/eye-off-outline.svg);
+            background-size: 100% 100%;
+            cursor: pointer;
+        }
+        .conceal.hide{
+            background-image: url(/img/eye-outline.svg);
+            background-size: 100% 100%;
+        }
+
+    </style>
+
+</head>
+<body>
+<div class="signup-container mt-3">
+    <h2>Edit account</h2>
+    <form id="signupForm" th:action="@{/user/edit}" method="post">
+        <div class="mb-3">
+            <label>Email: <span th:text="${session.user.email}"></span></label>
+        </div>
+
+        <div class="mb-3 mt-5">
+            <label for="firstName">First Name:</label>
+            <input type="text" class="form-control" id="firstName" name="first_name" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+" placeholder="First name" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="lastName">Last Name:</label>
+            <input type="text" class="form-control" id="lastName" name="last_name" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+" placeholder="Last name" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password"
+                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,}" required>
+            <button type="button" class="btn" id="generatePassword">Generate Random Password</button>
+            <div class="conceal" id='conceal'></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="passwordConfirm">Confirm Password:</label>
+            <input type="password" class="form-control" id="passwordConfirm" name="passwordConfirm" placeholder="Confirm password" required>
+        </div>
+
+        <div class="mb-3">
+            <span th:if="${session.is_admin==true}">Admin account</span>
+            <span th:if="${session.is_admin!=true}">Normal account</span>
+        </div>
+
+        <input type="hidden" th:value="${session.user.email}" id="email" name="email">
+        <input type="hidden" th:value="${session.is_admin}" name="is_admin">
+
+        <button type="submit" class="btn">Submit and Sign In</button>
+        <div class="mt-3">
+            <a href="/signin">Turn to Sign In</a>
+        </div>
+    </form>
+</div>
+</body>
+
+<script>
+    document.getElementById('signupForm').addEventListener('submit', function(event) {
+        var password = document.getElementById('password').value;
+        var passwordConfirm = document.getElementById('passwordConfirm').value;
+        if (password !== passwordConfirm) {
+            alert("Passwords do not match.");
+            event.preventDefault();
+            return false;
+        }
+    });
+
+    document.getElementById('generatePassword').addEventListener('click', function() {
+        var psw = randomPassword(8);
+        document.getElementById('password').value = psw;
+        document.getElementById('passwordConfirm').value = psw;
+    });
+
+
+    function randomPassword(length) {
+        var chars = "abcdefghijklmnopqrstuvwxyz!@#$%^&*()-+<>ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        var pass = "";
+        pass += getRandomChar("abcdefghijklmnopqrstuvwxyz");
+        pass += getRandomChar("!@#$%^&*()-+<>");
+        pass += getRandomChar("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        pass += getRandomChar("1234567890");
+        for (var x = 4; x <= length; x++) {
+            pass += getRandomChar(chars);
+        }
+        return pass;
+    }
+    function getRandomChar(charSet) {
+        return charSet.charAt(Math.floor(Math.random() * charSet.length));
+    }
+
+    //hide password
+    var password = document.getElementById('password');
+    var button = document.getElementById('conceal');
+    button.addEventListener('click',function(){
+        if(password.type==='password')
+        {
+            password.setAttribute('type','text');
+            button.classList.add('hide');
+        }else{
+            password.setAttribute('type','password');
+            button.classList.remove('hide');
+        }
+    })
+
+</script>
+
+</html>

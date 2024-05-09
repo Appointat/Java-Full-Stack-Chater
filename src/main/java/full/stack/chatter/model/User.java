@@ -43,6 +43,17 @@ public abstract class User {
     @Column(name = "failed_attempt")
     protected Integer failed_attempt;
 
+    @Column(name="is_new")
+    protected Boolean is_new;
+
+    public Boolean getIs_new() {
+        return is_new;
+    }
+
+    public void setIs_new(Boolean is_new) {
+        this.is_new = is_new;
+    }
+
     public int getFailed_attempt() {return failed_attempt;}
 
     public void setFailed_attempt(int failed_attempt) {this.failed_attempt = failed_attempt;}
@@ -66,6 +77,10 @@ public abstract class User {
     public List<Long> getInvitedChatRooms() {
         return !this.invited_chat_rooms.isEmpty() ? this.invited_chat_rooms : null;
     }
+
+    public void setFirst_name(String first_name){ this.first_name = first_name;}
+    public void setLast_name(String last_name){ this.last_name = last_name;}
+    public void setPassword(String password){ this.password = password;}
 
     public String getFirstName() {
         return this.first_name;

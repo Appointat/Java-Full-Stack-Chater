@@ -16,6 +16,7 @@ public class NormalUser extends User{
         this.password = password;
         this.is_active = true;
         this.failed_attempt=0;
+        this.is_new=false;
     }
 
 }

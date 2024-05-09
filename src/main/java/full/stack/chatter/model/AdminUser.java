@@ -14,6 +14,7 @@ public class AdminUser extends User {
         this.password = password;
         this.is_active = true;
         this.failed_attempt=0;
+        this.is_new=false;
     }
 
     public void addUserToChatRoom(User user, ChatRoom chat_room) {

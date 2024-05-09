@@ -1,6 +1,6 @@
 package full.stack.chatter.controller;
 
-
+import full.stack.chatter.services.EmailService;
 import full.stack.chatter.model.AdminUser;
 import full.stack.chatter.model.ChatRoom;
 import full.stack.chatter.model.NormalUser;
@@ -21,11 +21,16 @@ import java.util.Objects;
 @Controller
 @RequestMapping("user")
 public class UserController {
+
+    private final EmailService emailService;
+
     @Resource
     private UserAndRoomManagementRequest userAndRoomManagementRequest;
 
-    public UserController(UserAndRoomManagementRequest userAndRoomManagementRequest){
+
+    public UserController(UserAndRoomManagementRequest userAndRoomManagementRequest, EmailService emailService){
         this.userAndRoomManagementRequest=userAndRoomManagementRequest;
+        this.emailService = emailService;
     }
 
     @RequestMapping("signup")
@@ -47,16 +52,20 @@ public class UserController {
     }
 
     @RequestMapping("admin_create")
-    public String admin_create(String first_name, String last_name, String email, String password, Boolean is_admin, HttpSession session) {
+    public String admin_create(String email, Boolean is_admin, String password, HttpSession session) {
         session.removeAttribute("notice");
         session.setAttribute("notice", "success");
         try {
             if (is_admin != null && is_admin) {
-                AdminUser user = new AdminUser(first_name, last_name, email, password);
+                AdminUser user = new AdminUser("temp", "temp", email, password);
+                user.setIs_new(true);
                 userAndRoomManagementRequest.addAdminUser(user);
+                emailService.sendConfirmationEmail(email, password);
             } else {
-                NormalUser user = new NormalUser(first_name, last_name, email, password);
+                NormalUser user = new NormalUser("temp", "temp", email, password);
+                user.setIs_new(true);
                 userAndRoomManagementRequest.addNormalUser(user);
+                emailService.sendConfirmationEmail(email, password);
             }
         }
         catch(Exception e){
@@ -65,6 +74,7 @@ public class UserController {
         }
         return "redirect:/page_admin_create";
     }
+
 
     @RequestMapping("signin")
     public String signin(String email, String password, Boolean is_admin, HttpSession session) {
@@ -79,6 +89,10 @@ public class UserController {
                         admin_user.setFailed_attempt(0);
                         userAndRoomManagementRequest.updateAdminUser(admin_user);
                         session.setAttribute("user", admin_user);
+                        if (admin_user.getIs_new()){
+                            session.setAttribute("is_admin", true);
+                            return "redirect:/page_first_login";
+                        }
                         return "redirect:/page_admin";
                     } else {
                         int attempts = admin_user.getFailed_attempt() + 1;
@@ -102,6 +116,10 @@ public class UserController {
                         normal_user.setFailed_attempt(0);
                         userAndRoomManagementRequest.updateNormalUser(normal_user);
                         session.setAttribute("user", normal_user);
+                        if (normal_user.getIs_new()){
+                            session.setAttribute("is_admin", false);
+                            return "redirect:/page_first_login";
+                        }
                         return "redirect:/page_normaluser";
                     } else {
                         int attempts = normal_user.getFailed_attempt() + 1;
@@ -119,6 +137,29 @@ public class UserController {
         }
         session.setAttribute("error", "wrong or abnormal account");
         return "redirect:/signin";
+    }
+
+    @RequestMapping("first_login")
+    public String first_login(String first_name, String last_name,String email, String password, Boolean is_admin, HttpSession session){
+        if(is_admin != null && is_admin){
+            AdminUser user=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+            user.setIs_new(false);
+            user.setFirst_name(first_name);
+            user.setLast_name(last_name);
+            user.setPassword(password);
+            userAndRoomManagementRequest.updateAdminUser(user);
+            session.setAttribute("user", user);
+            return "redirect:/page_admin";
+        }else{
+            NormalUser user=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+            user.setIs_new(false);
+            user.setFirst_name(first_name);
+            user.setLast_name(last_name);
+            user.setPassword(password);
+            userAndRoomManagementRequest.updateNormalUser(user);
+            session.setAttribute("user", user);
+            return "redirect:/page_normaluser";
+        }
     }
 
     @RequestMapping("userlist")

@@ -38,20 +38,7 @@
             color: black;
             background-color: #fdf2e9;
         }
-        .conceal{
-            position: absolute;
-            bottom: 40px;
-            right: 10px;
-            width: 30px;
-            height: 30px;
-            background-image: url(/img/eye-off-outline.svg);
-            background-size: 100% 100%;
-            cursor: pointer;
-        }
-        .conceal.hide{
-            background-image: url(/img/eye-outline.svg);
-            background-size: 100% 100%;
-        }
+
 
     </style>
 
@@ -71,32 +58,10 @@
 <div class="signup-container mt-3">
     <h2>Admin Create new account</h2>
     <form id="signupForm" th:action="@{/user/admin_create}" method="post">
-        <div class="mb-3 mt-5">
-            <label for="firstName">First Name:</label>
-            <input type="text" class="form-control" id="firstName" name="first_name" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+" placeholder="First name" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="lastName">Last Name:</label>
-            <input type="text" class="form-control" id="lastName" name="last_name" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+" placeholder="Last name" required>
-        </div>
 
         <div class="mb-3">
             <label for="email">Email:</label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="email" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="password">Password:</label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="Password"
-                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,}" required>
-            <button type="button" class="btn" id="generatePassword">Generate Random Password</button>
-            <div class="conceal" id='conceal'></div>
-        </div>
-
-        <div class="mb-3">
-            <label for="passwordConfirm">Confirm Password:</label>
-            <input type="password" class="form-control" id="passwordConfirm" name="passwordConfirm" placeholder="Confirm password" required>
+            <input type="email"  id="email" name="email" placeholder="email" required>
         </div>
 
         <div class="mb-3">
@@ -104,6 +69,7 @@
             <input type="checkbox" id="admin" name="is_admin">
         </div>
 
+        <input type="hidden" id="password" name="password">
 
         <button type="submit" class="btn">Create</button>
         <div class="mt-3">
@@ -115,21 +81,10 @@
 
 <script>
     document.getElementById('signupForm').addEventListener('submit', function(event) {
-        var password = document.getElementById('password').value;
-        var passwordConfirm = document.getElementById('passwordConfirm').value;
-        if (password !== passwordConfirm) {
-            alert("Passwords do not match.");
-            event.preventDefault();
-            return false;
-        }
+        var passwordField = document.getElementById('password');
+        var generatedPassword = randomPassword(10);
+        passwordField.value = generatedPassword;
     });
-
-    document.getElementById('generatePassword').addEventListener('click', function() {
-        var psw = randomPassword(8);
-        document.getElementById('password').value = psw;
-        document.getElementById('passwordConfirm').value = psw;
-    });
-
 
     function randomPassword(length) {
         var chars = "abcdefghijklmnopqrstuvwxyz!@#$%^&*()-+<>ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -146,20 +101,6 @@
     function getRandomChar(charSet) {
         return charSet.charAt(Math.floor(Math.random() * charSet.length));
     }
-
-    //hide password
-    var password = document.getElementById('password');
-    var button = document.getElementById('conceal');
-    button.addEventListener('click',function(){
-        if(password.type==='password')
-        {
-            password.setAttribute('type','text');
-            button.classList.add('hide');
-        }else{
-            password.setAttribute('type','password');
-            button.classList.remove('hide');
-        }
-    })
 
 </script>
 
