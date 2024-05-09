@@ -41,6 +41,31 @@
             background-image: url(/img/eye-outline.svg);
             background-size: 100% 100%;
         }
+        .cartoon22{
+            position:absolute;
+            top: 150px;
+            right: -100px;
+            width: 100px;
+            height: 100px;
+            background-size: 100% 100%;
+            background-image: url(https://s1.hdslb.com/bfs/seed/jinkela/short/mini-login-v2/img/22_open.4ea5f239.png);
+
+        }
+        .cartoon22.hide{
+            background-image: url(https://s1.hdslb.com/bfs/seed/jinkela/short/mini-login-v2/img/22_close.9382a5a8.png);
+        }
+        .cartoon33{
+            position:absolute;
+            top: 150px;
+            left: -100px;
+            width: 100px;
+            height: 100px;
+            background-size: 100% 100%;
+            background-image: url(https://s1.hdslb.com/bfs/seed/jinkela/short/mini-login-v2/img/33_open.f7d7f655.png);
+        }
+        .cartoon33.hide{
+            background-image: url(https://s1.hdslb.com/bfs/seed/jinkela/short/mini-login-v2/img/33_close.a8c18fc8.png);
+        }
     </style>
 
 </head>
@@ -61,6 +86,9 @@
 
 <div class="signin-container mt-3">
     <h2>Sign In</h2>
+    <div class="cartoon22" id="cartoon22"></div>
+    <div class="cartoon33" id="cartoon33"></div>
+
     <form th:action="@{/user/signin}" method="post">
         <div class="mb-3 mt-3">
             <label for="email">Email:</label>
@@ -68,7 +96,7 @@
         </div>
         <div class="mb-3">
             <label for="password">Password:</label>
-            <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" required>
+            <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" required pattern=".{8,}">
             <div class="conceal" id='conceal'></div>
         </div>
         <div class="mb-3">
@@ -87,6 +115,8 @@
 </body>
 
 <script>
+    var cartoon33=document.getElementById('cartoon33')
+    var cartoon22=document.getElementById('cartoon22')
     var password = document.getElementById('password');
     var button = document.getElementById('conceal');
     button.addEventListener('click',function(){
@@ -94,9 +124,13 @@
         {
             password.setAttribute('type','text');
             button.classList.add('hide');
+            cartoon22.classList.add('hide');
+            cartoon33.classList.add('hide');
         }else{
             password.setAttribute('type','password');
             button.classList.remove('hide');
+            cartoon22.classList.remove('hide');
+            cartoon33.classList.remove('hide');
         }
     })
 </script>
