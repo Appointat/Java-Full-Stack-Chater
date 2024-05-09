@@ -14,6 +14,7 @@
 <body>
 <header class="header">
     <h1>User Dashboard</h1>
+    <a class="logout-btn" href="/signin">Logout</a>
     <nav class="main-nav">
         <ul class="main-nav-list">
             <li><a class="nav-btn" href="">User Page</a></li>
@@ -24,7 +25,9 @@
 </header>
 
 <main class="main">
-    <aside class="aside-info">User information</aside>
+    <aside class="aside-info">
+        <span th:text="${session.user.email}"></span>
+    </aside>
     <section class="main-section">main</section>
 </main>
 

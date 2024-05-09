@@ -46,6 +46,26 @@ public class UserController {
         return "redirect:/signin";
     }
 
+    @RequestMapping("admin_create")
+    public String admin_create(String first_name, String last_name, String email, String password, Boolean is_admin, HttpSession session) {
+        session.removeAttribute("notice");
+        session.setAttribute("notice", "success");
+        try {
+            if (is_admin != null && is_admin) {
+                AdminUser user = new AdminUser(first_name, last_name, email, password);
+                userAndRoomManagementRequest.addAdminUser(user);
+            } else {
+                NormalUser user = new NormalUser(first_name, last_name, email, password);
+                userAndRoomManagementRequest.addNormalUser(user);
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            session.setAttribute("notice", "failed");
+        }
+        return "redirect:/page_admin_create";
+    }
+
     @RequestMapping("signin")
     public String signin(String email, String password, Boolean is_admin, HttpSession session) {
         session.removeAttribute("error");
@@ -119,6 +139,22 @@ public class UserController {
     @RequestMapping("admindelete")
     public String admindelete(String email){
         userAndRoomManagementRequest.removeAdminUser(userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email)));
+        return "redirect:/user/userlist";
+    }
+
+    @RequestMapping("normalchangestatus")
+    public String normalchangestatus(String email){
+        NormalUser user=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+        user.setIsActive(!user.getIsActive());
+        userAndRoomManagementRequest.updateNormalUser(user);
+        return "redirect:/user/userlist";
+    }
+
+    @RequestMapping("adminchangestatus")
+    public String adminchangestatus(String email){
+        AdminUser user=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+        user.setIsActive(!user.getIsActive());
+        userAndRoomManagementRequest.updateAdminUser(user);
         return "redirect:/user/userlist";
     }
 

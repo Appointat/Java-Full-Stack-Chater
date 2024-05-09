@@ -11,13 +11,18 @@
     />
     <link rel="stylesheet" href="/css/page_admin.css" />
 </head>
+
 <body>
+
+
 <header class="header">
+
     <h1>Admin Dashboard</h1>
+    <a class="logout-btn" href="/signin">Logout</a>
     <nav class="main-nav">
         <ul class="main-nav-list">
             <li><a class="nav-btn" href="">Admin page</a></li>
-            <li><a class="nav-btn" href="">Edit my Account</a></li>
+            <li><a class="nav-btn" href="/page_admin_create">Create an account</a></li>
             <li><a class="nav-btn" href="/user/userlist">User List</a></li>
         </ul>
     </nav>
@@ -25,7 +30,6 @@
 
 <main class="main">
     <aside class="aside-info">
-        <a href="/signin">Logout</a>
         <span th:text="${session.user.email}"></span>
     </aside>
     <section class="main-section">Room list</section>
