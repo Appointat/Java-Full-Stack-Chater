@@ -12,7 +12,13 @@
         .table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 20px;
             margin-bottom: 20px;
+            overflow-x: auto;
+        }
+        .table td:last-child {
+            min-width: 160px;
+            white-space: nowrap;
         }
 
         .table_header{
@@ -33,7 +39,7 @@
             background-color: #ffffff;
         }
 
-        tr:not(.table_header):hover {
+        tr:not(.table_header ):hover {
             background-color: #eef;
         }
 
@@ -44,6 +50,7 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            text-decoration: none;
         }
 
         .btn:hover {
@@ -54,9 +61,36 @@
         .sortable {
             cursor: pointer;
         }
+
+        .search-row {
+            background-color: #f2f2f2;
+            border-top: 2px solid #cccccc;
+            border-bottom: 2px solid #cccccc;
+        }
+
+        input[type="text"] {
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            color: #333;
+            width: 200px;
+            height: 20px;
+            padding: 8px 10px;
+            margin: 4px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus {
+            border: 1px solid #4285F4;
+            outline: none;
+        }
+
+        .search-row th {
+            padding: 12px 8px;
+        }
+
     </style>
-
-
 
 </head>
 
@@ -64,6 +98,13 @@
 <body>
 <a class="btn" href="/page_admin">return</a>
 <table class="table" id="normalUserTable">
+    <tr class="search-row">
+        <th><input type="text" class="searchID" placeholder="Search by ID" oninput="searchAll('normalUserTable')"></th>
+        <th><input type="text" class="searchEmail" placeholder="Search by Email" oninput="searchAll('normalUserTable')"></th>
+        <th><input type="text" class="searchFirstname" placeholder="Search by Firstname" oninput="searchAll('normalUserTable')"></th>
+        <th><input type="text" class="searchLastname" placeholder="Search by Lastname" oninput="searchAll('normalUserTable')"></th>
+        <th colspan="2"></th>
+    </tr>
     <tr class="table_header" >
         <td class="sortable sort-id"> Normal ID </td>
         <td class="sortable sort-email"> Email </td>
@@ -72,7 +113,7 @@
         <td class="sortable sort-active">Active</td>
         <td>Action</td>
     </tr>
-    <tr th:each="normalUser,state:${normalUserList}">
+    <tr th:each="normalUser,state:${normalUserList}" class="data-row">
         <td>
             <span th:text="${normalUser.getId()}"></span>
         </td>
@@ -113,6 +154,13 @@
 </div>
 
 <table class="table" id="adminUserTable">
+    <tr class="search-row">
+        <th><input type="text" class="searchID" placeholder="Search by ID" oninput="searchAll('adminUserTable')"></th>
+        <th><input type="text" class="searchEmail" placeholder="Search by Email" oninput="searchAll('adminUserTable')"></th>
+        <th><input type="text" class="searchFirstname" placeholder="Search by Firstname" oninput="searchAll('adminUserTable')"></th>
+        <th><input type="text" class="searchLastname" placeholder="Search by Lastname" oninput="searchAll('adminUserTable')"></th>
+        <th colspan="2"></th>
+    </tr>
     <tr class="table_header">
         <td class="sortable sort-id"> Admin ID </td>
         <td class="sortable sort-email"> Email </td>
@@ -121,7 +169,7 @@
         <td class="sortable sort-active">Active</td>
         <td>Action</td>
     </tr>
-    <tr th:each="adminUser,state:${adminUserList}"  th:class="${state.odd?'row1':'row2'}">
+    <tr th:each="adminUser,state:${adminUserList}" class="data-row">
         <td>
             <span th:text="${adminUser.getId()}"></span>
         </td>
@@ -173,9 +221,9 @@
                 var tableId = table.id;
                 var pageInfoId = tableId === 'normalUserTable' ? 'normalUserPageInfo' : 'adminUserPageInfo';
                 var columnIndex = header.cellIndex;
-                var rows = Array.from(table.querySelectorAll("tr:nth-child(n+2)"));
+                var rows = Array.from(table.querySelectorAll(".data-row"));
                 var isNumeric = header.classList.contains('sort-id');
-                var sortAsc = header.getAttribute('data-sort-asc') !== 'true'; // Toggle sort direction
+                var sortAsc = header.getAttribute('data-sort-asc') !== 'true';
 
                 rows.sort(function(a, b) {
                     var x = a.cells[columnIndex].textContent.trim();
@@ -205,7 +253,7 @@
 
     function changePage(tableId, pageInfoId, page) {
         var table = document.getElementById(tableId);
-        var rows = Array.from(table.querySelectorAll("tr:nth-child(n+2)"));
+        var rows = Array.from(table.querySelectorAll(".data-row"));
         var recordsPerPage = 10;
         var numPages = Math.ceil(rows.length / recordsPerPage);
 
@@ -241,6 +289,36 @@
         changePage('normalUserTable', 'normalUserPageInfo', 1);
         changePage('adminUserTable', 'adminUserPageInfo', 1);
     };
+
+    function searchAll(tableId) {
+        var table = document.getElementById(tableId);
+        var rows = Array.from(table.querySelectorAll(".data-row"));
+
+        var searchTextID = table.querySelector('.searchID').value.toLowerCase();
+        var searchTextEmail = table.querySelector('.searchEmail').value.toLowerCase();
+        var searchTextFirstname = table.querySelector('.searchFirstname').value.toLowerCase();
+        var searchTextLastname = table.querySelector('.searchLastname').value.toLowerCase();
+
+        rows.forEach(row => {
+            const idText = row.cells[0].textContent.toLowerCase();
+            const emailText = row.cells[1].textContent.toLowerCase();
+            const firstnameText = row.cells[2].textContent.toLowerCase();
+            const lastnameText = row.cells[3].textContent.toLowerCase();
+
+            if (idText.includes(searchTextID) &&
+                emailText.includes(searchTextEmail) &&
+                firstnameText.includes(searchTextFirstname) &&
+                lastnameText.includes(searchTextLastname)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+
+
+
 
 </script>
 
