@@ -61,17 +61,17 @@
     <h2>Edit account</h2>
     <form id="signupForm" th:action="@{/user/edit}" method="post">
         <div class="mb-3">
-            <label>Email: <span th:text="${session.user.email}"></span></label>
+            <label>Email: <span th:text="${session.user.getEmail()}"></span></label>
         </div>
 
         <div class="mb-3 mt-5">
             <label for="firstName">First Name:</label>
-            <input type="text" class="form-control" id="firstName" name="first_name" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+" placeholder="First name" required>
+            <input type="text" class="form-control" id="firstName" name="first_name" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+" placeholder="First name" required th:value="${session.user.getFirstName()}">
         </div>
 
         <div class="mb-3">
             <label for="lastName">Last Name:</label>
-            <input type="text" class="form-control" id="lastName" name="last_name" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+" placeholder="Last name" required>
+            <input type="text" class="form-control" id="lastName" name="last_name" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+" placeholder="Last name" required th:value="${session.user.getLastName()}">
         </div>
 
         <div class="mb-3">
@@ -87,17 +87,13 @@
             <input type="password" class="form-control" id="passwordConfirm" name="passwordConfirm" placeholder="Confirm password" required>
         </div>
 
-        <div class="mb-3">
-            <span th:if="${session.is_admin==true}">Admin account</span>
-            <span th:if="${session.is_admin!=true}">Normal account</span>
-        </div>
-
         <input type="hidden" th:value="${session.user.email}" id="email" name="email">
         <input type="hidden" th:value="${session.is_admin}" name="is_admin">
 
-        <button type="submit" class="btn">Submit and Sign In</button>
+        <button type="submit" class="btn">Submit</button>
+
         <div class="mt-3">
-            <a href="/signin">Turn to Sign In</a>
+            <a th:href="${session.is_admin} ? '/page_admin' : '/page_normaluser'">Return</a>
         </div>
     </form>
 </div>

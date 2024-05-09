@@ -15,7 +15,7 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setSubject("New User Confirmation");
-        message.setText("Your temporary password: " + password + ", please change after your first login");
+        message.setText("Your password: " + password + " \nPlease change after Sign In");
         mailSender.send(message);
     }
 }

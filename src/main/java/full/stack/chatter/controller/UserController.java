@@ -7,6 +7,7 @@ import full.stack.chatter.model.NormalUser;
 import full.stack.chatter.services.UserAndRoomManagementRequest;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,9 +76,9 @@ public class UserController {
         return "redirect:/page_admin_create";
     }
 
-
     @RequestMapping("signin")
     public String signin(String email, String password, Boolean is_admin, HttpSession session) {
+        session.removeAttribute("email");
         session.removeAttribute("error");
         if (is_admin != null && is_admin) {
             try {
@@ -89,8 +90,8 @@ public class UserController {
                         admin_user.setFailed_attempt(0);
                         userAndRoomManagementRequest.updateAdminUser(admin_user);
                         session.setAttribute("user", admin_user);
+                        session.setAttribute("is_admin", true);
                         if (admin_user.getIs_new()){
-                            session.setAttribute("is_admin", true);
                             return "redirect:/page_first_login";
                         }
                         return "redirect:/page_admin";
@@ -116,8 +117,8 @@ public class UserController {
                         normal_user.setFailed_attempt(0);
                         userAndRoomManagementRequest.updateNormalUser(normal_user);
                         session.setAttribute("user", normal_user);
+                        session.setAttribute("is_admin", false);
                         if (normal_user.getIs_new()){
-                            session.setAttribute("is_admin", false);
                             return "redirect:/page_first_login";
                         }
                         return "redirect:/page_normaluser";
@@ -162,6 +163,25 @@ public class UserController {
         }
     }
 
+    @RequestMapping("edit")
+    public String edit(String first_name, String last_name,String email, String password, Boolean is_admin){
+        if(is_admin != null && is_admin){
+            AdminUser user=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+            user.setFirst_name(first_name);
+            user.setLast_name(last_name);
+            user.setPassword(password);
+            userAndRoomManagementRequest.updateAdminUser(user);
+            return "/page_signin";
+        }else{
+            NormalUser user=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+            user.setFirst_name(first_name);
+            user.setLast_name(last_name);
+            user.setPassword(password);
+            userAndRoomManagementRequest.updateNormalUser(user);
+            return "/page_signin";
+        }
+    }
+
     @RequestMapping("userlist")
     public String userlist(Model model){
         List<NormalUser> normalUserList=userAndRoomManagementRequest.getNormalUsers();
@@ -177,6 +197,7 @@ public class UserController {
         userAndRoomManagementRequest.removeOneUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
         return "redirect:/user/userlist";
     }
+
     @RequestMapping("admindelete")
     public String admindelete(String email){
         userAndRoomManagementRequest.removeAdminUser(userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email)));
@@ -197,6 +218,32 @@ public class UserController {
         user.setIsActive(!user.getIsActive());
         userAndRoomManagementRequest.updateAdminUser(user);
         return "redirect:/user/userlist";
+    }
+
+    @RequestMapping("forget")
+    public String forget(String email, Boolean is_admin, HttpSession session){
+        session.removeAttribute("email");
+        if(is_admin != null && is_admin){
+            try {
+                AdminUser user=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+                emailService.sendConfirmationEmail(email, user.getPassword());
+                return"redirect:/signin";
+            } catch (Exception e) {
+                e.printStackTrace();
+                session.setAttribute("email","user not exist");
+                return"redirect:/forget";
+            }
+        }else{
+            try {
+                NormalUser user=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+                emailService.sendConfirmationEmail(email, user.getPassword());
+                return"redirect:/signin";
+            } catch (Exception e) {
+                e.printStackTrace();
+                session.setAttribute("email","user not exist");
+                return"redirect:/forget";
+            }
+        }
     }
 
     @RestController
