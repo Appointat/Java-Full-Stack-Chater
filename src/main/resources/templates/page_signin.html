@@ -95,7 +95,9 @@
         </div>
         <div class="mb-3">
             <label for="password">Password:</label>
-            <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" required pattern=".{8,}">
+            <input class="form-control" id="password" name="password" pattern=".{8,}" placeholder="Enter password"
+                   required title="Password must be at least 8 characters long." type="password">
+            <div id="invalid-password-feedback" style="color: red; display: none;"></div>
             <div class="conceal" id='conceal'></div>
         </div>
         <div class="mb-3">
@@ -118,7 +120,9 @@
     var cartoon33=document.getElementById('cartoon33')
     var cartoon22=document.getElementById('cartoon22')
     var password = document.getElementById('password');
+    var passwordFeedback = document.getElementById('invalid-password-feedback');
     var button = document.getElementById('conceal');
+
     button.addEventListener('click',function(){
         if(password.type==='password')
         {
@@ -133,6 +137,16 @@
             cartoon33.classList.remove('hide');
         }
     })
+
+    password.addEventListener('input', function () {
+        if (password.value.length < 8) {
+            passwordFeedback.innerHTML = "Password must be at least 8 characters long.<br>";
+            passwordFeedback.style.display = 'block';
+        } else {
+            passwordFeedback.innerHTML = "";
+            passwordFeedback.style.display = 'none';
+        }
+    });
 </script>
 
 
