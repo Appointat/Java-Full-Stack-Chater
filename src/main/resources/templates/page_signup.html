@@ -78,7 +78,10 @@
         <div class="mb-3">
             <label for="password">Password:</label>
             <input type="password" class="form-control" id="password" name="password" placeholder="Password"
-                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,}" required>
+                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,}"
+                   required
+                   title="Password must contain at least one digit, one lowercase letter, one uppercase letter, one special character, and at least 8 characters long.">
+            <div id="invalid-password-feedback" style="color: red; display: none;"></div>
             <button type="button" class="btn" id="generatePassword">Generate Random Password</button>
             <div class="conceal" id='conceal'></div>
         </div>
@@ -114,7 +117,8 @@
     });
 
     document.getElementById('generatePassword').addEventListener('click', function() {
-        var psw = randomPassword(8);
+        const lenPassword = 8;
+        var psw = randomPassword(lenPassword);
         document.getElementById('password').value = psw;
         document.getElementById('passwordConfirm').value = psw;
     });
@@ -139,16 +143,42 @@
     //hide password
     var password = document.getElementById('password');
     var button = document.getElementById('conceal');
+    var passwordFeedback = document.getElementById('invalid-password-feedback');
+
     button.addEventListener('click',function(){
         if(password.type==='password')
         {
             password.setAttribute('type','text');
             button.classList.add('hide');
-        }else{
+        } else {
             password.setAttribute('type','password');
             button.classList.remove('hide');
         }
     })
+
+    // verify the pattern of password, and show the feedback
+    password.addEventListener('input', function () {
+        // only return the message when the password is invalid
+        var passwordPatternMessage = "";
+        if (!/(?=.*\d)/.test(password.value)) {
+            passwordPatternMessage += "Password must contain at least one digit. <br>";
+        }
+        if (!/(?=.*[a-z])/.test(password.value)) {
+            passwordPatternMessage += "Password must contain at least one lowercase letter. <br>";
+        }
+        if (!/(?=.*[A-Z])/.test(password.value)) {
+            passwordPatternMessage += "Password must contain at least one uppercase letter. <br>";
+        }
+        if (!/(?=.*[\W])/.test(password.value)) {
+            passwordPatternMessage += "Password must contain at least one special character. <br>";
+        }
+        if (password.value.length < 8) {
+            passwordPatternMessage += "Password must be at least 8 characters long. <br>";
+        }
+
+        passwordFeedback.innerHTML = passwordPatternMessage;
+        passwordFeedback.style.display = passwordPatternMessage ? 'block' : 'none';
+    });
 
 </script>
 
