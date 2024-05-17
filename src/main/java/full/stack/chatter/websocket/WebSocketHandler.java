@@ -12,16 +12,17 @@ import java.io.IOException;
 
 public class WebSocketHandler extends TextWebSocketHandler {
 
-    private final String nameChat;
+    private final long id;
+    private final String tittle;
     private final Logger logger = Logger.getLogger(WebSocketHandler.class.getName());
 
-    public WebSocketHandler(String nameChat) {
-        this.nameChat = nameChat;
+    public WebSocketHandler(long id, String tittle) {
+        this.id = id;
+        this.tittle = tittle;
     }
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws IOException {
-
         ObjectMapper mapper = new ObjectMapper();
 
         String receivedMessage = (String) message.getPayload();
@@ -32,12 +33,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws IOException {
-        session.sendMessage(new TextMessage("Bienvenue sur " + this.nameChat));
-        logger.info("Connecté sur le " + this.nameChat);
+        session.sendMessage(new TextMessage("Welcome to " + this.tittle));
+        logger.info("Connected to " + this.tittle);
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        logger.info("Déconnecté du " + this.nameChat);
+        logger.info("Disconnected to " + this.tittle);
     }
 }

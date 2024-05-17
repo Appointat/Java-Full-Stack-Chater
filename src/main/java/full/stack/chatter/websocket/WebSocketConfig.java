@@ -11,6 +11,9 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new WebSocketHandler("le salon SR03"), "/salon").setAllowedOrigins("*");
+        // TODO: define the id and the tittle
+        long id = 1;
+        String tittle = "Chat Room SR03 (" + id + ")";
+        registry.addHandler(new WebSocketHandler(id, tittle), "/chatroom").setAllowedOrigins("*");
     }
 }
