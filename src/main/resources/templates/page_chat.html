@@ -114,6 +114,35 @@
             border-radius: 100%; /* 圆形头像 */
         }
 
+        /* 底部发送信息栏 */
+        .send-message-area {
+            align-self: center; /* 设置对齐方式，根据需求可以改为 flex-start (左对齐) 或 flex-end (右对齐) */
+            width: 100%; /* 根据实际需求调整宽度 */
+            padding: 10px; /* 增加内边距以便更好的布局和观感 */
+            display: flex; /* 使用 flex 布局以便更好的控制子元素 */
+            background-color: #f1f1f1; /* 设置背景颜色，根据实际UI风格调整 */
+        }
+
+        /* 发送按钮和输入框样式可能也需要相应的设置 */
+        .send-message-area input[type="text"] {
+            flex-grow: 1; /* 输入框占据大部分空间 */
+            margin-right: 10px; /* 在输入框和发送按钮之间增加一些间隔 */
+        }
+
+        .send-message-area button {
+            padding: 5px 20px; /* 适当的按钮填充 */
+            background-color: #4CAF50; /* 按钮背景颜色 */
+            color: white; /* 文字颜色 */
+            border: none; /* 去除边框 */
+            cursor: pointer; /* 鼠标悬停时显示指针 */
+        }
+
+        /* 为按钮增加悬停效果 */
+        .send-message-area button:hover {
+            background-color: #45a049; /* 按钮悬停时的背景颜色变化 */
+        }
+
+
         /* 媒体查询用于适应不同屏幕尺寸 */
         @media (max-width: 768px) {
             aside {
@@ -148,11 +177,55 @@
     <div class="message received">
         Another received message.
     </div>
+
     <!-- More info -->
+
+    <div class="send-message-area">
+        <input id="messageInput" placeholder="Type a message..." style="flex-grow: 1; margin-right: 10px;" type="text">
+        <button onclick="sendMessage()">Send</button>
+    </div>
 </div>
+
 
 <aside>Aside - List of Chat Rooms and Controls</aside>
 <footer>Footer - Java Full-Stack Chatter 2024 | CHEN Zikang HOU Longhao</footer>
 </body>
 <script src="https://cdn.metroui.org.ua/current/metro.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const wsUrl = 'ws://localhost:8080/chatroom';
+        let websocket = new WebSocket(wsUrl);
+
+        websocket.onopen = function (event) {
+            writeToScreen('Connected to: ' + wsUrl);
+        };
+
+        websocket.onmessage = function (event) {
+            writeToScreen('Received: ' + event.data);
+        };
+
+        websocket.onerror = function (event) {
+            writeToScreen('Error: ' + event.data);
+        };
+
+        websocket.onclose = function (event) {
+            writeToScreen('Disconnected.');
+        };
+
+        function sendMessage() {
+            const message = document.getElementById('messageInput').value;
+            websocket.send(message);
+            writeToScreen('Sent: ' + message);
+        }
+
+        function writeToScreen(message) {
+            let messageArea = document.getElementById('messageArea');
+            messageArea.value += message + "\n";
+        }
+
+        window.sendMessage = sendMessage; // 将 sendMessage 暴露给全局作用域以便 HTML 中的 button 使用
+    });
+</script>
+
 </html>
