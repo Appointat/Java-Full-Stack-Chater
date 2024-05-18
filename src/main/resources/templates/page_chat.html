@@ -247,7 +247,7 @@
             const chat_container = document.querySelector('.chat-container')
             const message_div = document.createElement('div')
             message_div.classList.add('message')
-            message_div.classList.add(type) // add classes for styling based on type
+            message_div.classList.add(type) // type: 'sent', 'received' or 'system_message'
             message_div.innerHTML = message;
 
             chat_container.appendChild(message_div); // append the new message div to the container
