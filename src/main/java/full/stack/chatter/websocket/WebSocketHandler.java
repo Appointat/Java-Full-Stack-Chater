@@ -25,10 +25,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
-        String receivedMessage = (String) message.getPayload();
-        MessageSocket messageSocket = mapper.readValue(receivedMessage, MessageSocket.class);
+        String received_message = (String) message.getPayload();
+        MessageSocket message_socket = mapper.readValue(received_message, MessageSocket.class);
 
-        session.sendMessage(new TextMessage(messageSocket.getUser() + " : " + messageSocket.getMessage()));
+        session.sendMessage(new TextMessage(message_socket.getUser() + " : " + message_socket.getMessage()));
     }
 
     @Override

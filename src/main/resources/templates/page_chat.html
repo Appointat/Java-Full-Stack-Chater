@@ -76,6 +76,7 @@
 
         /* 发送者的消息样式 */
         .sent {
+
             align-self: flex-end; /* 将发送者消息靠右对齐 */
             margin-right: 20px; /* 与侧边栏的距离 */
             background-color: #007bff;
@@ -112,6 +113,14 @@
             height: 20px; /* 头像的高度 */
             background-color: mediumorchid; /* 头像颜色 */
             border-radius: 100%; /* 圆形头像 */
+        }
+
+        .system_message {
+            align-self: center;
+            background-color: #f1f1f1;
+            color: #333;
+            padding: 5px 10px;
+            border-radius: 10px;
         }
 
         /* 底部发送信息栏 */
@@ -165,17 +174,17 @@
 <body>
 
 <header>Header - Chat Room Name</header>
-<!--<nav>Nav - Manage Users, Manage Forums</nav>-->
+<!-- <nav>Nav - Manage Users, Manage Forums</nav> -->
 <main>Main - Content area where details are displayed and managed</main>
 <div class="chat-container">
     <div class="message received">
-        Hello, this is a received message.
+        Hello, this is a received message. (Example)
     </div>
     <div class="message sent">
-        Hi, this is my message.
+        Hi, this is my message. (Example)
     </div>
     <div class="message received">
-        Another received message.
+        Another received message. (Example)
     </div>
 
     <!-- More info -->
@@ -189,43 +198,66 @@
 
 <aside>Aside - List of Chat Rooms and Controls</aside>
 <footer>Footer - Java Full-Stack Chatter 2024 | CHEN Zikang HOU Longhao</footer>
-</body>
-<script src="https://cdn.metroui.org.ua/current/metro.js"></script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const wsUrl = 'ws://localhost:8080/chatroom';
-        let websocket = new WebSocket(wsUrl);
+        const ws_url = 'ws://localhost:8080/chatroom';
+        let websocket = new WebSocket(ws_url);
 
-        websocket.onopen = function (event) {
-            writeToScreen('Connected to: ' + wsUrl);
+        document.getElementById('messageInput').focus();
+        document.getElementById('messageInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        websocket.onopen = function () {
+            writeToScreen('System: connected to: ' + ws_url, 'system_message');
         };
 
-        websocket.onmessage = function (event) {
-            writeToScreen('Received: ' + event.data);
-        };
+        // websocket.onmessage = function (event) {
+        //     writeToScreen('System: ' + event.data, 'system_message');
+        // };
 
         websocket.onerror = function (event) {
-            writeToScreen('Error: ' + event.data);
+            writeToScreen('Error: ' + event.data, 'system_message');
         };
 
-        websocket.onclose = function (event) {
-            writeToScreen('Disconnected.');
+        websocket.onclose = function () {
+            writeToScreen('System: disconnected.', 'system_message');
         };
 
         function sendMessage() {
-            const message = document.getElementById('messageInput').value;
-            websocket.send(message);
-            writeToScreen('Sent: ' + message);
+            const message = document.getElementById('messageInput').value.trim();
+            if (!message) {
+                return;
+            }
+
+            const message_json = {
+                "user": "me", // user: "me" or "you"
+                "message": message
+            }
+            websocket.send(JSON.stringify(message_json));
+            writeToScreen(message, 'sent');
+
+            document.getElementById('messageInput').value = '';
         }
 
-        function writeToScreen(message) {
-            let messageArea = document.getElementById('messageArea');
-            messageArea.value += message + "\n";
+        function writeToScreen(message, type = 'received') {
+            const chat_container = document.querySelector('.chat-container')
+            const message_div = document.createElement('div')
+            message_div.classList.add('message')
+            message_div.classList.add(type) // add classes for styling based on type
+            message_div.innerHTML = message;
+
+            chat_container.appendChild(message_div); // append the new message div to the container
+            chat_container.scrollTop = chat_container.scrollHeight; // auto-scroll to the bottom
         }
 
-        window.sendMessage = sendMessage; // 将 sendMessage 暴露给全局作用域以便 HTML 中的 button 使用
+        window.sendMessage = sendMessage; // expose the function to the global scope
     });
 </script>
 
+</body>
+<script src="https://cdn.metroui.org.ua/current/metro.js"></script>
 </html>
