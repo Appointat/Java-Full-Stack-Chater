@@ -1,6 +1,7 @@
 package full.stack.chatter.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import full.stack.chatter.model.ChatRoom;
 import org.jboss.logging.Logger;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -12,13 +13,13 @@ import java.io.IOException;
 
 public class WebSocketHandler extends TextWebSocketHandler {
 
-    private final long id;
+    private final ChatRoom chat_room;
     private final String tittle;
     private final Logger logger = Logger.getLogger(WebSocketHandler.class.getName());
 
-    public WebSocketHandler(long id, String tittle) {
-        this.id = id;
-        this.tittle = tittle;
+    public WebSocketHandler(ChatRoom chat_room) {
+        this.chat_room = chat_room;
+        this.tittle = chat_room.getTitle();
     }
 
     @Override

@@ -7,20 +7,18 @@ import full.stack.chatter.model.User;
 import full.stack.chatter.services.UserAndRoomManagementRequest;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-@RequestMapping(value = "/chat-room")
+@RequestMapping(value = "/chatroom")
 public class ChatRoomController {
     @Resource
     private UserAndRoomManagementRequest userAndRoomManagementRequest;
 
-    @RequestMapping(value = "/create-chat-room")
+    @RequestMapping(value = "/createchatroom") // path 命名方式，看你吧，保持一致就行
     public void createChatRoom(User creator, String chat_room_name, String description, LocalDateTime create_date, LocalDateTime expire_date) {
         // The input `creator` can be either an admin user or a normal user
 
@@ -42,12 +40,12 @@ public class ChatRoomController {
         }
     }
 
-    @GetMapping(value = "/list-chat-rooms")
+    @RequestMapping(value = "/chatroomslist")
     public List<ChatRoom> getChatRooms() {
         return userAndRoomManagementRequest.getChatRooms();
     }
 
-    @PostMapping(value = "/remove-chat-room") // TODO: to be tested
+    @RequestMapping(value = "/removechatroom") // TODO: to be tested
     public void removeChatRoom(Long chat_room_id) { // TODO: to add the input parameters to identify the chat room
         ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(chat_room_id);
 
@@ -75,7 +73,7 @@ public class ChatRoomController {
         userAndRoomManagementRequest.removeChatRoom(chat_room);
     }
 
-    @PostMapping(value = "/invite-user-to-chat-room")
+    @RequestMapping(value = "/inviteusertochatroom")
     public void inviteUserToChatRoom(AdminUser invitor, User invited_user, Long chat_room_id) { // TODO: to add the input parameters to identify the chat room and the user
         // TODO: need to define the rule of who can invite user to chat room?
         // TODO: the test of postgreSQL
@@ -93,7 +91,7 @@ public class ChatRoomController {
         }
     }
 
-    @PostMapping(value = "/remove-user-from-chat-room")
+    @RequestMapping(value = "/removeuserfromchatroom")
     public void removeUserFromChatRoom(AdminUser remover, User removed_user, Long chat_room_id) { // TODO: to add the input parameters to identify the chat room and the user
         // TODO: need to define the rule of who can remove user from chat room?
 

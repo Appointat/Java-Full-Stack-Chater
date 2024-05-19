@@ -201,7 +201,9 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const ws_url = 'ws://localhost:8080/chatroom';
+        // 这个path是要改的，只要和后端的registerWebSocketHandlers里面建立的websocket的连接一致就行
+        // 实际上，我们需要定义，谁是发消息的人，谁是收消息的人。保证A和B在同一个chatroom里面是重要的。
+        const ws_url = 'ws://localhost:8080/chatroom/100'; // "chatroom + id"
         let websocket = new WebSocket(ws_url);
 
         document.getElementById('messageInput').focus();
@@ -211,19 +213,19 @@
             }
         });
 
-        websocket.onopen = function () {
+        websocket.onopen = function () { // once the connection is established
             writeToScreen('System: connected to: ' + ws_url, 'system_message');
         };
 
-        // websocket.onmessage = function (event) {
+        // websocket.onmessage = function (event) { // once a message is received
         //     writeToScreen('System: ' + event.data, 'system_message');
         // };
 
-        websocket.onerror = function (event) {
+        websocket.onerror = function (event) { // once an error occurs
             writeToScreen('Error: ' + event.data, 'system_message');
         };
 
-        websocket.onclose = function () {
+        websocket.onclose = function () { // once the connection is closed (optional)
             writeToScreen('System: disconnected.', 'system_message');
         };
 
