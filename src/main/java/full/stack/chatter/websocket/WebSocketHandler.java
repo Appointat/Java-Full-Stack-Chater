@@ -3,6 +3,7 @@ package full.stack.chatter.websocket;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import full.stack.chatter.model.ChatRoom;
 import org.jboss.logging.Logger;
+import org.springframework.lang.NonNull;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
@@ -29,7 +30,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws IOException {
+    public void handleMessage(@NonNull WebSocketSession session, @NonNull WebSocketMessage<?> message) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
         String received_message = (String) message.getPayload();
@@ -43,7 +44,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws IOException {
+    public void afterConnectionEstablished(@NonNull WebSocketSession session) throws IOException {
         sessions.add(session);
         logger.info(session.getId());
 
@@ -55,7 +56,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+    public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
         sessions.remove(session);
         logger.info("Disconnected to " + this.tittle);
     }
