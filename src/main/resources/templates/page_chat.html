@@ -5,7 +5,10 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <title>Admin Page</title>
-    <link href="https://cdn.metroui.org.ua/current/metro.css" rel="stylesheet">
+    <link
+            href="https://cdn.metroui.org.ua/current/metro.css"
+            rel="stylesheet"
+    >
 
     <style>
         body, html {
@@ -190,9 +193,11 @@
     <!-- More info -->
 
     <div class="send-message-area">
+        <label for="messageInput" style="display: none;">Message Input</label>
         <input id="messageInput" placeholder="Type a message..." style="flex-grow: 1; margin-right: 10px;" type="text">
         <button onclick="sendMessage()">Send</button>
     </div>
+
 </div>
 
 
@@ -203,8 +208,9 @@
     document.addEventListener("DOMContentLoaded", function () {
         // 这个path是要改的，只要和后端的registerWebSocketHandlers里面建立的websocket的连接一致就行
         // 实际上，我们需要定义，谁是发消息的人，谁是收消息的人。保证A和B在同一个chatroom里面是重要的。
-        const user_name = localStorage.getItem('username'); // user name
-        const chat_room_id = localStorage.getItem('chat_room_id'); // chat room id
+        // const user_name = localStorage.getItem('username'); // user name
+        const user_name = "Adam";
+        // const chat_room_id = localStorage.getItem('chat_room_id'); // chat room id
         const ws_url = 'ws://localhost:8080/chatroom/' + 100;
         let websocket = new WebSocket(ws_url);
 
@@ -219,9 +225,11 @@
             writeToScreen('System: connected to: ' + ws_url, 'system_message');
         };
 
-        // websocket.onmessage = function (event) { // once a message is received
-        //     writeToScreen('System: ' + event.data, 'system_message');
-        // };
+        websocket.onmessage = function (event) { // once a message is received
+            const message_json = JSON.parse(event.data);
+            const message_type = message_json.user === user_name ? 'sent' : 'received';
+            writeToScreen(message_json.message, message_type);
+        };
 
         websocket.onerror = function (event) { // once an error occurs
             writeToScreen('Error: ' + event.data, 'system_message');
@@ -238,11 +246,11 @@
             }
 
             const message_json = {
-                "user": "me", // user: "me" or "you"
+                "user": user_name,
                 "message": message
             }
             websocket.send(JSON.stringify(message_json));
-            writeToScreen(message, 'sent');
+            // writeToScreen(message, 'sent');
 
             document.getElementById('messageInput').value = '';
         }
