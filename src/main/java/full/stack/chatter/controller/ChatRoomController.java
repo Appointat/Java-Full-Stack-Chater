@@ -40,7 +40,7 @@ public class ChatRoomController {
             // Update the creator, whose `created_chat_rooms` field should be updated
             creator.addCreatedChatRoom(chat_room.getId());
             userAndRoomManagementRequest.updateAdminUser(creator);
-
+            return"redirect:/page_admin";
         }else{
             // Set/create a chat room
             ChatRoom chat_room = new ChatRoom();
@@ -51,8 +51,9 @@ public class ChatRoomController {
             // Update the creator, whose `created_chat_rooms` field should be updated
             creator.addCreatedChatRoom(chat_room.getId());
             userAndRoomManagementRequest.updateNormalUser(creator);
+            return"redirect:/page_normaluser";
         }
-        return"redirect:/page_admin";
+
 //        if (creator instanceof NormalUser normal_user) {
 //            userAndRoomManagementRequest.updateNormalUser(normal_user);
 //        } else if (creator instanceof AdminUser admin_user) {
