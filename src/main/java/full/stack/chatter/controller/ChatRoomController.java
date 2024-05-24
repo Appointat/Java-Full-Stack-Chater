@@ -6,6 +6,7 @@ import full.stack.chatter.model.NormalUser;
 import full.stack.chatter.model.User;
 import full.stack.chatter.services.UserAndRoomManagementRequest;
 import jakarta.annotation.Resource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -18,26 +19,47 @@ public class ChatRoomController {
     @Resource
     private UserAndRoomManagementRequest userAndRoomManagementRequest;
 
-    @RequestMapping(value = "/createchatroom") // path 命名方式，看你吧，保持一致就行
-    public void createChatRoom(User creator, String chat_room_name, String description, LocalDateTime create_date, LocalDateTime expire_date) {
+    @RequestMapping(value = "/createchatroom")
+    public String createChatRoom(String email, Boolean is_admin, String chat_room_name, String description,
+                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime create_date,
+                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime expire_date) {
+        System.out.println(chat_room_name);
+        System.out.println(description);
+        System.out.println(email);
+        System.out.println(is_admin);
+        System.out.println(create_date);
+        System.out.println(expire_date);
         // The input `creator` can be either an admin user or a normal user
+        if(is_admin){
+            // Set/create a chat room
+            ChatRoom chat_room = new ChatRoom();
+            AdminUser creator=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+            chat_room.setChatRoom(chat_room_name, description, creator, create_date, expire_date);
+            // Update the chat room in the database
+            userAndRoomManagementRequest.addChatRoom(chat_room);
+            // Update the creator, whose `created_chat_rooms` field should be updated
+            creator.addCreatedChatRoom(chat_room.getId());
+            userAndRoomManagementRequest.updateAdminUser(creator);
 
-        // Set/create a chat room
-        ChatRoom chat_room = new ChatRoom();
-        chat_room.setChatRoom(chat_room_name, description, creator, create_date, expire_date);
-
-        // Update the chat room in the database
-        userAndRoomManagementRequest.addChatRoom(chat_room);
-
-        // Update the creator, whose `created_chat_rooms` field should be updated
-        creator.addCreatedChatRoom(chat_room.getId());
-        if (creator instanceof NormalUser normal_user) {
-            userAndRoomManagementRequest.updateNormalUser(normal_user);
-        } else if (creator instanceof AdminUser admin_user) {
-            userAndRoomManagementRequest.updateAdminUser((AdminUser) admin_user);
-        } else {
-            throw new RuntimeException("Invalid user type");
+        }else{
+            // Set/create a chat room
+            ChatRoom chat_room = new ChatRoom();
+            NormalUser creator=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+            chat_room.setChatRoom(chat_room_name, description, creator, create_date, expire_date);
+            // Update the chat room in the database
+            userAndRoomManagementRequest.addChatRoom(chat_room);
+            // Update the creator, whose `created_chat_rooms` field should be updated
+            creator.addCreatedChatRoom(chat_room.getId());
+            userAndRoomManagementRequest.updateNormalUser(creator);
         }
+        return"redirect:/page_admin";
+//        if (creator instanceof NormalUser normal_user) {
+//            userAndRoomManagementRequest.updateNormalUser(normal_user);
+//        } else if (creator instanceof AdminUser admin_user) {
+//
+//        } else {
+//            throw new RuntimeException("Invalid user type");
+//        }
     }
 
     @RequestMapping(value = "/chatroomslist")

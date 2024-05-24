@@ -32,11 +32,50 @@
 <main class="main">
     <aside class="aside-info">
         <span th:text="${session.user.email}"></span>
+
+        <form id="chatroom-form" th:action="@{/chatroom/createchatroom}" method="post">
+            <div>
+                <input type="hidden" id="email" name="email" th:value="${session.user.email}">
+                <input type="hidden" id="create_date" name="create_date">
+                <input type="hidden" id="is_admin" name="is_admin" th:value="${true}">
+            </div>
+            <div>
+                <label for="chat_room_name">Chat Room Name:</label>
+                <input type="text" id="chat_room_name" name="chat_room_name" required>
+            </div>
+            <div>
+                <label for="description">Description:</label>
+                <input type="text" id="description" name="description" required>
+            </div>
+
+            <div>
+                <label for="expire_date">Expire Date:</label>
+                <input type="datetime-local" id="expire_date" name="expire_date" required>
+            </div>
+            <div>
+                <button type="submit">Create Chat Room</button>
+            </div>
+        </form>
+
     </aside>
     <section class="main-section">Room list</section>
 </main>
 
 <footer class="footer">Java Full-Stack Chatter 2024 | CHEN Zikang HOU Longhao</footer>
 </body>
+<script>
+    document.getElementById('chatroom-form').addEventListener('submit', function(event) {
+        const createDateInput = document.getElementById('create_date');
+        const expireDateInput = document.getElementById('expire_date');
+        const now = new Date();
+        const formattedCreateDate = now.toISOString().split('.')[0]; // Format to 'YYYY-MM-DDTHH:MM:SS'
+        createDateInput.value = formattedCreateDate;
+        const expireDateValue = new Date(expireDateInput.value);
+        if (expireDateValue <= now) {
+            alert("Expire date must be after the current date and time.");
+            event.preventDefault();
+        }
+    });
+</script>
 <script src="https://cdn.metroui.org.ua/current/metro.js"></script>
 </html>
