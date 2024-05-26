@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -80,6 +81,7 @@ public class UserController {
     public String signin(String email, String password, Boolean is_admin, HttpSession session) {
         session.removeAttribute("email");
         session.removeAttribute("error");
+        session.removeAttribute("created_rooms");
         if (is_admin != null && is_admin) {
             try {
                 Long admin_user_id = userAndRoomManagementRequest.findAdminUserIdByEmail(email);
@@ -94,6 +96,10 @@ public class UserController {
                         if (admin_user.getIs_new()){
                             return "redirect:/page_first_login";
                         }
+                        List<ChatRoom> created_rooms=userAndRoomManagementRequest.getCreatedChatRoomsByAdminID(admin_user_id);
+                        session.setAttribute("created_rooms", created_rooms);
+                        List<ChatRoom> invited_rooms=userAndRoomManagementRequest.getInvitedChatRoomsByAdminID(admin_user_id);
+                        session.setAttribute("invited_rooms", invited_rooms);
                         return "redirect:/page_admin";
                     } else {
                         int attempts = admin_user.getFailed_attempt() + 1;
@@ -121,6 +127,10 @@ public class UserController {
                         if (normal_user.getIs_new()){
                             return "redirect:/page_first_login";
                         }
+                        List<ChatRoom> created_rooms=userAndRoomManagementRequest.getCreatedChatRoomsByNormalID(normal_user_id);
+                        session.setAttribute("created_rooms", created_rooms);
+                        List<ChatRoom> invited_rooms=userAndRoomManagementRequest.getInvitedChatRoomsByNormalID(normal_user_id);
+                        session.setAttribute("invited_rooms", invited_rooms);
                         return "redirect:/page_normaluser";
                     } else {
                         int attempts = normal_user.getFailed_attempt() + 1;

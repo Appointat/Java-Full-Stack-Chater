@@ -131,22 +131,21 @@ public class ChatRoom {
     }
 
     // Add a user to the chat room, and the user must be either an AdminUser or a NormalUser
-    public void addUser(User user) {
+    public String addUser(User user) {
         if (user instanceof AdminUser) {
             if (this.admin_users_list.contains(user)) {
-                System.out.println("User already exists in the chat room");
-                return;
+                return("User already exists in the chat room");
             }
             this.admin_users_list.add((AdminUser) user);
         } else if (user instanceof NormalUser) {
             if (this.normal_users_list.contains(user)) {
-                System.out.println("User already exists in the chat room");
-                return;
+                return("User already exists in the chat room");
             }
             this.normal_users_list.add((NormalUser) user);
         } else {
-            System.out.println("User must be either AdminUser or NormalUser");
+            return("User must be either AdminUser or NormalUser");
         }
+        return("success");
     }
 
     // Remove a user from the chat room, and the user must be either an AdminUser or a NormalUser

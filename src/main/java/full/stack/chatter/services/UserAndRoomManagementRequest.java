@@ -9,6 +9,7 @@ import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -133,5 +134,40 @@ public class UserAndRoomManagementRequest {
     public ChatRoom getOneChatRoom(Long id) {
         return em.find(ChatRoom.class, id);
     }
+
+    public List<ChatRoom> getCreatedChatRoomsByAdminID(Long id) {
+        TypedQuery<ChatRoom> q = em.createQuery("select cr from ChatRoom cr where cr.admin_creator.id = :adminId", ChatRoom.class);
+        q.setParameter("adminId", id);
+        return q.getResultList();
+    }
+
+    public List<ChatRoom> getCreatedChatRoomsByNormalID(Long id) {
+        TypedQuery<ChatRoom> q = em.createQuery("select cr from ChatRoom cr where cr.normal_creator.id = :normalId", ChatRoom.class);
+        q.setParameter("normalId", id);
+        return q.getResultList();
+    }
+
+    public List<ChatRoom> getInvitedChatRoomsByAdminID(Long id) {
+        String jpql = "SELECT r FROM AdminUser a JOIN a.admin_invited_chat_rooms r WHERE a.id = :adminId";
+        TypedQuery<Long> q = em.createQuery(jpql, Long.class);
+        q.setParameter("adminId", id);
+        List<ChatRoom> chatRooms=new ArrayList<>();
+        for (Long i: q.getResultList()) {
+            chatRooms.add(this.getOneChatRoom(i));
+        }
+        return chatRooms;
+    }
+
+    public List<ChatRoom> getInvitedChatRoomsByNormalID(Long id) {
+        String jpql = "SELECT r FROM NormalUser a JOIN a.normal_invited_chat_rooms r WHERE a.id = :normalId";
+        TypedQuery<Long> q = em.createQuery(jpql, Long.class);
+        q.setParameter("normalId", id);
+        List<ChatRoom> chatRooms=new ArrayList<>();
+        for (Long i: q.getResultList()) {
+            chatRooms.add(this.getOneChatRoom(i));
+        }
+        return chatRooms;
+    }
+
 
 }

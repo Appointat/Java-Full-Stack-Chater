@@ -58,7 +58,76 @@
         </form>
 
     </aside>
-    <section class="main-section">Room list</section>
+
+<!--    Room List-->
+    <section class="main-section">
+        <h2>Created rooms</h2>
+        <table class="table" id="created-rooms">
+            <tr class="table_header" >
+                <td class="room-id"> ID </td>
+                <td class="title">Title</td>
+                <td class="description"> Description </td>
+                <td class="created-date">Created Date</td>
+                <td class="expired-ate">Expire Date</td>
+                <td>Action</td>
+            </tr>
+            <tr th:each="rooms:${session.created_rooms}" class="data-row">
+                <td>
+                    <span th:text="${rooms.getId()}"></span>
+                </td>
+                <td>
+                    <span th:text="${rooms.getTitle()}"></span>
+                </td>
+                <td>
+                    <span th:text="${rooms.getDescription()}"></span>
+                </td>
+                <td>
+                    <span th:text="${rooms.getCreatedDate()}"></span>
+                </td>
+                <td>
+                    <span th:text="${rooms.getExpiredDate()}"></span>
+                </td>
+
+                <td>
+                    <a class="btn" href="javascript:;" >Enter</a>
+                    <a class="btn" href="javascript:;" >Delete</a>
+                    <a class="btn" th:href="@{/chatroom/invite(id=${rooms.getId()})}">Invite</a>
+                </td>
+            </tr>
+        </table>
+        <h2>Invited rooms</h2>
+        <table class="table" id="invited-rooms">
+            <tr class="table_header" >
+                <td class="room-id"> ID </td>
+                <td class="title">Title</td>
+                <td class="description"> Description </td>
+                <td class="created-date">Created Date</td>
+                <td class="expired-ate">Expire Date</td>
+                <td>Action</td>
+            </tr>
+            <tr th:each="invited_rooms:${session.invited_rooms}" class="data-row">
+                <td>
+                    <span th:text="${invited_rooms.getId()}"></span>
+                </td>
+                <td>
+                    <span th:text="${invited_rooms.getTitle()}"></span>
+                </td>
+                <td>
+                    <span th:text="${invited_rooms.getDescription()}"></span>
+                </td>
+                <td>
+                    <span th:text="${invited_rooms.getCreatedDate()}"></span>
+                </td>
+                <td>
+                    <span th:text="${invited_rooms.getExpiredDate()}"></span>
+                </td>
+
+                <td>
+                    <a class="btn" href="javascript:;" >Enter</a>
+                </td>
+            </tr>
+        </table>
+    </section>
 </main>
 
 <footer class="footer">Java Full-Stack Chatter 2024 | CHEN Zikang HOU Longhao</footer>

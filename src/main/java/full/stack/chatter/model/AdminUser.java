@@ -1,7 +1,9 @@
 package full.stack.chatter.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "AdminUsers")
@@ -27,6 +29,73 @@ public class AdminUser extends User {
 
     public Boolean getIsUserExisted(String email) { // TODO: implement this method
         return null;
+    }
+
+
+    @ElementCollection
+    @CollectionTable(name = "admin_created_chat_rooms", joinColumns = @JoinColumn(name = "id"))
+    @Column(name = "admin_created_chat_room_id")
+    protected List<Long> admin_created_chat_rooms = new ArrayList<>();
+
+    @ElementCollection
+    @CollectionTable(name = "admin_invited_chat_rooms", joinColumns = @JoinColumn(name = "id"))
+    @Column(name = "admin_invited_chat_room_id")
+    protected List<Long> admin_invited_chat_rooms = new ArrayList<>();
+
+
+    public List<Long> getCreatedChatRooms() {
+        return !this.admin_created_chat_rooms.isEmpty() ? this.admin_created_chat_rooms : null;
+    }
+
+    public List<Long> getInvitedChatRooms() {
+        return !this.admin_invited_chat_rooms.isEmpty() ? this.admin_invited_chat_rooms : null;
+    }
+
+    public void setUser(String first_name, String last_name, String email, String password, Boolean is_active) {
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.email = email;
+        this.password = password;
+        this.is_active = is_active;
+        // TODO: used for test of postgreSQL
+        this.admin_created_chat_rooms = new ArrayList<>();
+        this.admin_created_chat_rooms.add(1L);
+        this.admin_created_chat_rooms.add(2L);
+        this.admin_invited_chat_rooms = new ArrayList<>();
+        this.admin_invited_chat_rooms.add(3L);
+        this.admin_invited_chat_rooms.add(4L);
+    }
+
+    public void addCreatedChatRoom(Long chat_room_id) {
+        if (this.admin_created_chat_rooms.contains(chat_room_id)) {
+            System.out.println("Chat room already created by this user");
+            return;
+        }
+        this.admin_created_chat_rooms.add(chat_room_id);
+    }
+
+    public void removeCreatedChatRoom(Long chat_room_id) {
+        if (!this.admin_created_chat_rooms.contains(chat_room_id)) {
+            System.out.println("Chat room not created by this user");
+            return;
+        }
+        this.admin_created_chat_rooms.remove(chat_room_id);
+    }
+
+    public void addInvitedChatRoom(Long chat_room_id) {
+        if (this.admin_invited_chat_rooms.contains(chat_room_id)) {
+            System.out.println("Chat room already invited to this user");
+            return;
+        }
+        this.admin_invited_chat_rooms.add(chat_room_id);
+    }
+
+    public void removeInvitedChatRoom(Long chat_room_id) {
+        if (!this.admin_invited_chat_rooms.contains(chat_room_id)) {
+            System.out.println("Chat room not invited to this user");
+            return;
+        }
+        this.admin_invited_chat_rooms.remove(chat_room_id);
     }
 
 }
