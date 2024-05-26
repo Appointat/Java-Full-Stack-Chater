@@ -103,7 +103,36 @@ public class ChatRoomController {
         return "redirect:/page_invite";
     }
 
+    @RequestMapping(value="deleteroom")
+    public String deleteroom(@RequestParam Long id, @RequestParam Boolean is_admin, @RequestParam String email, HttpSession session){
+        userAndRoomManagementRequest.removeChatRoom(userAndRoomManagementRequest.getOneChatRoom(id));
+        if (is_admin != null && is_admin){
+            List<ChatRoom> created_rooms=userAndRoomManagementRequest.getCreatedChatRoomsByAdminID(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+            session.setAttribute("created_rooms", created_rooms);
+            return "redirect:/page_admin";
+        }else{
+            List<ChatRoom> created_rooms=userAndRoomManagementRequest.getCreatedChatRoomsByNormalID(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+            session.setAttribute("created_rooms", created_rooms);
+            return "redirect:/page_normaluser";
+        }
 
+    }
+
+    @RequestMapping(value="quitroom")
+    public String quitroom(@RequestParam Long id, @RequestParam Boolean is_admin, @RequestParam String email, HttpSession session){
+        if (is_admin != null && is_admin){
+            userAndRoomManagementRequest.quitChatRoom(userAndRoomManagementRequest.getOneChatRoom(id), true,email);
+            List<ChatRoom> invited_rooms=userAndRoomManagementRequest.getInvitedChatRoomsByAdminID(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+            session.setAttribute("invited_rooms", invited_rooms);
+            return "redirect:/page_admin";
+        }else{
+            userAndRoomManagementRequest.quitChatRoom(userAndRoomManagementRequest.getOneChatRoom(id), false,email);
+            List<ChatRoom> invited_rooms=userAndRoomManagementRequest.getInvitedChatRoomsByNormalID(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+            session.setAttribute("invited_rooms", invited_rooms);
+            return "redirect:/page_normaluser";
+        }
+
+    }
 
     @RequestMapping(value = "/chatroomslist")
     public List<ChatRoom> getChatRooms() {

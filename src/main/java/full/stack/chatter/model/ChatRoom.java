@@ -80,6 +80,10 @@ public class ChatRoom {
         return this.admin_creator != null ? this.admin_creator : this.normal_creator;
     }
 
+    public NormalUser getNormal_creator() {return this.normal_creator;}
+
+    public AdminUser getAdmin_creator() {return this.admin_creator;}
+
     public int getDuration() {
         return this.duration;
     }
