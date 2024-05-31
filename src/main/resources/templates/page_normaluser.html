@@ -81,15 +81,30 @@
                 </td>
 
                 <td>
-                    <a class="room-btn" href="javascript:;" >Enter</a>
+                    <a class="room-btn" href="javascript:;" onclick="enterChatRoom(this.getAttribute('room-id'), this.getAttribute('room-expired-date'))"
+                       th:room-expired-date="${rooms.getExpiredDate()}"
+                       th:room-id="${rooms.getId()}">Enter</a>
                     <a class="room-btn" href="javascript:;" th:room-id="${rooms.getId()}" th:onclick="|deleteRoom(this.getAttribute('room-id'))|">Delete</a>
                     <a class="room-btn" th:href="@{/chatroom/invite(id=${rooms.getId()})}">Invite</a>
                 </td>
             </tr>
             <script>
+                function enterChatRoom(roomId, roomExpiredDate) {
+                    // Check if the chat room has expired
+                    const now = new Date();
+                    const expireDate = new Date(roomExpiredDate);
+                    const isExpired = now > expireDate;
+
+                    if (isExpired) {
+                        alert("This chat room has expired.");
+                    } else {
+                        window.location.href = `/chatroom/${roomId}`;
+                    }
+                }
+
                 function deleteRoom(id){
                     if(window.confirm('Are you sure to delete this room ? ')){
-                        var isAdmin = false;
+                        const isAdmin = false;
                         const email = document.getElementById('login_email').innerText;
                         location.href='[[@{/chatroom/deleteroom?id=}]]'+id+ '&is_admin=' + isAdmin +'&email='+ email;
                     }

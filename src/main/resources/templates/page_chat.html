@@ -204,14 +204,11 @@
 <aside>Aside - List of Chat Rooms and Controls</aside>
 <footer>Footer - Java Full-Stack Chatter 2024 | CHEN Zikang HOU Longhao</footer>
 
-<script>
+<script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", function () {
-        // 这个path是要改的，只要和后端的registerWebSocketHandlers里面建立的websocket的连接一致就行
-        // 实际上，我们需要定义，谁是发消息的人，谁是收消息的人。保证A和B在同一个chatroom里面是重要的。
-        // const user_name = localStorage.getItem('username'); // user name
-        const user_name = "Adam";
-        // const chat_room_id = localStorage.getItem('chat_room_id'); // chat room id
-        const ws_url = 'ws://localhost:8080/chatroom/' + 100;
+        const user_name = "Adam"; // TODO: replace with the actual user name
+        const chat_room_id = /*[[${chat_room_id}]]*/;
+        const ws_url = 'ws://localhost:8080/chatroom/' + chat_room_id;
         let websocket = new WebSocket(ws_url);
 
         document.getElementById('messageInput').focus();

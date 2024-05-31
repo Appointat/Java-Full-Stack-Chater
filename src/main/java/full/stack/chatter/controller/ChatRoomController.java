@@ -5,11 +5,13 @@ import full.stack.chatter.model.ChatRoom;
 import full.stack.chatter.model.NormalUser;
 import full.stack.chatter.model.User;
 import full.stack.chatter.services.UserAndRoomManagementRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -21,6 +23,12 @@ import java.util.List;
 public class ChatRoomController {
     @Resource
     private UserAndRoomManagementRequest userAndRoomManagementRequest;
+
+    @GetMapping("/{roomId}")
+    public String getChatRoom(@PathVariable Long roomId, Model model) {
+        model.addAttribute("chat_room_id", roomId);
+        return "page_chat";
+    }
 
     @RequestMapping(value = "/createchatroom")
     public String createChatRoom(String email, Boolean is_admin, String chat_room_name, String description, HttpSession session,

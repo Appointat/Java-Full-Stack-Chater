@@ -25,7 +25,6 @@
             <li><a class="nav-btn" href="/page_edit">Edit my Account</a></li>
             <li><a class="nav-btn" href="/page_admin_create">Create an Account</a></li>
             <li><a class="nav-btn" href="/user/userlist">User List</a></li>
-            <li><a class="nav-btn" href="/chatroom">Create A Chat Room</a></li>
         </ul>
     </nav>
 </header>
@@ -90,17 +89,33 @@
                 </td>
 
                 <td>
-                    <a class="room-btn" href="javascript:;" >Enter</a>
+                    <a class="room-btn" href="javascript:;" onclick="enterChatRoom(this.getAttribute('room-id'), this.getAttribute('room-expired-date'))"
+                       th:room-expired-date="${rooms.getExpiredDate()}"
+                       th:room-id="${rooms.getId()}">Enter</a>
                     <a class="room-btn" href="javascript:;" th:room-id="${rooms.getId()}" th:onclick="|deleteRoom(this.getAttribute('room-id'))|">Delete</a>
                     <a class="room-btn" th:href="@{/chatroom/invite(id=${rooms.getId()})}">Invite</a>
                 </td>
             </tr>
             <script>
-                function deleteRoom(id){
+
+                function enterChatRoom(roomId, roomExpiredDate) {
+                    // Check if the chat room has expired
+                    const now = new Date();
+                    const expireDate = new Date(roomExpiredDate);
+                    const isExpired = now > expireDate;
+
+                    if (isExpired) {
+                        alert("This chat room has expired.");
+                    } else {
+                        window.location.href = `/chatroom/${roomId}`;
+                    }
+                }
+
+                function deleteRoom(roomId) {
                     if(window.confirm('Are you sure to delete this room ? ')){
-                        var isAdmin = true;
+                        const isAdmin = true;
                         const email = document.getElementById('login_email').innerText;
-                        location.href='[[@{/chatroom/deleteroom?id=}]]'+id+ '&is_admin=' + isAdmin +'&email='+ email;
+                        location.href = '[[@{/chatroom/deleteroom?id=}]]' + roomId + '&is_admin=' + isAdmin + '&email=' + email;
                     }
                 }
             </script>
