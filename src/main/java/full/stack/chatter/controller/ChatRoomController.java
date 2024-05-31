@@ -35,8 +35,9 @@ public class ChatRoomController {
                                  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime create_date,
                                  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime expire_date) {
         session.removeAttribute("created_rooms");
+
         // The input `creator` can be either an admin user or a normal user
-        if(is_admin){
+        if (is_admin) {
             // Set/create a chat room
             ChatRoom chat_room = new ChatRoom();
             AdminUser creator=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
@@ -49,7 +50,7 @@ public class ChatRoomController {
             List<ChatRoom> created_rooms=userAndRoomManagementRequest.getCreatedChatRoomsByAdminID(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
             session.setAttribute("created_rooms", created_rooms);
             return"redirect:/page_admin";
-        }else{
+        } else {
             // Set/create a chat room
             ChatRoom chat_room = new ChatRoom();
             NormalUser creator=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
