@@ -12,14 +12,17 @@
 
     <link rel="stylesheet" href="/css/page_user.css" />
 </head>
+
 <body>
+
+
 <header class="header">
+
     <h1>User Dashboard</h1>
     <a class="logout-btn" href="/signin">Logout</a>
     <nav class="main-nav">
         <ul class="main-nav-list">
             <li><a class="nav-btn" href="/page_edit">Edit my account</a></li>
-            <li><a class="nav-btn" href="/chatroom">Create A Chat Room</a></li>
         </ul>
     </nav>
 </header>
@@ -51,6 +54,7 @@
             </div>
         </form>
     </aside>
+
     <!--    Room List-->
     <section class="main-section">
         <h2>Created rooms</h2>
@@ -110,11 +114,12 @@
                     }
                 }
             </script>
+
         </table>
         <h2>Invited rooms</h2>
         <table class="table" id="invited-rooms">
             <tr class="table_header" >
-                <td class="room-id"> ID </td>
+                <td class="room-id">ID</td>
                 <td class="title">Title</td>
                 <td class="description"> Description </td>
                 <td class="created-date">Created Date</td>
@@ -146,7 +151,7 @@
             <script>
                 function quitRoom(id){
                     if(window.confirm('Are you sure to quit this room ? ')){
-                        var isAdmin = false;
+                        const isAdmin = false;
                         const email = document.getElementById('login_email').innerText;
                         location.href='[[@{/chatroom/quitroom?id=}]]'+id+ '&is_admin=' + isAdmin +'&email='+ email;
                     }
