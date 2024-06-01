@@ -86,7 +86,6 @@ public class UserController {
             try {
                 Long admin_user_id = userAndRoomManagementRequest.findAdminUserIdByEmail(email);
                 AdminUser admin_user = userAndRoomManagementRequest.getOneAdminUser(admin_user_id);
-                System.out.println(admin_user);
                 if (admin_user != null && admin_user.getIsActive()) {
                     if (admin_user.getPassword().equals(password)) {
                         admin_user.setFailed_attempt(0);

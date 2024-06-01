@@ -1,0 +1,61 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.signin-container {
+    background-color: #f7f7f7;
+    padding: 20px;
+    border-radius: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.btn-primary:hover {
+    background-color: #fdf2e9;
+}
+
+.box{
+    position: relative;
+}
+
+.conceal{
+    position: absolute;
+    top: 30px;
+    right: 5px;
+    width: 30px;
+    height: 30px;
+    background-image: url(/src/components/styles/img/eye-off-outline.svg);
+    background-size: 100% 100%;
+    cursor: pointer;
+}
+.conceal.hide{
+    background-image: url(/src/components/styles/img/eye-outline.svg);
+}
+.cartoon22{
+    position:absolute;
+    top: 150px;
+    right: -100px;
+    width: 100px;
+    height: 100px;
+    background-size: 100% 100%;
+    background-image: url(https://s1.hdslb.com/bfs/seed/jinkela/short/mini-login-v2/img/22_open.4ea5f239.png);
+
+}
+.cartoon22.hide{
+    background-image: url(https://s1.hdslb.com/bfs/seed/jinkela/short/mini-login-v2/img/22_close.9382a5a8.png);
+}
+.cartoon33{
+    position:absolute;
+    top: 150px;
+    left: -100px;
+    width: 100px;
+    height: 100px;
+    background-size: 100% 100%;
+    background-image: url(https://s1.hdslb.com/bfs/seed/jinkela/short/mini-login-v2/img/33_open.f7d7f655.png);
+}
+.cartoon33.hide{
+    background-image: url(https://s1.hdslb.com/bfs/seed/jinkela/short/mini-login-v2/img/33_close.a8c18fc8.png);
+}
