@@ -24,9 +24,9 @@ public class ChatRoomController {
     @Resource
     private UserAndRoomManagementRequest userAndRoomManagementRequest;
 
-    @GetMapping("/{roomId}")
-    public String getChatRoom(@PathVariable Long roomId, Model model) {
-        model.addAttribute("chat_room_id", roomId);
+    @GetMapping("/{chat_room_id}")
+    public String getChatRoom(@PathVariable Long chat_room_id, Model model) {
+        model.addAttribute("chat_room_id", chat_room_id);
         return "page_chat";
     }
 

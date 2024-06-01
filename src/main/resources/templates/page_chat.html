@@ -207,16 +207,14 @@
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", function () {
         const user_name = "Adam"; // TODO: replace with the actual user name
-        const chat_room_id = /*[[${chat_room_id}]]*/;
-        const ws_url = 'ws://localhost:8080/chatroom/' + chat_room_id;
+        const chat_room_id = /*[[${chat_room_id}]]*/ 1;
+        const ws_url = 'ws://localhost:8080/ws/chatroom/' + chat_room_id;
         let websocket;
 
         try {
             websocket = new WebSocket(ws_url);
         } catch (error) {
-            console.error('WebSocket error:', error);
-            writeToScreen('Error: Could not connect to WebSocket', 'system_message');
-            return;
+            console.log('Error connecting to:', ws_url);
         }
 
         document.getElementById('messageInput').focus();
@@ -232,18 +230,19 @@
 
         websocket.onmessage = function (event) { // once a message is received
             try {
+                console.log('data:', event.data);
                 const message_json = JSON.parse(event.data);
                 const message_type = message_json.user === user_name ? 'sent' : 'received';
                 writeToScreen(message_json.message, message_type);
             } catch (error) {
                 console.error('Error parsing message:', error);
-                writeToScreen('Error: Invalid message format', 'system_message');
+                // writeToScreen('Error: Invalid message format', 'system_message');
             }
         };
 
         websocket.onerror = function (event) { // once an error occurs
             console.error('WebSocket error:', event);
-            writeToScreen('Error: WebSocket error occurred', 'system_message');
+            writeToScreen('Error: Could not connect to the websocket server', 'system_message');
         };
 
         websocket.onclose = function () { // once the connection is closed (optional)
@@ -251,11 +250,13 @@
         };
 
         function sendMessage() {
+            // Get the chat message from the input field
             const message = document.getElementById('messageInput').value.trim();
             if (!message) {
                 return;
             }
 
+            // Send the message to the websocket server
             const message_json = {
                 "user": user_name,
                 "message": message
@@ -267,6 +268,7 @@
                 writeToScreen('Error: Could not send message', 'system_message');
             }
 
+            // Clear the input field
             document.getElementById('messageInput').value = '';
         }
 
