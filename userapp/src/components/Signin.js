@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
 import './styles/Signin.css'
 import axios from "axios";
 
@@ -11,6 +11,7 @@ const Signin=()=>{
     const navigate = useNavigate();
     const [passwordType, setPasswordType] = useState('password');
     const [buttonClass, setButtonClass] = useState('');
+    const [cartoonClass, setCartoonClass] = useState('');
 
 
     const handleSignin=async(event)=> {
@@ -35,7 +36,7 @@ const Signin=()=>{
                 if (error.response && error.response.status === 401) {
                     setError(error.response.data);
                 } else {
-                    setError("Sign in failed. Please try again.");
+                    setError("Signin failed. Please try again.");
                 }
             })
 
@@ -45,9 +46,11 @@ const Signin=()=>{
         if (passwordType === 'password') {
             setPasswordType('text');
             setButtonClass('hide');
+            setCartoonClass('hide')
         } else {
             setPasswordType('password');
             setButtonClass('');
+            setCartoonClass('')
         }
     };
 
@@ -55,8 +58,8 @@ const Signin=()=>{
     return(
         <div className="signin-container mt-3">
             <h2>Sign In</h2>
-            <div className="cartoon22" id="cartoon22"></div>
-            <div className="cartoon33" id="cartoon33"></div>
+            <div className={`cartoon22 ${cartoonClass}`} id="cartoon22"></div>
+            <div className={`cartoon33 ${cartoonClass}`} id="cartoon33"></div>
 
             <form onSubmit={handleSignin}>
                 <div className="mb-3 mt-3">
@@ -98,7 +101,7 @@ const Signin=()=>{
                 <button type="submit" className="btn btn-primary">Sign In</button>
                 <div className="mt-3">
                     <a href="/forget">forgot password?</a>
-                    <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+                    <p>Don't have an account? <Link to="/signup">Sign Up</Link></p>
                 </div>
             </form>
         </div>

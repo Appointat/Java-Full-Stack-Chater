@@ -1,6 +1,7 @@
 package full.stack.chatter.controller;
 
 
+import full.stack.chatter.dto.SignupRequest;
 import full.stack.chatter.model.AdminUser;
 import full.stack.chatter.model.NormalUser;
 import full.stack.chatter.model.User;
@@ -75,7 +76,23 @@ public class AppController {
         }
     }
 
-
+    @PostMapping("signup")
+    @ResponseBody
+    public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest){
+        try {
+            if (signupRequest.getIs_admin() != null && signupRequest.getIs_admin()) {
+                AdminUser user = new AdminUser(signupRequest.getFirstname(), signupRequest.getLastname(), signupRequest.getEmail(), signupRequest.getPassword());
+                userAndRoomManagementRequest.addAdminUser(user);
+            } else {
+                NormalUser user = new NormalUser(signupRequest.getFirstname(), signupRequest.getLastname(), signupRequest.getEmail(), signupRequest.getPassword());
+                userAndRoomManagementRequest.addNormalUser(user);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("account existed");
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body("success");
+    }
 
 
 
