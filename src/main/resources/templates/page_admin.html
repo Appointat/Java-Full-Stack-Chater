@@ -149,7 +149,9 @@
                 </td>
 
                 <td>
-                    <a class="room-btn" href="javascript:;" >Enter</a>
+                    <a class="room-btn" href="javascript:;" onclick="enterChatRoom(this.getAttribute('room-id'), this.getAttribute('room-expired-date'))"
+                       th:room-expired-date="${invited_rooms.getExpiredDate()}"
+                       th:room-id="${invited_rooms.getId()}">Enter</a>
                     <a class="room-btn" href="javascript:;" th:room-id="${invited_rooms.getId()}" th:onclick="|quitRoom(this.getAttribute('room-id'))|">Quit</a>
                 </td>
             </tr>
