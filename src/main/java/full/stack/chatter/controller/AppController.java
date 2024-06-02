@@ -1,8 +1,10 @@
 package full.stack.chatter.controller;
 
 
+import full.stack.chatter.dto.CreateroomRequest;
 import full.stack.chatter.dto.SignupRequest;
 import full.stack.chatter.model.AdminUser;
+import full.stack.chatter.model.ChatRoom;
 import full.stack.chatter.model.NormalUser;
 import full.stack.chatter.model.User;
 import full.stack.chatter.services.UserAndRoomManagementRequest;
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("app")
@@ -23,7 +27,6 @@ public class AppController {
     @ResponseBody
     public ResponseEntity<?> signin(@RequestParam String email, @RequestParam String password, @RequestParam Boolean is_admin) {
         try {
-            System.out.println("111");
             if (is_admin != null && is_admin) {
                 //search for admin user by email
                 Long admin_user_id = userAndRoomManagementRequest.findAdminUserIdByEmail(email);
@@ -50,7 +53,6 @@ public class AppController {
                         return ResponseEntity.ok(normal_user);
                     } else {
                         handlePasswordWrong(normal_user);
-                        System.out.println("123");
                         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("password incorrect");
                     }
                 }else{
@@ -94,8 +96,100 @@ public class AppController {
         return ResponseEntity.status(HttpStatus.CREATED).body("success");
     }
 
+    @PostMapping("createroom")
+    @ResponseBody
+    public ResponseEntity<?> createroom(@RequestBody CreateroomRequest createroomRequest){
+        ChatRoom chat_room = new ChatRoom();
+        if(createroomRequest.getIs_admin()){
+            AdminUser creator=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(createroomRequest.getEmail()));
+            chat_room.setChatRoom(createroomRequest.getTitle(), createroomRequest.getDescription(), creator, createroomRequest.getCreatedate(), createroomRequest.getExpiredate());
+            userAndRoomManagementRequest.addChatRoom(chat_room);
+            creator.addCreatedChatRoom(chat_room.getId());
+            userAndRoomManagementRequest.updateAdminUser(creator);
+        }else{
+            NormalUser creator=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(createroomRequest.getEmail()));
+            chat_room.setChatRoom(createroomRequest.getTitle(), createroomRequest.getDescription(), creator, createroomRequest.getCreatedate(), createroomRequest.getExpiredate());
+            userAndRoomManagementRequest.addChatRoom(chat_room);
+            creator.addCreatedChatRoom(chat_room.getId());
+            userAndRoomManagementRequest.updateNormalUser(creator);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body("success");
+    }
 
+    @GetMapping("createdrooms")
+    @ResponseBody
+    public ResponseEntity<List<ChatRoom>> createdrooms(@RequestParam String email, @RequestParam Boolean is_admin){
+        List<ChatRoom> created_rooms;
+        if(is_admin){
+            created_rooms=userAndRoomManagementRequest.getCreatedChatRoomsByAdminID(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+        }else{
+            created_rooms=userAndRoomManagementRequest.getCreatedChatRoomsByNormalID(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+        }
+        return  ResponseEntity.ok(created_rooms);
+    }
 
+    @GetMapping("invitedrooms")
+    @ResponseBody
+    public ResponseEntity<List<ChatRoom>> invitedrooms(@RequestParam String email, @RequestParam Boolean is_admin){
+        List<ChatRoom> invited_rooms;
+        if(is_admin){
+            invited_rooms=userAndRoomManagementRequest.getInvitedChatRoomsByAdminID(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+        }else{
+            invited_rooms=userAndRoomManagementRequest.getInvitedChatRoomsByNormalID(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+        }
+        return  ResponseEntity.ok(invited_rooms);
+    }
 
+    @DeleteMapping("/deleteroom/{roomId}")
+    @ResponseBody
+    public ResponseEntity<?> deleteroom(@PathVariable Long roomId){
+        userAndRoomManagementRequest.removeChatRoom(userAndRoomManagementRequest.getOneChatRoom(roomId));
+        return ResponseEntity.ok("Room deleted");
+    }
 
+    @PutMapping("/invite/{roomId}/{email}/{is_admin}/{invitor_email}/{invitor_admin}")
+    @ResponseBody
+    public ResponseEntity<?> invite(@PathVariable Long roomId, @PathVariable String email,@PathVariable Boolean is_admin,@PathVariable String invitor_email,@PathVariable Boolean invitor_admin){
+        if(is_admin) {
+            if (email.equals(invitor_email) && invitor_admin) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Cannot invite yourself");
+            } else {
+                try {
+                    AdminUser admin_user = userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+                    ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(roomId);
+                    String notice = chat_room.addUser(admin_user);
+                    userAndRoomManagementRequest.updateChatRoom(chat_room);
+                    admin_user.addInvitedChatRoom(roomId);
+                    userAndRoomManagementRequest.updateAdminUser(admin_user);
+                    if (notice.equals("success")) {
+                        return ResponseEntity.ok().build();
+                    } else {
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(notice);
+                    }
+                }catch (Exception e) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User does not exist");
+                }
+            }
+        }else{
+            if (email.equals(invitor_email) && !invitor_admin) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Cannot invite yourself");
+            }else{
+                try {
+                    NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+                    ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(roomId);
+                    String notice = chat_room.addUser(normal_user);
+                    userAndRoomManagementRequest.updateChatRoom(chat_room);
+                    normal_user.addInvitedChatRoom(roomId);
+                    userAndRoomManagementRequest.updateNormalUser(normal_user);
+                    if (notice.equals("success")) {
+                        return ResponseEntity.ok().build();
+                    } else {
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(notice);
+                    }
+                }catch (Exception e) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User does not exist");
+                }
+            }
+        }
+    }
 }

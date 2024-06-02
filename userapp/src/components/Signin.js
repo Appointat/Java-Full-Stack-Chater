@@ -26,6 +26,7 @@ const Signin=()=>{
             .then(res=> {
                 const User=res.data;
                 sessionStorage.setItem('user',JSON.stringify(User));
+                sessionStorage.setItem('is_admin',String(is_admin));
                 if(is_admin){
                     navigate('/admin');
                 }else{
@@ -58,9 +59,6 @@ const Signin=()=>{
     return(
         <div className="signin-container mt-3">
             <h2>Sign In</h2>
-            <div className={`cartoon22 ${cartoonClass}`} id="cartoon22"></div>
-            <div className={`cartoon33 ${cartoonClass}`} id="cartoon33"></div>
-
             <form onSubmit={handleSignin}>
                 <div className="mb-3 mt-3">
                     <label htmlFor="email">Email:</label>
@@ -87,6 +85,8 @@ const Signin=()=>{
                            required
                     ></input>
                     <div className={`conceal ${buttonClass}`} onClick={togglePasswordVisibility}></div>
+                    <div className={`cartoon22 ${cartoonClass}`} id="cartoon22"></div>
+                    <div className={`cartoon33 ${cartoonClass}`} id="cartoon33"></div>
                 </div>
                 <div className="mb-3">
                     <label htmlFor="admin">Admin:</label>
