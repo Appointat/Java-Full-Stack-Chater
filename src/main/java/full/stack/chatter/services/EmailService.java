@@ -16,6 +16,10 @@ public class EmailService {
         message.setTo(email);
         message.setSubject("New User Confirmation");
         message.setText("Your password: " + password + " \nPlease change after Sign In");
-        mailSender.send(message);
+        try {
+            mailSender.send(message);
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
     }
 }

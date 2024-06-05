@@ -239,7 +239,7 @@ public class UserController {
                 return"redirect:/signin";
             } catch (Exception e) {
                 e.printStackTrace();
-                session.setAttribute("email","user not exist");
+                session.setAttribute("email","user not exist or sending failed");
                 return"redirect:/forget";
             }
         }else{
@@ -249,7 +249,7 @@ public class UserController {
                 return"redirect:/signin";
             } catch (Exception e) {
                 e.printStackTrace();
-                session.setAttribute("email","user not exist");
+                session.setAttribute("email","user not exist or sending failed");
                 return"redirect:/forget";
             }
         }

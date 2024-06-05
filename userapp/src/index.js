@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import Admin from './components/Admin'
-import Normal from './components/Normal'
+import Rooms from './components/Rooms'
+import Forgot from './components/Forgot';
 import Signup from './components/Signup'
 import Invite from './components/Invite'
 import App from './App';
@@ -9,15 +9,16 @@ import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
+import ReportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
         <Routes>
             <Route path="/signup" element={<Signup />} />
-            <Route path="/admin" element={<Admin />} />
+            <Route path="/rooms" element={<Rooms />} />
             <Route path="/invite" element={<Invite />} />
-            <Route path="/normal" element={<Normal />} />
+            <Route path="/forgot" element={<Forgot />} />
             <Route path="/" element={<App />} />
         </Routes>
     </BrowserRouter>

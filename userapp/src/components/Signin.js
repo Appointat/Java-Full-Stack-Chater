@@ -27,10 +27,12 @@ const Signin=()=>{
                 const User=res.data;
                 sessionStorage.setItem('user',JSON.stringify(User));
                 sessionStorage.setItem('is_admin',String(is_admin));
-                if(is_admin){
-                    navigate('/admin');
+                console.log(User.is_new);
+                console.log(User);
+                if(User.is_new){
+                    navigate('/newuser');
                 }else{
-                    navigate('/normal');
+                    navigate('/rooms');
                 }
             })
             .catch((error)=>{
@@ -100,7 +102,7 @@ const Signin=()=>{
                 {error && <div className="alert alert-danger" role="alert">{error}</div>}
                 <button type="submit" className="btn btn-primary">Sign In</button>
                 <div className="mt-3">
-                    <a href="/forget">forgot password?</a>
+                    <Link to="/forgot">Forgot password?</Link>
                     <p>Don't have an account? <Link to="/signup">Sign Up</Link></p>
                 </div>
             </form>

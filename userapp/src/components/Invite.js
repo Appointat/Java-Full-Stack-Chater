@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {Link, useLocation} from 'react-router-dom';
 import axios from "axios";
+import './styles/Invite.css'
 import { useNavigate } from 'react-router-dom';
 
 const Invite=()=>{
@@ -36,7 +37,7 @@ const Invite=()=>{
 
             <form onSubmit={handleInvite}>
                 <div className="mb-3">
-                    <label htmlFor="email">Email:</label>
+                    <label htmlFor="email">Email : </label>
                     <input type="email"
                            id="email"
                            name="email"
@@ -57,11 +58,11 @@ const Invite=()=>{
                     />
                 </div>
                 {error && <div className="alert alert-danger" role="alert">{error}</div>}
-                <button type="submit" className="btn" >Invite</button>
+                <button type="submit" className="invite-btn" >Invite</button>
             </form>
             <div className="mt-3">
 
-                <Link to="/admin">Return</Link>
+                <Link to="/rooms">Return</Link>
             </div>
         </div>
     )

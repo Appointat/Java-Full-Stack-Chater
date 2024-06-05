@@ -1,13 +1,15 @@
 package full.stack.chatter.controller;
 
-
+import full.stack.chatter.services.EmailService;
 import full.stack.chatter.dto.CreateroomRequest;
 import full.stack.chatter.dto.SignupRequest;
 import full.stack.chatter.model.AdminUser;
 import full.stack.chatter.model.ChatRoom;
 import full.stack.chatter.model.NormalUser;
 import full.stack.chatter.model.User;
+import full.stack.chatter.services.EmailService;
 import full.stack.chatter.services.UserAndRoomManagementRequest;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +21,16 @@ import java.util.List;
 @RequestMapping("app")
 public class AppController {
 
-    @Autowired
+    @Resource
     private UserAndRoomManagementRequest userAndRoomManagementRequest;
 
+    @Resource
+    private final EmailService emailService;
+
+    public AppController(UserAndRoomManagementRequest userAndRoomManagementRequest, EmailService emailService){
+        this.userAndRoomManagementRequest=userAndRoomManagementRequest;
+        this.emailService = emailService;
+    }
 
     @GetMapping("signin")
     @ResponseBody
@@ -189,6 +198,30 @@ public class AppController {
                 }catch (Exception e) {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User does not exist");
                 }
+            }
+        }
+    }
+
+    @GetMapping("/forgot")
+    @ResponseBody
+    public ResponseEntity<?> forgot(@RequestParam String email, @RequestParam Boolean is_admin){
+        if(is_admin != null && is_admin){
+            try {
+                AdminUser user=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+                emailService.sendConfirmationEmail(email, user.getPassword());
+                return ResponseEntity.ok().build();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User does not exist or sending failed");
+            }
+        }else{
+            try {
+                NormalUser user=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+                emailService.sendConfirmationEmail(email, user.getPassword());
+                return ResponseEntity.ok().build();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User does not exist or sending failed");
             }
         }
     }

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
-import './styles/Admin.css'
+import './styles/Rooms.css'
 
-const Admin=()=>{
+const Rooms=()=>{
     const user = JSON.parse(sessionStorage.getItem('user'));    //get logged user information
     const is_admin=sessionStorage.getItem('is_admin')==="true";
     const navigate = useNavigate();
@@ -81,8 +81,8 @@ const Admin=()=>{
         <div className="admin-container" >
 
             <header className="header">
-                <h1 className="title">Chatter</h1>
-                <a className="logout-btn" href="/signin">Logout</a>
+                <h1 className="title">Welcome to Chatter</h1>
+                <a className="logout-btn" href="/">Logout</a>
                 <nav className="main-nav">
                     <a className="nav-btn" href="/page_edit">Edit my Account</a>
                 </nav>
@@ -91,6 +91,7 @@ const Admin=()=>{
             <main className="main">
                 <aside className="aside-info">
                     <span id="login_email">{user.email}</span>
+                    <span id="login_email">{is_admin?'Admin user':'Normal user'}</span>
                     <form onSubmit={handleCreateRoom}>
                         <div>
                             <input type="hidden" id="create_date" name="create_date"/>
@@ -137,7 +138,7 @@ const Admin=()=>{
 
 
                 <section className="main-section">
-                    <h2>Created rooms</h2>
+                <h2>Created rooms</h2>
                     <table className="table" id="created-rooms">
                         <tr className="table_header">
                             <td className="room-id">ID</td>
@@ -195,4 +196,4 @@ const Admin=()=>{
     )
 }
 
-export default Admin;
+export default Rooms;
