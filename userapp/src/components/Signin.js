@@ -27,8 +27,6 @@ const Signin=()=>{
                 const User=res.data;
                 sessionStorage.setItem('user',JSON.stringify(User));
                 sessionStorage.setItem('is_admin',String(is_admin));
-                console.log(User.is_new);
-                console.log(User);
                 if(User.is_new){
                     navigate('/newuser');
                 }else{

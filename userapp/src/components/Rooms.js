@@ -15,6 +15,7 @@ const Rooms=()=>{
 
 
 
+
     useEffect(() => {
         if (user && is_admin!=null) {
             axios.get("http://localhost:8080/app/createdrooms", {   //get created room list
@@ -75,6 +76,22 @@ const Rooms=()=>{
         }
     }
 
+    const handleQuit=async(roomId)=>{
+        if(window.confirm('Are you sure to quit this room ? ')) {
+            axios.put(`http://localhost:8080/app/quitroom`,{
+                email: user.email,
+                is_admin:is_admin,
+                roomId:roomId
+            })
+                .then(res=>{
+                    window.location.reload();
+                })
+                .catch(err=>{
+                    alert("Failed to quit the room.");
+                })
+
+        }
+    }
 
 
     return(
@@ -84,7 +101,7 @@ const Rooms=()=>{
                 <h1 className="title">Welcome to Chatter</h1>
                 <a className="logout-btn" href="/">Logout</a>
                 <nav className="main-nav">
-                    <a className="nav-btn" href="/page_edit">Edit my Account</a>
+                    <Link className="nav-btn" to="/edit">Edit my Account</Link>
                 </nav>
             </header>
 
@@ -183,7 +200,7 @@ const Rooms=()=>{
                                 <td>{invitedroom.expiredDate}</td>
                                 <td>
                                     <a>Enter</a>
-                                    <a>Quit</a>
+                                    <a className="room-btn" onClick={() => handleQuit(invitedroom.id)}>Quit</a>
                                 </td>
                             </tr>
                         ))}

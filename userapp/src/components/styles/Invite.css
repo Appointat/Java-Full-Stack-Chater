@@ -13,10 +13,9 @@
     transition: all 150ms;
     cursor: pointer;
     border: none;
-    background-color: #007bff;
+    background-color: #e67e22;
     color: #fff;
 }
 .invite-btn:hover {
-    color: black;
-    background-color: #fdf2e9;
+    background-color: #cf711f;
 }

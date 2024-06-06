@@ -4,6 +4,8 @@ import Rooms from './components/Rooms'
 import Forgot from './components/Forgot';
 import Signup from './components/Signup'
 import Invite from './components/Invite'
+import Newuser from './components/Newuser'
+import Edit from './components/Edit'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
@@ -19,6 +21,8 @@ root.render(
             <Route path="/rooms" element={<Rooms />} />
             <Route path="/invite" element={<Invite />} />
             <Route path="/forgot" element={<Forgot />} />
+            <Route path="/newuser" element={<Newuser />} />
+            <Route path="/edit" element={<Edit />} />
             <Route path="/" element={<App />} />
         </Routes>
     </BrowserRouter>

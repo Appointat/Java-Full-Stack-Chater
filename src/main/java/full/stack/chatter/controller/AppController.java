@@ -1,5 +1,6 @@
 package full.stack.chatter.controller;
 
+import full.stack.chatter.dto.QuitRoomRequest;
 import full.stack.chatter.services.EmailService;
 import full.stack.chatter.dto.CreateroomRequest;
 import full.stack.chatter.dto.SignupRequest;
@@ -223,6 +224,60 @@ public class AppController {
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User does not exist or sending failed");
             }
+        }
+    }
+
+    @PutMapping("/newuser")
+    @ResponseBody
+    public ResponseEntity<User> newuser(@RequestBody SignupRequest signupRequest){
+        if(signupRequest.getIs_admin() != null && signupRequest.getIs_admin()){
+            AdminUser user=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(signupRequest.getEmail()));
+            user.setIs_new(false);
+            user.setFirst_name(signupRequest.getFirstname());
+            user.setLast_name(signupRequest.getLastname());
+            user.setPassword(signupRequest.getPassword());
+            userAndRoomManagementRequest.updateAdminUser(user);
+            return ResponseEntity.ok(user);
+        }else{
+            NormalUser user=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(signupRequest.getEmail()));
+            user.setIs_new(false);
+            user.setFirst_name(signupRequest.getFirstname());
+            user.setLast_name(signupRequest.getLastname());
+            user.setPassword(signupRequest.getPassword());
+            userAndRoomManagementRequest.updateNormalUser(user);
+            return ResponseEntity.ok(user);
+        }
+    }
+
+    @PutMapping("/edit")
+    @ResponseBody
+    public ResponseEntity<User> edit(@RequestBody SignupRequest signupRequest){
+        if(signupRequest.getIs_admin() != null && signupRequest.getIs_admin()){
+            AdminUser user=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(signupRequest.getEmail()));
+            user.setFirst_name(signupRequest.getFirstname());
+            user.setLast_name(signupRequest.getLastname());
+            user.setPassword(signupRequest.getPassword());
+            userAndRoomManagementRequest.updateAdminUser(user);
+            return ResponseEntity.ok(user);
+        }else{
+            NormalUser user=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(signupRequest.getEmail()));
+            user.setFirst_name(signupRequest.getFirstname());
+            user.setLast_name(signupRequest.getLastname());
+            user.setPassword(signupRequest.getPassword());
+            userAndRoomManagementRequest.updateNormalUser(user);
+            return ResponseEntity.ok(user);
+        }
+    }
+
+    @PutMapping("quitroom")
+    @ResponseBody
+    public ResponseEntity<?> quitroom(@RequestBody QuitRoomRequest quitRoomRequest){
+        if(quitRoomRequest.getIs_admin() != null &&quitRoomRequest.getIs_admin()){
+            userAndRoomManagementRequest.quitChatRoom(userAndRoomManagementRequest.getOneChatRoom(quitRoomRequest.getRoomId()), true, quitRoomRequest.getEmail());
+            return ResponseEntity.ok().build();
+        }else{
+            userAndRoomManagementRequest.quitChatRoom(userAndRoomManagementRequest.getOneChatRoom(quitRoomRequest.getRoomId()), false, quitRoomRequest.getEmail());
+            return ResponseEntity.ok().build();
         }
     }
 }
