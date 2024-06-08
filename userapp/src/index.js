@@ -6,6 +6,7 @@ import Signup from './components/Signup'
 import Invite from './components/Invite'
 import Newuser from './components/Newuser'
 import Edit from './components/Edit'
+import Chat from './components/Chat'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
@@ -22,6 +23,7 @@ root.render(
             <Route path="/invite" element={<Invite />} />
             <Route path="/forgot" element={<Forgot />} />
             <Route path="/newuser" element={<Newuser />} />
+            <Route path="/chat/:roomId" element={<Chat />} />
             <Route path="/edit" element={<Edit />} />
             <Route path="/" element={<App />} />
         </Routes>

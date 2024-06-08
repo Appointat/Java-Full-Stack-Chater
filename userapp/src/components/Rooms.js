@@ -93,6 +93,12 @@ const Rooms=()=>{
         }
     }
 
+    const handleEnter = (roomId) => {
+        localStorage.setItem('user', sessionStorage.getItem('user'));
+        localStorage.setItem('is_admin',sessionStorage.getItem('is_admin'));
+        window.open(`/chat/${roomId}`, '_blank', 'noopener,noreferrer');
+    }
+
 
     return(
         <div className="admin-container" >
@@ -173,7 +179,7 @@ const Rooms=()=>{
                                 <td>{createdroom.createdDate}</td>
                                 <td>{createdroom.expiredDate}</td>
                                 <td>
-                                    {/*<a>Enter</a>*/}
+                                    <button className="room-btn" onClick={() => handleEnter(createdroom.id)}>Enter</button>
                                     <a className="room-btn" onClick={() => handleDelete(createdroom.id)}>Delete</a>
                                     <Link to= "/invite" state={{ roomId: createdroom.id }} className="room-btn">Invite</Link>
                                 </td>
@@ -199,7 +205,7 @@ const Rooms=()=>{
                                 <td>{invitedroom.createdDate}</td>
                                 <td>{invitedroom.expiredDate}</td>
                                 <td>
-                                    <a>Enter</a>
+                                    <button className="room-btn" onClick={() => handleEnter(invitedroom.id)}>Enter</button>
                                     <a className="room-btn" onClick={() => handleQuit(invitedroom.id)}>Quit</a>
                                 </td>
                             </tr>
