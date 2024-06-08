@@ -34,7 +34,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         ObjectMapper mapper = new ObjectMapper();
         String received_message = message.getPayload();
         MessageSocket message_socket = mapper.readValue(received_message, MessageSocket.class);
-        System.out.println("Received message from user " + message_socket.getUser() + ": " + message_socket.getMessage());
+        System.out.println("Received message from user " + message_socket.getEmail() + ": " + message_socket.getMessage());
 
         // Save the message in the chat room
         this.message_sockets_history.add(message_socket);
