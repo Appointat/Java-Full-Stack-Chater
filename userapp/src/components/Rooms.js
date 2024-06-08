@@ -179,7 +179,7 @@ const Rooms=()=>{
                                 <td>{createdroom.createdDate}</td>
                                 <td>{createdroom.expiredDate}</td>
                                 <td>
-                                    <button className="room-btn" onClick={() => handleEnter(createdroom.id)}>Enter</button>
+                                    <a className="room-btn" onClick={() => handleEnter(createdroom.id)}>Enter</a>
                                     <a className="room-btn" onClick={() => handleDelete(createdroom.id)}>Delete</a>
                                     <Link to= "/invite" state={{ roomId: createdroom.id }} className="room-btn">Invite</Link>
                                 </td>
@@ -205,7 +205,7 @@ const Rooms=()=>{
                                 <td>{invitedroom.createdDate}</td>
                                 <td>{invitedroom.expiredDate}</td>
                                 <td>
-                                    <button className="room-btn" onClick={() => handleEnter(invitedroom.id)}>Enter</button>
+                                    <a className="room-btn" onClick={() => handleEnter(invitedroom.id)}>Enter</a>
                                     <a className="room-btn" onClick={() => handleQuit(invitedroom.id)}>Quit</a>
                                 </td>
                             </tr>

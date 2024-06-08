@@ -161,6 +161,7 @@ public class AppController {
     @ResponseBody
     public ResponseEntity<?> invite(@PathVariable Long roomId, @PathVariable String email,@PathVariable Boolean is_admin,@PathVariable String invitor_email,@PathVariable Boolean invitor_admin){
         if(is_admin) {
+            System.out.println(invitor_admin);
             if (email.equals(invitor_email) && invitor_admin) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Cannot invite yourself");
             } else {
@@ -279,5 +280,12 @@ public class AppController {
             userAndRoomManagementRequest.quitChatRoom(userAndRoomManagementRequest.getOneChatRoom(quitRoomRequest.getRoomId()), false, quitRoomRequest.getEmail());
             return ResponseEntity.ok().build();
         }
+    }
+
+    @GetMapping("/chatroom/{roomId}")
+    @ResponseBody
+    public ResponseEntity<ChatRoom> getroom(@PathVariable Long roomId){
+        ChatRoom cr=userAndRoomManagementRequest.getOneChatRoom(roomId);
+        return ResponseEntity.ok().body(cr);
     }
 }

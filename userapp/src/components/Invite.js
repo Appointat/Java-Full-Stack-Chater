@@ -9,14 +9,13 @@ const Invite=()=>{
     const {roomId}=location.state||{};
     const [email,setEmail]=useState('');
     const invitor_email = JSON.parse(sessionStorage.getItem('user')).email;
-    const invitor_admin = Boolean(sessionStorage.getItem('is_admin'));
+    const invitor_admin = sessionStorage.getItem('is_admin')==="true";
     const [is_admin, setIs_admin] = useState(false);
     const [error,setError]=useState(null);
     const navigate = useNavigate();
 
     const handleInvite=async(event)=>{
         event.preventDefault();
-
         axios.put(`http://localhost:8080/app/invite/${roomId}/${email}/${is_admin}/${invitor_email}/${invitor_admin}`)
             .then(res=>{
                 alert("success")

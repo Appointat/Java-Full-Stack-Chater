@@ -6,6 +6,15 @@ public class MessageSocket {
     private String email;
     private Boolean is_admin;
     private String message;
+    private Boolean system;
+
+    public Boolean getSystem() {
+        return system;
+    }
+
+    public void setSystem(Boolean system) {
+        this.system = system;
+    }
 
     public String getName() {
         return name;
