@@ -11,6 +11,7 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
+    //to send an email with password
     public void sendConfirmationEmail(String email, String password) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);

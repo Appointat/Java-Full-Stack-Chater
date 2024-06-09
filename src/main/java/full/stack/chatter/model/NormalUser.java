@@ -55,6 +55,7 @@ public class NormalUser extends User{
         this.normal_invited_chat_rooms.add(4L);
     }
 
+    //to create a chat room
     public void addCreatedChatRoom(Long chat_room_id) {
         if (this.normal_created_chat_rooms.contains(chat_room_id)) {
             System.out.println("Chat room already created by this user");
@@ -63,6 +64,7 @@ public class NormalUser extends User{
         this.normal_created_chat_rooms.add(chat_room_id);
     }
 
+    //to remove a created chat room
     public void removeCreatedChatRoom(Long chat_room_id) {
         if (!this.normal_created_chat_rooms.contains(chat_room_id)) {
             System.out.println("Chat room not created by this user");
@@ -71,6 +73,7 @@ public class NormalUser extends User{
         this.normal_created_chat_rooms.remove(chat_room_id);
     }
 
+    //to be invited into a chatroom
     public void addInvitedChatRoom(Long chat_room_id) {
         if (this.normal_invited_chat_rooms.contains(chat_room_id)) {
             System.out.println("Chat room already invited to this user");
@@ -79,6 +82,7 @@ public class NormalUser extends User{
         this.normal_invited_chat_rooms.add(chat_room_id);
     }
 
+    //to quit a chatroom
     public void removeInvitedChatRoom(Long chat_room_id) {
         if (!this.normal_invited_chat_rooms.contains(chat_room_id)) {
             System.out.println("Chat room not invited to this user");

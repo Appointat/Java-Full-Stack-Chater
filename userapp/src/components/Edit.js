@@ -49,8 +49,7 @@ const Edit=()=>{
 
     }
 
-
-
+    //get random password by length
     const randomPassword = (length) => {
         const chars = "abcdefghijklmnopqrstuvwxyz!@#$%^&*()-+<>ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         let pass = "";

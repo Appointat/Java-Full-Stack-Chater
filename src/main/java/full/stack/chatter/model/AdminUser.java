@@ -27,9 +27,6 @@ public class AdminUser extends User {
         chat_room.removeUser(user);
     }
 
-    public Boolean getIsUserExisted(String email) { // TODO: implement this method
-        return null;
-    }
 
 
     @ElementCollection
@@ -57,15 +54,9 @@ public class AdminUser extends User {
         this.email = email;
         this.password = password;
         this.is_active = is_active;
-        // TODO: used for test of postgreSQL
-        this.admin_created_chat_rooms = new ArrayList<>();
-        this.admin_created_chat_rooms.add(1L);
-        this.admin_created_chat_rooms.add(2L);
-        this.admin_invited_chat_rooms = new ArrayList<>();
-        this.admin_invited_chat_rooms.add(3L);
-        this.admin_invited_chat_rooms.add(4L);
     }
 
+    //to create a chatroom
     public void addCreatedChatRoom(Long chat_room_id) {
         if (this.admin_created_chat_rooms.contains(chat_room_id)) {
             System.out.println("Chat room already created by this user");
@@ -74,6 +65,7 @@ public class AdminUser extends User {
         this.admin_created_chat_rooms.add(chat_room_id);
     }
 
+    //to delete a created chatroom
     public void removeCreatedChatRoom(Long chat_room_id) {
         if (!this.admin_created_chat_rooms.contains(chat_room_id)) {
             System.out.println("Chat room not created by this user");
@@ -82,6 +74,7 @@ public class AdminUser extends User {
         this.admin_created_chat_rooms.remove(chat_room_id);
     }
 
+    //to be invited into a chatroom
     public void addInvitedChatRoom(Long chat_room_id) {
         if (this.admin_invited_chat_rooms.contains(chat_room_id)) {
             System.out.println("Chat room already invited to this user");
@@ -90,6 +83,7 @@ public class AdminUser extends User {
         this.admin_invited_chat_rooms.add(chat_room_id);
     }
 
+    //to quit a chatroom
     public void removeInvitedChatRoom(Long chat_room_id) {
         if (!this.admin_invited_chat_rooms.contains(chat_room_id)) {
             System.out.println("Chat room not invited to this user");

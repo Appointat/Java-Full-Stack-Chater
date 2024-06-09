@@ -24,18 +24,19 @@ public class ChatRoomController {
     @Resource
     private UserAndRoomManagementRequest userAndRoomManagementRequest;
 
+    //for springboot chatroom, not used
     @GetMapping("/{chat_room_id}")
     public String getChatRoom(@PathVariable Long chat_room_id, Model model) {
         model.addAttribute("chat_room_id", chat_room_id);
         return "page_chat";
     }
 
+    //for springboot create chatroom, not used
     @RequestMapping(value = "/createchatroom")
     public String createChatRoom(String email, Boolean is_admin, String chat_room_name, String description, HttpSession session,
                                  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime create_date,
                                  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime expire_date) {
         session.removeAttribute("created_rooms");
-
         // The input `creator` can be either an admin user or a normal user
         if (is_admin) {
             // Set/create a chat room
@@ -67,6 +68,7 @@ public class ChatRoomController {
 
     }
 
+    //for springboot invite, not used
     @RequestMapping(value = "/invite")
     public String invite(@RequestParam("id") Long roomId, HttpSession session){
         session.removeAttribute("invite_notice");
@@ -74,6 +76,7 @@ public class ChatRoomController {
         return "redirect:/page_invite";
     }
 
+    //for springboot invite, not used
     @RequestMapping(value = "/invite_user")
     public String invite_user(String email,Boolean invite_is_admin,Long room_id,HttpSession session,Boolean is_admin, String inviter_email){
         session.removeAttribute("invite_notice");
@@ -112,6 +115,7 @@ public class ChatRoomController {
         return "redirect:/page_invite";
     }
 
+    //for springboot delete chatroom, not used
     @RequestMapping(value="deleteroom")
     public String deleteroom(@RequestParam Long id, @RequestParam Boolean is_admin, @RequestParam String email, HttpSession session){
         userAndRoomManagementRequest.removeChatRoom(userAndRoomManagementRequest.getOneChatRoom(id));
@@ -127,6 +131,7 @@ public class ChatRoomController {
 
     }
 
+    //for springboot quit chatroom, not used
     @RequestMapping(value="quitroom")
     public String quitroom(@RequestParam Long id, @RequestParam Boolean is_admin, @RequestParam String email, HttpSession session){
         if (is_admin != null && is_admin){
@@ -143,11 +148,13 @@ public class ChatRoomController {
 
     }
 
+    //not used
     @RequestMapping(value = "/chatroomslist")
     public List<ChatRoom> getChatRooms() {
         return userAndRoomManagementRequest.getChatRooms();
     }
 
+    //not used
     @RequestMapping(value = "/removechatroom") // TODO: to be tested
     public void removeChatRoom(Long chat_room_id) { // TODO: to add the input parameters to identify the chat room
         ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(chat_room_id);
@@ -176,6 +183,7 @@ public class ChatRoomController {
         userAndRoomManagementRequest.removeChatRoom(chat_room);
     }
 
+    //not used
     @RequestMapping(value = "/inviteusertochatroom")
     public void inviteUserToChatRoom(AdminUser invitor, User invited_user, Long chat_room_id) {
 
@@ -196,6 +204,7 @@ public class ChatRoomController {
         }
     }
 
+    //not used
     @RequestMapping(value = "/removeuserfromchatroom")
     public void removeUserFromChatRoom(AdminUser remover, User removed_user, Long chat_room_id) {
 

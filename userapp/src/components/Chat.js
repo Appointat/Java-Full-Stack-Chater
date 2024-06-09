@@ -22,7 +22,7 @@ const Chat=()=>{
     const [creatorAdmin, setCreatorAdmin] = useState("");
     const disconnectSent = useRef(false);  // 标志位
 
-
+    //to get the room information by roomId in the path
     useEffect(() => {
         axios.get(`http://localhost:8080/app/chatroom/${roomId}`)
             .then((response) => {
@@ -39,7 +39,7 @@ const Chat=()=>{
             })
     }, []);
 
-
+    //to start a websocek connect
     useEffect(()=>{
         ws.current = new WebSocket(wsUrl);
 
@@ -89,8 +89,7 @@ const Chat=()=>{
         };
     }, [wsUrl, userEmail,is_admin]);
 
-
-
+    //to tell others the leaving message before unload
     const handleBeforeUnload = () => {
         if (!disconnectSent.current) {
             const messageJson = {
@@ -112,13 +111,7 @@ const Chat=()=>{
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
 
-    const handleKeyPress = (e) => {
-        if (e.key === 'Enter') {
-            sendMessage();
-        }
-    };
-
-
+    //to send message to websocket
     const sendMessage = () => {
         if (!inputMessage.trim()) {
             return;
@@ -140,18 +133,21 @@ const Chat=()=>{
         }
     };
 
+    //to write the received with the given type
     const writeToScreen = (msg, type) => {
         const newMessage = { text: msg, type };
         setMessages((prevMessages) => [...prevMessages, newMessage]);
         // chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
 
+    //if a message comes, put the window to the bottom
     useEffect(() => {
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         }
     }, [messages]);
 
+    //close the window
     const handleClose = () => {
         window.open('', '_self', ''); // This is required for some browsers
         window.close();
