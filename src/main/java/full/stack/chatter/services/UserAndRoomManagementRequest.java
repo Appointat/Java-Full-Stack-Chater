@@ -123,22 +123,22 @@ public class UserAndRoomManagementRequest {
     }
 
     public void removeChatRoom(ChatRoom chat_room) {
-        ChatRoom cr=em.find(ChatRoom.class, chat_room.getId());
-        if (cr.getAdmin_creator()!=null){
-            AdminUser admin_user=cr.getAdmin_creator();
+        ChatRoom cr = em.find(ChatRoom.class, chat_room.getId());
+        if (cr.getAdmin_creator() != null) {
+            AdminUser admin_user = cr.getAdmin_creator();
             admin_user.removeCreatedChatRoom(cr.getId());
             this.updateAdminUser(admin_user);
-        }else{
-            NormalUser normal_user=cr.getNormal_creator();
+        } else {
+            NormalUser normal_user = cr.getNormal_creator();
             normal_user.removeCreatedChatRoom(cr.getId());
             this.updateNormalUser(normal_user);
         }
 
-        for(AdminUser au:cr.getAdminUsers()){
+        for (AdminUser au : cr.getAdminUsers()) {
             au.removeInvitedChatRoom(cr.getId());
             this.updateAdminUser(au);
         }
-        for(NormalUser nu:cr.getNormalUsers()){
+        for (NormalUser nu : cr.getNormalUsers()) {
             nu.removeInvitedChatRoom(cr.getId());
             this.updateNormalUser(nu);
         }
@@ -146,15 +146,15 @@ public class UserAndRoomManagementRequest {
     }
 
     public void quitChatRoom(ChatRoom chat_room, Boolean is_admin, String email) {
-        ChatRoom cr=em.find(ChatRoom.class, chat_room.getId());
-        if(is_admin){
-            AdminUser admin_user=this.getOneAdminUser(this.findAdminUserIdByEmail(email));
+        ChatRoom cr = em.find(ChatRoom.class, chat_room.getId());
+        if (is_admin) {
+            AdminUser admin_user = this.getOneAdminUser(this.findAdminUserIdByEmail(email));
             admin_user.removeInvitedChatRoom(cr.getId());
             this.updateAdminUser(admin_user);
             cr.removeUser(admin_user);
             this.updateChatRoom(cr);
-        }else{
-            NormalUser normal_user=this.getOneNormalUser(this.findNormalUserIdByEmail(email));
+        } else {
+            NormalUser normal_user = this.getOneNormalUser(this.findNormalUserIdByEmail(email));
             normal_user.removeInvitedChatRoom(cr.getId());
             this.updateNormalUser(normal_user);
             cr.removeUser(normal_user);
@@ -187,8 +187,8 @@ public class UserAndRoomManagementRequest {
         String jpql = "SELECT r FROM AdminUser a JOIN a.admin_invited_chat_rooms r WHERE a.id = :adminId";
         TypedQuery<Long> q = em.createQuery(jpql, Long.class);
         q.setParameter("adminId", id);
-        List<ChatRoom> chatRooms=new ArrayList<>();
-        for (Long i: q.getResultList()) {
+        List<ChatRoom> chatRooms = new ArrayList<>();
+        for (Long i : q.getResultList()) {
             chatRooms.add(this.getOneChatRoom(i));
         }
         return chatRooms;
@@ -198,8 +198,8 @@ public class UserAndRoomManagementRequest {
         String jpql = "SELECT r FROM NormalUser a JOIN a.normal_invited_chat_rooms r WHERE a.id = :normalId";
         TypedQuery<Long> q = em.createQuery(jpql, Long.class);
         q.setParameter("normalId", id);
-        List<ChatRoom> chatRooms=new ArrayList<>();
-        for (Long i: q.getResultList()) {
+        List<ChatRoom> chatRooms = new ArrayList<>();
+        for (Long i : q.getResultList()) {
             chatRooms.add(this.getOneChatRoom(i));
         }
         return chatRooms;

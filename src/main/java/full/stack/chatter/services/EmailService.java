@@ -19,7 +19,7 @@ public class EmailService {
         message.setText("Your password: " + password + " \nPlease change after Sign In");
         try {
             mailSender.send(message);
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
