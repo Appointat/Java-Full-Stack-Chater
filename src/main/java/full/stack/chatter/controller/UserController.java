@@ -1,20 +1,18 @@
 package full.stack.chatter.controller;
 
-import full.stack.chatter.services.EmailService;
 import full.stack.chatter.model.AdminUser;
 import full.stack.chatter.model.ChatRoom;
 import full.stack.chatter.model.NormalUser;
+import full.stack.chatter.services.EmailService;
 import full.stack.chatter.services.UserAndRoomManagementRequest;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,8 +28,8 @@ public class UserController {
     private UserAndRoomManagementRequest userAndRoomManagementRequest;
 
 
-    public UserController(UserAndRoomManagementRequest userAndRoomManagementRequest, EmailService emailService){
-        this.userAndRoomManagementRequest=userAndRoomManagementRequest;
+    public UserController(UserAndRoomManagementRequest userAndRoomManagementRequest, EmailService emailService) {
+        this.userAndRoomManagementRequest = userAndRoomManagementRequest;
         this.emailService = emailService;
     }
 
@@ -46,10 +44,9 @@ public class UserController {
                 NormalUser user = new NormalUser(first_name, last_name, email, password);
                 userAndRoomManagementRequest.addNormalUser(user);
             }
-        }
-        catch(Exception e){     //user already exist
+        } catch (Exception e) {     //user already exist
             e.printStackTrace();
-            return"redirect:/signup";
+            return "redirect:/signup";
         }                       //success
         return "redirect:/signin";
     }
@@ -71,8 +68,7 @@ public class UserController {
                 userAndRoomManagementRequest.addNormalUser(user);
                 emailService.sendConfirmationEmail(email, password);
             }
-        }
-        catch(Exception e){     //user with same email and same type already exist
+        } catch (Exception e) {     //user with same email and same type already exist
             e.printStackTrace();
             session.setAttribute("notice", "failed");
         }
@@ -95,13 +91,13 @@ public class UserController {
                         userAndRoomManagementRequest.updateAdminUser(admin_user);   //update attempt to database
                         session.setAttribute("user", admin_user);
                         session.setAttribute("is_admin", true);
-                        if (admin_user.getIs_new()){    //if user is created by an admin and first signin
+                        if (admin_user.getIs_new()) {    //if user is created by an admin and first signin
                             return "redirect:/page_first_login";
                         }
                         //get created and invited rooms
-                        List<ChatRoom> created_rooms=userAndRoomManagementRequest.getCreatedChatRoomsByAdminID(admin_user_id);
+                        List<ChatRoom> created_rooms = userAndRoomManagementRequest.getCreatedChatRoomsByAdminID(admin_user_id);
                         session.setAttribute("created_rooms", created_rooms);
-                        List<ChatRoom> invited_rooms=userAndRoomManagementRequest.getInvitedChatRoomsByAdminID(admin_user_id);
+                        List<ChatRoom> invited_rooms = userAndRoomManagementRequest.getInvitedChatRoomsByAdminID(admin_user_id);
                         session.setAttribute("invited_rooms", invited_rooms);
                         return "redirect:/page_admin";
                     } else {    //password wrong
@@ -113,7 +109,7 @@ public class UserController {
                         userAndRoomManagementRequest.updateAdminUser(admin_user);
                     }
                 }
-            } catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return "redirect:/signin";
             }
@@ -127,12 +123,12 @@ public class UserController {
                         userAndRoomManagementRequest.updateNormalUser(normal_user);
                         session.setAttribute("user", normal_user);
                         session.setAttribute("is_admin", false);
-                        if (normal_user.getIs_new()){
+                        if (normal_user.getIs_new()) {
                             return "redirect:/page_first_login";
                         }
-                        List<ChatRoom> created_rooms=userAndRoomManagementRequest.getCreatedChatRoomsByNormalID(normal_user_id);
+                        List<ChatRoom> created_rooms = userAndRoomManagementRequest.getCreatedChatRoomsByNormalID(normal_user_id);
                         session.setAttribute("created_rooms", created_rooms);
-                        List<ChatRoom> invited_rooms=userAndRoomManagementRequest.getInvitedChatRoomsByNormalID(normal_user_id);
+                        List<ChatRoom> invited_rooms = userAndRoomManagementRequest.getInvitedChatRoomsByNormalID(normal_user_id);
                         session.setAttribute("invited_rooms", invited_rooms);
                         return "redirect:/page_normaluser";
                     } else {
@@ -144,7 +140,7 @@ public class UserController {
                         userAndRoomManagementRequest.updateNormalUser(normal_user);
                     }
                 }
-            } catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return "redirect:/signin";
             }
@@ -155,9 +151,9 @@ public class UserController {
 
     //for springboot update information after first login of a user created by an admin with email
     @RequestMapping("first_login")
-    public String first_login(String first_name, String last_name,String email, String password, Boolean is_admin, HttpSession session){
-        if(is_admin != null && is_admin){
-            AdminUser user=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+    public String first_login(String first_name, String last_name, String email, String password, Boolean is_admin, HttpSession session) {
+        if (is_admin != null && is_admin) {
+            AdminUser user = userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
             user.setIs_new(false);
             user.setFirst_name(first_name);
             user.setLast_name(last_name);
@@ -165,8 +161,8 @@ public class UserController {
             userAndRoomManagementRequest.updateAdminUser(user);
             session.setAttribute("user", user);
             return "redirect:/page_admin";
-        }else{
-            NormalUser user=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+        } else {
+            NormalUser user = userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
             user.setIs_new(false);
             user.setFirst_name(first_name);
             user.setLast_name(last_name);
@@ -179,16 +175,16 @@ public class UserController {
 
     //for springboot edit an account and update to database
     @RequestMapping("edit")
-    public String edit(String first_name, String last_name,String email, String password, Boolean is_admin){
-        if(is_admin != null && is_admin){
-            AdminUser user=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+    public String edit(String first_name, String last_name, String email, String password, Boolean is_admin) {
+        if (is_admin != null && is_admin) {
+            AdminUser user = userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
             user.setFirst_name(first_name);
             user.setLast_name(last_name);
             user.setPassword(password);
             userAndRoomManagementRequest.updateAdminUser(user);
             return "/page_signin";
-        }else{
-            NormalUser user=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+        } else {
+            NormalUser user = userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
             user.setFirst_name(first_name);
             user.setLast_name(last_name);
             user.setPassword(password);
@@ -199,9 +195,9 @@ public class UserController {
 
     //for springboot admin user get the user list
     @RequestMapping("userlist")
-    public String userlist(Model model){
-        List<NormalUser> normalUserList=userAndRoomManagementRequest.getNormalUsers();
-        List<AdminUser> adminUserList=userAndRoomManagementRequest.getAdminUsers();
+    public String userlist(Model model) {
+        List<NormalUser> normalUserList = userAndRoomManagementRequest.getNormalUsers();
+        List<AdminUser> adminUserList = userAndRoomManagementRequest.getAdminUsers();
 
         model.addAttribute("normalUserList", normalUserList);
         model.addAttribute("adminUserList", adminUserList);
@@ -210,22 +206,22 @@ public class UserController {
 
     //for springboot admin user delete a normal user account
     @RequestMapping("normaldelete")
-    public String normaldelete(String email){
+    public String normaldelete(String email) {
         userAndRoomManagementRequest.removeOneUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
         return "redirect:/user/userlist";
     }
 
     //for springboot admin user delete an admin user account
     @RequestMapping("admindelete")
-    public String admindelete(String email){
+    public String admindelete(String email) {
         userAndRoomManagementRequest.removeAdminUser(userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email)));
         return "redirect:/user/userlist";
     }
 
     //for springboot admin user activate or dis-activate a normal user account
     @RequestMapping("normalchangestatus")
-    public String normalchangestatus(String email){
-        NormalUser user=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+    public String normalchangestatus(String email) {
+        NormalUser user = userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
         user.setIsActive(!user.getIsActive());
         userAndRoomManagementRequest.updateNormalUser(user);
         return "redirect:/user/userlist";
@@ -233,8 +229,8 @@ public class UserController {
 
     //for springboot admin user activate or dis-activate a admin user account
     @RequestMapping("adminchangestatus")
-    public String adminchangestatus(String email){
-        AdminUser user=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+    public String adminchangestatus(String email) {
+        AdminUser user = userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
         user.setIsActive(!user.getIsActive());
         userAndRoomManagementRequest.updateAdminUser(user);
         return "redirect:/user/userlist";
@@ -242,27 +238,27 @@ public class UserController {
 
     //for springboot send email with password
     @RequestMapping("forget")
-    public String forget(String email, Boolean is_admin, HttpSession session){
+    public String forget(String email, Boolean is_admin, HttpSession session) {
         session.removeAttribute("email");
-        if(is_admin != null && is_admin){
+        if (is_admin != null && is_admin) {
             try {
-                AdminUser user=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+                AdminUser user = userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
                 emailService.sendConfirmationEmail(email, user.getPassword());
-                return"redirect:/signin";
+                return "redirect:/signin";
             } catch (Exception e) {
                 e.printStackTrace();
-                session.setAttribute("email","user not exist or sending failed");
-                return"redirect:/forget";
+                session.setAttribute("email", "user not exist or sending failed");
+                return "redirect:/forget";
             }
-        }else{
+        } else {
             try {
-                NormalUser user=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+                NormalUser user = userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
                 emailService.sendConfirmationEmail(email, user.getPassword());
-                return"redirect:/signin";
+                return "redirect:/signin";
             } catch (Exception e) {
                 e.printStackTrace();
-                session.setAttribute("email","user not exist or sending failed");
-                return"redirect:/forget";
+                session.setAttribute("email", "user not exist or sending failed");
+                return "redirect:/forget";
             }
         }
     }
