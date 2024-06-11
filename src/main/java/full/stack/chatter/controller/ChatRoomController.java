@@ -41,36 +41,36 @@ public class ChatRoomController {
         if (is_admin) {
             // Set/create a chat room
             ChatRoom chat_room = new ChatRoom();
-            AdminUser creator=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+            AdminUser creator = userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
             chat_room.setChatRoom(chat_room_name, description, creator, create_date, expire_date);
             // Update the chat room in the database
             userAndRoomManagementRequest.addChatRoom(chat_room);
             // Update the creator, whose `created_chat_rooms` field should be updated
             creator.addCreatedChatRoom(chat_room.getId());
             userAndRoomManagementRequest.updateAdminUser(creator);
-            List<ChatRoom> created_rooms=userAndRoomManagementRequest.getCreatedChatRoomsByAdminID(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+            List<ChatRoom> created_rooms = userAndRoomManagementRequest.getCreatedChatRoomsByAdminID(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
             session.setAttribute("created_rooms", created_rooms);
-            return"redirect:/page_admin";
+            return "redirect:/page_admin";
         } else {
             // Set/create a chat room
             ChatRoom chat_room = new ChatRoom();
-            NormalUser creator=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+            NormalUser creator = userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
             chat_room.setChatRoom(chat_room_name, description, creator, create_date, expire_date);
             // Update the chat room in the database
             userAndRoomManagementRequest.addChatRoom(chat_room);
             // Update the creator, whose `created_chat_rooms` field should be updated
             creator.addCreatedChatRoom(chat_room.getId());
             userAndRoomManagementRequest.updateNormalUser(creator);
-            List<ChatRoom> created_rooms=userAndRoomManagementRequest.getCreatedChatRoomsByNormalID(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+            List<ChatRoom> created_rooms = userAndRoomManagementRequest.getCreatedChatRoomsByNormalID(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
             session.setAttribute("created_rooms", created_rooms);
-            return"redirect:/page_normaluser";
+            return "redirect:/page_normaluser";
         }
 
     }
 
     //for springboot invite, not used
     @RequestMapping(value = "/invite")
-    public String invite(@RequestParam("id") Long roomId, HttpSession session){
+    public String invite(@RequestParam("id") Long roomId, HttpSession session) {
         session.removeAttribute("invite_notice");
         session.setAttribute("roomId", roomId);
         return "redirect:/page_invite";
@@ -78,14 +78,14 @@ public class ChatRoomController {
 
     //for springboot invite, not used
     @RequestMapping(value = "/invite_user")
-    public String invite_user(String email,Boolean invite_is_admin,Long room_id,HttpSession session,Boolean is_admin, String inviter_email){
+    public String invite_user(String email, Boolean invite_is_admin, Long room_id, HttpSession session, Boolean is_admin, String inviter_email) {
         session.removeAttribute("invite_notice");
         session.setAttribute("invite_notice", "success");
-        if (invite_is_admin != null && invite_is_admin){
-            try{
-                if(is_admin && inviter_email.equals(email)){
-                    session.setAttribute("invite_notice","Cannot invite yourself");
-                }else {
+        if (invite_is_admin != null && invite_is_admin) {
+            try {
+                if (is_admin && inviter_email.equals(email)) {
+                    session.setAttribute("invite_notice", "Cannot invite yourself");
+                } else {
                     AdminUser admin_user = userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
                     ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(room_id);
                     session.setAttribute("invite_notice", chat_room.addUser(admin_user));
@@ -93,14 +93,14 @@ public class ChatRoomController {
                     admin_user.addInvitedChatRoom(room_id);
                     userAndRoomManagementRequest.updateAdminUser(admin_user);
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 session.setAttribute("invite_notice", "account not existed");
             }
-        }else{
-            try{
-                if( !is_admin && inviter_email.equals(email)){
-                    session.setAttribute("invite_notice","Cannot invite yourself");
-                }else {
+        } else {
+            try {
+                if (!is_admin && inviter_email.equals(email)) {
+                    session.setAttribute("invite_notice", "Cannot invite yourself");
+                } else {
                     NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
                     ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(room_id);
                     session.setAttribute("invite_notice", chat_room.addUser(normal_user));
@@ -108,7 +108,7 @@ public class ChatRoomController {
                     normal_user.addInvitedChatRoom(room_id);
                     userAndRoomManagementRequest.updateNormalUser(normal_user);
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 session.setAttribute("invite_notice", "account not existed");
             }
         }
@@ -116,15 +116,15 @@ public class ChatRoomController {
     }
 
     //for springboot delete chatroom, not used
-    @RequestMapping(value="deleteroom")
-    public String deleteroom(@RequestParam Long id, @RequestParam Boolean is_admin, @RequestParam String email, HttpSession session){
+    @RequestMapping(value = "deleteroom")
+    public String deleteroom(@RequestParam Long id, @RequestParam Boolean is_admin, @RequestParam String email, HttpSession session) {
         userAndRoomManagementRequest.removeChatRoom(userAndRoomManagementRequest.getOneChatRoom(id));
-        if (is_admin != null && is_admin){
-            List<ChatRoom> created_rooms=userAndRoomManagementRequest.getCreatedChatRoomsByAdminID(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+        if (is_admin != null && is_admin) {
+            List<ChatRoom> created_rooms = userAndRoomManagementRequest.getCreatedChatRoomsByAdminID(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
             session.setAttribute("created_rooms", created_rooms);
             return "redirect:/page_admin";
-        }else{
-            List<ChatRoom> created_rooms=userAndRoomManagementRequest.getCreatedChatRoomsByNormalID(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+        } else {
+            List<ChatRoom> created_rooms = userAndRoomManagementRequest.getCreatedChatRoomsByNormalID(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
             session.setAttribute("created_rooms", created_rooms);
             return "redirect:/page_normaluser";
         }
@@ -132,16 +132,16 @@ public class ChatRoomController {
     }
 
     //for springboot quit chatroom, not used
-    @RequestMapping(value="quitroom")
-    public String quitroom(@RequestParam Long id, @RequestParam Boolean is_admin, @RequestParam String email, HttpSession session){
-        if (is_admin != null && is_admin){
-            userAndRoomManagementRequest.quitChatRoom(userAndRoomManagementRequest.getOneChatRoom(id), true,email);
-            List<ChatRoom> invited_rooms=userAndRoomManagementRequest.getInvitedChatRoomsByAdminID(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+    @RequestMapping(value = "quitroom")
+    public String quitroom(@RequestParam Long id, @RequestParam Boolean is_admin, @RequestParam String email, HttpSession session) {
+        if (is_admin != null && is_admin) {
+            userAndRoomManagementRequest.quitChatRoom(userAndRoomManagementRequest.getOneChatRoom(id), true, email);
+            List<ChatRoom> invited_rooms = userAndRoomManagementRequest.getInvitedChatRoomsByAdminID(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
             session.setAttribute("invited_rooms", invited_rooms);
             return "redirect:/page_admin";
-        }else{
-            userAndRoomManagementRequest.quitChatRoom(userAndRoomManagementRequest.getOneChatRoom(id), false,email);
-            List<ChatRoom> invited_rooms=userAndRoomManagementRequest.getInvitedChatRoomsByNormalID(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+        } else {
+            userAndRoomManagementRequest.quitChatRoom(userAndRoomManagementRequest.getOneChatRoom(id), false, email);
+            List<ChatRoom> invited_rooms = userAndRoomManagementRequest.getInvitedChatRoomsByNormalID(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
             session.setAttribute("invited_rooms", invited_rooms);
             return "redirect:/page_normaluser";
         }
