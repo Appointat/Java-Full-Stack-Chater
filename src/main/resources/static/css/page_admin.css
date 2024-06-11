@@ -63,7 +63,7 @@ h1 {
     margin-left: 10px;
 }
 
-#login_email{
+#login_email {
     font-weight: bold;
     display: block;
     margin-bottom: 20px;
@@ -81,16 +81,16 @@ h1 {
     bottom: 0;
     width: 100%;
     height: 60px;
-    background: linear-gradient(to bottom,  white,#fdf2e9);
+    background: linear-gradient(to bottom, white, #fdf2e9);
 }
 
 .logout-btn,
 .logout-btn:link,
-.logout-btn:visited{
+.logout-btn:visited {
     position: absolute;
     text-decoration: none;
-    right:20px;
-    top:20px;
+    right: 20px;
+    top: 20px;
     font-weight: 300;
     font-size: 20px;
 }
@@ -108,7 +108,7 @@ h1 {
     white-space: nowrap;
 }
 
-.table_header{
+.table_header {
     background-color: #f9f9f9;
     border-bottom: 1px solid #ddd;
 }
