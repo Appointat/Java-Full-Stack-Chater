@@ -1,10 +1,8 @@
 package full.stack.chatter.model;
 
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,7 +31,7 @@ public abstract class User {
     @Column(name = "failed_attempt")
     protected Integer failed_attempt;
 
-    @Column(name="is_new")
+    @Column(name = "is_new")
     protected Boolean is_new;
 
     public Boolean getIs_new() {
@@ -44,9 +42,13 @@ public abstract class User {
         this.is_new = is_new;
     }
 
-    public int getFailed_attempt() {return failed_attempt;}
+    public int getFailed_attempt() {
+        return failed_attempt;
+    }
 
-    public void setFailed_attempt(int failed_attempt) {this.failed_attempt = failed_attempt;}
+    public void setFailed_attempt(int failed_attempt) {
+        this.failed_attempt = failed_attempt;
+    }
 
     public Long getId() {
         return this.id;
@@ -64,9 +66,17 @@ public abstract class User {
 
     public abstract List<Long> getInvitedChatRooms();
 
-    public void setFirst_name(String first_name){ this.first_name = first_name;}
-    public void setLast_name(String last_name){ this.last_name = last_name;}
-    public void setPassword(String password){ this.password = password;}
+    public void setFirst_name(String first_name) {
+        this.first_name = first_name;
+    }
+
+    public void setLast_name(String last_name) {
+        this.last_name = last_name;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getFirstName() {
         return this.first_name;
