@@ -1,8 +1,7 @@
 package full.stack.chatter.controller;
 
-import full.stack.chatter.dto.QuitRoomRequest;
-import full.stack.chatter.services.EmailService;
 import full.stack.chatter.dto.CreateroomRequest;
+import full.stack.chatter.dto.QuitRoomRequest;
 import full.stack.chatter.dto.SignupRequest;
 import full.stack.chatter.model.AdminUser;
 import full.stack.chatter.model.ChatRoom;
@@ -11,7 +10,6 @@ import full.stack.chatter.model.User;
 import full.stack.chatter.services.EmailService;
 import full.stack.chatter.services.UserAndRoomManagementRequest;
 import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +26,8 @@ public class AppController {
     @Resource
     private final EmailService emailService;
 
-    public AppController(UserAndRoomManagementRequest userAndRoomManagementRequest, EmailService emailService){
-        this.userAndRoomManagementRequest=userAndRoomManagementRequest;
+    public AppController(UserAndRoomManagementRequest userAndRoomManagementRequest, EmailService emailService) {
+        this.userAndRoomManagementRequest = userAndRoomManagementRequest;
         this.emailService = emailService;
     }
 
@@ -50,7 +48,7 @@ public class AppController {
                         handlePasswordWrong(admin_user);                    //add one attempt or dis-activate
                         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("password incorrect");
                     }
-                }else{
+                } else {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("account inactive");
                 }
             } else {
@@ -66,11 +64,11 @@ public class AppController {
                         handlePasswordWrong(normal_user);                   //add one attempt or dis-activate
                         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("password incorrect");
                     }
-                }else{
+                } else {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("account inactive");
                 }
             }
-        }catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("user not found");   //cannot find the user
         }
@@ -91,7 +89,7 @@ public class AppController {
 
     @PostMapping("signup")
     @ResponseBody
-    public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest){
+    public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest) {
         try {
             if (signupRequest.getIs_admin() != null && signupRequest.getIs_admin()) {   //add admin user to database
                 AdminUser user = new AdminUser(signupRequest.getFirstname(), signupRequest.getLastname(), signupRequest.getEmail(), signupRequest.getPassword());
@@ -100,7 +98,7 @@ public class AppController {
                 NormalUser user = new NormalUser(signupRequest.getFirstname(), signupRequest.getLastname(), signupRequest.getEmail(), signupRequest.getPassword());
                 userAndRoomManagementRequest.addNormalUser(user);
             }
-        }catch (Exception e) {          //exception when email already existed in database
+        } catch (Exception e) {          //exception when email already existed in database
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("account existed");
         }
@@ -109,16 +107,16 @@ public class AppController {
 
     @PostMapping("createroom")
     @ResponseBody
-    public ResponseEntity<?> createroom(@RequestBody CreateroomRequest createroomRequest){
+    public ResponseEntity<?> createroom(@RequestBody CreateroomRequest createroomRequest) {
         ChatRoom chat_room = new ChatRoom();
-        if(createroomRequest.getIs_admin()){    //room created by admin user
-            AdminUser creator=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(createroomRequest.getEmail()));
+        if (createroomRequest.getIs_admin()) {    //room created by admin user
+            AdminUser creator = userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(createroomRequest.getEmail()));
             chat_room.setChatRoom(createroomRequest.getTitle(), createroomRequest.getDescription(), creator, createroomRequest.getCreatedate(), createroomRequest.getExpiredate());
             userAndRoomManagementRequest.addChatRoom(chat_room);    //add new room
             creator.addCreatedChatRoom(chat_room.getId());
             userAndRoomManagementRequest.updateAdminUser(creator);  //upload admin user
-        }else{                                  //room created by normal user
-            NormalUser creator=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(createroomRequest.getEmail()));
+        } else {                                  //room created by normal user
+            NormalUser creator = userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(createroomRequest.getEmail()));
             chat_room.setChatRoom(createroomRequest.getTitle(), createroomRequest.getDescription(), creator, createroomRequest.getCreatedate(), createroomRequest.getExpiredate());
             userAndRoomManagementRequest.addChatRoom(chat_room);    //add new room
             creator.addCreatedChatRoom(chat_room.getId());
@@ -129,33 +127,33 @@ public class AppController {
 
     @GetMapping("createdrooms")
     @ResponseBody
-    public ResponseEntity<List<ChatRoom>> createdrooms(@RequestParam String email, @RequestParam Boolean is_admin){
+    public ResponseEntity<List<ChatRoom>> createdrooms(@RequestParam String email, @RequestParam Boolean is_admin) {
         //get rooms created by admin or normal user
         List<ChatRoom> created_rooms;
-        if(is_admin){
-            created_rooms=userAndRoomManagementRequest.getCreatedChatRoomsByAdminID(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
-        }else{
-            created_rooms=userAndRoomManagementRequest.getCreatedChatRoomsByNormalID(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+        if (is_admin) {
+            created_rooms = userAndRoomManagementRequest.getCreatedChatRoomsByAdminID(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+        } else {
+            created_rooms = userAndRoomManagementRequest.getCreatedChatRoomsByNormalID(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
         }
-        return  ResponseEntity.ok(created_rooms);
+        return ResponseEntity.ok(created_rooms);
     }
 
     @GetMapping("invitedrooms")
     @ResponseBody
-    public ResponseEntity<List<ChatRoom>> invitedrooms(@RequestParam String email, @RequestParam Boolean is_admin){
+    public ResponseEntity<List<ChatRoom>> invitedrooms(@RequestParam String email, @RequestParam Boolean is_admin) {
         //get rooms in which user is invited
         List<ChatRoom> invited_rooms;
-        if(is_admin){
-            invited_rooms=userAndRoomManagementRequest.getInvitedChatRoomsByAdminID(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
-        }else{
-            invited_rooms=userAndRoomManagementRequest.getInvitedChatRoomsByNormalID(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+        if (is_admin) {
+            invited_rooms = userAndRoomManagementRequest.getInvitedChatRoomsByAdminID(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+        } else {
+            invited_rooms = userAndRoomManagementRequest.getInvitedChatRoomsByNormalID(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
         }
-        return  ResponseEntity.ok(invited_rooms);
+        return ResponseEntity.ok(invited_rooms);
     }
 
     @DeleteMapping("/deleteroom/{roomId}")
     @ResponseBody
-    public ResponseEntity<?> deleteroom(@PathVariable Long roomId){
+    public ResponseEntity<?> deleteroom(@PathVariable Long roomId) {
         //remove a room from database
         userAndRoomManagementRequest.removeChatRoom(userAndRoomManagementRequest.getOneChatRoom(roomId));
         return ResponseEntity.ok("Room deleted");
@@ -163,8 +161,8 @@ public class AppController {
 
     @PutMapping("/invite/{roomId}/{email}/{is_admin}/{invitor_email}/{invitor_admin}")
     @ResponseBody
-    public ResponseEntity<?> invite(@PathVariable Long roomId, @PathVariable String email,@PathVariable Boolean is_admin,@PathVariable String invitor_email,@PathVariable Boolean invitor_admin){
-        if(is_admin) {      //invite an admin
+    public ResponseEntity<?> invite(@PathVariable Long roomId, @PathVariable String email, @PathVariable Boolean is_admin, @PathVariable String invitor_email, @PathVariable Boolean invitor_admin) {
+        if (is_admin) {      //invite an admin
             if (email.equals(invitor_email) && invitor_admin) {     //same email and same type = invite the user himself
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Cannot invite yourself");
             } else {
@@ -180,14 +178,14 @@ public class AppController {
                     } else {
                         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(notice);
                     }
-                }catch (Exception e) {      //cannot find the user
+                } catch (Exception e) {      //cannot find the user
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User does not exist");
                 }
             }
-        }else{      //invite a normal user
+        } else {      //invite a normal user
             if (email.equals(invitor_email) && !invitor_admin) {  //same email and same type = invite the user himself
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Cannot invite yourself");
-            }else{
+            } else {
                 try {
                     NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email)); //find the normal user
                     ChatRoom chat_room = userAndRoomManagementRequest.getOneChatRoom(roomId);   //find the chatroom
@@ -200,7 +198,7 @@ public class AppController {
                     } else {
                         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(notice);
                     }
-                }catch (Exception e) {  //cannot find the user
+                } catch (Exception e) {  //cannot find the user
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User does not exist");
                 }
             }
@@ -209,19 +207,19 @@ public class AppController {
 
     @GetMapping("/forgot")
     @ResponseBody
-    public ResponseEntity<?> forgot(@RequestParam String email, @RequestParam Boolean is_admin){
-        if(is_admin != null && is_admin){
+    public ResponseEntity<?> forgot(@RequestParam String email, @RequestParam Boolean is_admin) {
+        if (is_admin != null && is_admin) {
             try {   //find an admin by email
-                AdminUser user=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
+                AdminUser user = userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
                 emailService.sendConfirmationEmail(email, user.getPassword());
                 return ResponseEntity.ok().build();
             } catch (Exception e) {     //account doesn't exist
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User does not exist or sending failed");
             }
-        }else{
+        } else {
             try {   //find a normal user by email
-                NormalUser user=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
+                NormalUser user = userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
                 emailService.sendConfirmationEmail(email, user.getPassword());
                 return ResponseEntity.ok().build();
             } catch (Exception e) {     //account doesn't exist
@@ -233,18 +231,18 @@ public class AppController {
 
     @PutMapping("/newuser")
     @ResponseBody
-    public ResponseEntity<User> newuser(@RequestBody SignupRequest signupRequest){
+    public ResponseEntity<User> newuser(@RequestBody SignupRequest signupRequest) {
         //to upload the new information for new user created by an admin with only the email
-        if(signupRequest.getIs_admin() != null && signupRequest.getIs_admin()){
-            AdminUser user=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(signupRequest.getEmail()));
+        if (signupRequest.getIs_admin() != null && signupRequest.getIs_admin()) {
+            AdminUser user = userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(signupRequest.getEmail()));
             user.setIs_new(false);
             user.setFirst_name(signupRequest.getFirstname());
             user.setLast_name(signupRequest.getLastname());
             user.setPassword(signupRequest.getPassword());
             userAndRoomManagementRequest.updateAdminUser(user);
             return ResponseEntity.ok(user);
-        }else{
-            NormalUser user=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(signupRequest.getEmail()));
+        } else {
+            NormalUser user = userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(signupRequest.getEmail()));
             user.setIs_new(false);
             user.setFirst_name(signupRequest.getFirstname());
             user.setLast_name(signupRequest.getLastname());
@@ -256,17 +254,17 @@ public class AppController {
 
     @PutMapping("/edit")
     @ResponseBody
-    public ResponseEntity<User> edit(@RequestBody SignupRequest signupRequest){
+    public ResponseEntity<User> edit(@RequestBody SignupRequest signupRequest) {
         //to change information, same as newuser except setIs_new
-        if(signupRequest.getIs_admin() != null && signupRequest.getIs_admin()){
-            AdminUser user=userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(signupRequest.getEmail()));
+        if (signupRequest.getIs_admin() != null && signupRequest.getIs_admin()) {
+            AdminUser user = userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(signupRequest.getEmail()));
             user.setFirst_name(signupRequest.getFirstname());
             user.setLast_name(signupRequest.getLastname());
             user.setPassword(signupRequest.getPassword());
             userAndRoomManagementRequest.updateAdminUser(user);
             return ResponseEntity.ok(user);
-        }else{
-            NormalUser user=userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(signupRequest.getEmail()));
+        } else {
+            NormalUser user = userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(signupRequest.getEmail()));
             user.setFirst_name(signupRequest.getFirstname());
             user.setLast_name(signupRequest.getLastname());
             user.setPassword(signupRequest.getPassword());
@@ -277,11 +275,11 @@ public class AppController {
 
     @PutMapping("quitroom")
     @ResponseBody
-    public ResponseEntity<?> quitroom(@RequestBody QuitRoomRequest quitRoomRequest){
-        if(quitRoomRequest.getIs_admin() != null &&quitRoomRequest.getIs_admin()){  //admin user quit a room
+    public ResponseEntity<?> quitroom(@RequestBody QuitRoomRequest quitRoomRequest) {
+        if (quitRoomRequest.getIs_admin() != null && quitRoomRequest.getIs_admin()) {  //admin user quit a room
             userAndRoomManagementRequest.quitChatRoom(userAndRoomManagementRequest.getOneChatRoom(quitRoomRequest.getRoomId()), true, quitRoomRequest.getEmail());
             return ResponseEntity.ok().build();
-        }else{  //normal user quit a room
+        } else {  //normal user quit a room
             userAndRoomManagementRequest.quitChatRoom(userAndRoomManagementRequest.getOneChatRoom(quitRoomRequest.getRoomId()), false, quitRoomRequest.getEmail());
             return ResponseEntity.ok().build();
         }
@@ -289,9 +287,9 @@ public class AppController {
 
     @GetMapping("/chatroom/{roomId}")
     @ResponseBody
-    public ResponseEntity<ChatRoom> getroom(@PathVariable Long roomId){
+    public ResponseEntity<ChatRoom> getroom(@PathVariable Long roomId) {
         //to get one chatroom by id
-        ChatRoom cr=userAndRoomManagementRequest.getOneChatRoom(roomId);
+        ChatRoom cr = userAndRoomManagementRequest.getOneChatRoom(roomId);
         return ResponseEntity.ok().body(cr);
     }
 }
