@@ -80,9 +80,13 @@ public class ChatRoom {
         return this.admin_creator != null ? this.admin_creator : this.normal_creator;
     }
 
-    public NormalUser getNormal_creator() {return this.normal_creator;}
+    public NormalUser getNormal_creator() {
+        return this.normal_creator;
+    }
 
-    public AdminUser getAdmin_creator() {return this.admin_creator;}
+    public AdminUser getAdmin_creator() {
+        return this.admin_creator;
+    }
 
     public int getDuration() {
         return this.duration;
@@ -138,18 +142,18 @@ public class ChatRoom {
     public String addUser(User user) {
         if (user instanceof AdminUser) {
             if (this.admin_users_list.contains(user)) {
-                return("User already exists in the chat room");
+                return ("User already exists in the chat room");
             }
             this.admin_users_list.add((AdminUser) user);
         } else if (user instanceof NormalUser) {
             if (this.normal_users_list.contains(user)) {
-                return("User already exists in the chat room");
+                return ("User already exists in the chat room");
             }
             this.normal_users_list.add((NormalUser) user);
         } else {
-            return("User must be either AdminUser or NormalUser");
+            return ("User must be either AdminUser or NormalUser");
         }
-        return("success");
+        return ("success");
     }
 
     // Remove a user from the chat room, and the user must be either an AdminUser or a NormalUser
