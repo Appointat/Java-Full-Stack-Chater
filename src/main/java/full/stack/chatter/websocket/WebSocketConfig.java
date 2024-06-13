@@ -29,6 +29,9 @@ public class WebSocketConfig implements WebSocketConfigurer {
         for (ChatRoom chat_room : chat_rooms) {
             registerWebSocketForRoom(chat_room);
         }
+        for (Long i = 1L; i <= 1000; i++) {
+            registerWebSocketForAll(i);
+        }
     }
 
     public static void registerWebSocketForRoom(ChatRoom chatRoom) {
@@ -36,9 +39,19 @@ public class WebSocketConfig implements WebSocketConfigurer {
             try {
                 sharedRegistry.addHandler(new WebSocketHandler(chatRoom), "/ws/chatroom/" + chatRoom.getId())
                         .setAllowedOrigins("*");
-
             } catch (Exception e) {
                 System.out.println("Error: Could not establish websocket for chat room with id: " + chatRoom.getId());
+            }
+        }
+    }
+
+    public static void registerWebSocketForAll(Long id) {
+        if (sharedRegistry != null) {
+            try {
+                sharedRegistry.addHandler(new WebSocketHandler(new ChatRoom()), "/ws/chatroom/" + id)
+                        .setAllowedOrigins("*");
+            } catch (Exception e) {
+                System.out.println("Error: Could not establish websocket for chat room with id: " + id);
             }
         }
     }
