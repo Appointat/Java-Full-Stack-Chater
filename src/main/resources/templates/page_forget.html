@@ -27,7 +27,9 @@
         .btn-primary:hover {
             background-color: #fdf2e9;
         }
-
+        .verify{
+            cursor: pointer;
+        }
     </style>
 
 </head>
@@ -57,6 +59,11 @@
         <div class="mb-3">
             <label for="admin">Admin:</label>
             <input type="checkbox" id="admin" name="is_admin">
+        </div>
+
+        <div class="mb-3">
+            <img class="verify" src="/app/generateImageCode" alt="verify code" onclick="this.src='/app/generateImageCode?'+Math.random();" />
+            <input type="text" class="form-control" id="code" name="code" placeholder="Verify code" required>
         </div>
 
         <button type="submit" class="btn btn-primary">Send</button>

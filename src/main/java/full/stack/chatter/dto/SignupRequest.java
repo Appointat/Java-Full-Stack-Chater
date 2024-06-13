@@ -6,6 +6,15 @@ public class SignupRequest {
     private String email;
     private String password;
     private Boolean is_admin;
+    private String code;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     public String getFirstname() {
         return firstname;

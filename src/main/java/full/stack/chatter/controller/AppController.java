@@ -7,13 +7,22 @@ import full.stack.chatter.model.AdminUser;
 import full.stack.chatter.model.ChatRoom;
 import full.stack.chatter.model.NormalUser;
 import full.stack.chatter.model.User;
+import full.stack.chatter.utils.AuthUtils;
 import full.stack.chatter.services.EmailService;
 import full.stack.chatter.services.UserAndRoomManagementRequest;
+import full.stack.chatter.utils.VerifyCodeUtils;
 import jakarta.annotation.Resource;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -40,7 +49,7 @@ public class AppController {
                 Long admin_user_id = userAndRoomManagementRequest.findAdminUserIdByEmail(email);
                 AdminUser admin_user = userAndRoomManagementRequest.getOneAdminUser(admin_user_id);
                 if (admin_user != null && admin_user.getIsActive()) {       //user exist and active
-                    if (admin_user.getPassword().equals(password)) {        //password correct
+                    if (AuthUtils.matchesPassword(password,admin_user.getPassword())) {        //password correct
                         admin_user.setFailed_attempt(0);                    //reset failed attempt
                         userAndRoomManagementRequest.updateAdminUser(admin_user);   //update to database
                         return ResponseEntity.ok(admin_user);               //return admin user
@@ -56,7 +65,7 @@ public class AppController {
                 Long normal_user_id = userAndRoomManagementRequest.findNormalUserIdByEmail(email);
                 NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(normal_user_id);
                 if (normal_user != null && normal_user.getIsActive()) {     //user exist and active
-                    if (normal_user.getPassword().equals(password)) {       //password correct
+                    if (AuthUtils.matchesPassword(password,normal_user.getPassword())) {       //password correct
                         normal_user.setFailed_attempt(0);                   //reset the failed attempt
                         userAndRoomManagementRequest.updateNormalUser(normal_user); //update database
                         return ResponseEntity.ok(normal_user);              //return normal user
@@ -89,18 +98,23 @@ public class AppController {
 
     @PostMapping("signup")
     @ResponseBody
-    public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest) {
+    public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest, HttpSession session) {
+        String sessionCode = (String) session.getAttribute("code");
+        if(!sessionCode.equals(signupRequest.getCode())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("code wrong");
+        }
+        String cpassword=AuthUtils.encryptPassword(signupRequest.getPassword());
         try {
             if (signupRequest.getIs_admin() != null && signupRequest.getIs_admin()) {   //add admin user to database
-                AdminUser user = new AdminUser(signupRequest.getFirstname(), signupRequest.getLastname(), signupRequest.getEmail(), signupRequest.getPassword());
+                AdminUser user = new AdminUser(signupRequest.getFirstname(), signupRequest.getLastname(), signupRequest.getEmail(), cpassword);
                 userAndRoomManagementRequest.addAdminUser(user);
             } else {                                                                    //add normal user to database
-                NormalUser user = new NormalUser(signupRequest.getFirstname(), signupRequest.getLastname(), signupRequest.getEmail(), signupRequest.getPassword());
+                NormalUser user = new NormalUser(signupRequest.getFirstname(), signupRequest.getLastname(), signupRequest.getEmail(), cpassword);
                 userAndRoomManagementRequest.addNormalUser(user);
             }
         } catch (Exception e) {          //exception when email already existed in database
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("account existed");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("account already existed");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body("success");
     }
@@ -207,11 +221,20 @@ public class AppController {
 
     @GetMapping("/forgot")
     @ResponseBody
-    public ResponseEntity<?> forgot(@RequestParam String email, @RequestParam Boolean is_admin) {
+    public ResponseEntity<?> forgot(@RequestParam String email, @RequestParam Boolean is_admin,@RequestParam String code, HttpSession session) {
+        String sessionCode = (String) session.getAttribute("code");
+        if(!sessionCode.equals(code)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("code wrong");
+        }
+
+        String password=AuthUtils.generateRandomPassword(9);
+        String cpassword= AuthUtils.encryptPassword(password);
         if (is_admin != null && is_admin) {
             try {   //find an admin by email
                 AdminUser user = userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
-                emailService.sendConfirmationEmail(email, user.getPassword());
+                user.setPassword(cpassword);
+                userAndRoomManagementRequest.updateAdminUser(user);
+                emailService.sendConfirmationEmail(email, password);
                 return ResponseEntity.ok().build();
             } catch (Exception e) {     //account doesn't exist
                 e.printStackTrace();
@@ -220,7 +243,9 @@ public class AppController {
         } else {
             try {   //find a normal user by email
                 NormalUser user = userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
-                emailService.sendConfirmationEmail(email, user.getPassword());
+                user.setPassword(cpassword);
+                userAndRoomManagementRequest.updateNormalUser(user);
+                emailService.sendConfirmationEmail(email, password);
                 return ResponseEntity.ok().build();
             } catch (Exception e) {     //account doesn't exist
                 e.printStackTrace();
@@ -229,16 +254,17 @@ public class AppController {
         }
     }
 
+    //to upload the new information for new user created by an admin with only the email
     @PutMapping("/newuser")
     @ResponseBody
     public ResponseEntity<User> newuser(@RequestBody SignupRequest signupRequest) {
-        //to upload the new information for new user created by an admin with only the email
+        String cpassword=AuthUtils.encryptPassword(signupRequest.getPassword());
         if (signupRequest.getIs_admin() != null && signupRequest.getIs_admin()) {
             AdminUser user = userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(signupRequest.getEmail()));
             user.setIs_new(false);
             user.setFirst_name(signupRequest.getFirstname());
             user.setLast_name(signupRequest.getLastname());
-            user.setPassword(signupRequest.getPassword());
+            user.setPassword(cpassword);
             userAndRoomManagementRequest.updateAdminUser(user);
             return ResponseEntity.ok(user);
         } else {
@@ -246,28 +272,29 @@ public class AppController {
             user.setIs_new(false);
             user.setFirst_name(signupRequest.getFirstname());
             user.setLast_name(signupRequest.getLastname());
-            user.setPassword(signupRequest.getPassword());
+            user.setPassword(cpassword);
             userAndRoomManagementRequest.updateNormalUser(user);
             return ResponseEntity.ok(user);
         }
     }
 
+    //to change information, same as newuser except setIs_new
     @PutMapping("/edit")
     @ResponseBody
     public ResponseEntity<User> edit(@RequestBody SignupRequest signupRequest) {
-        //to change information, same as newuser except setIs_new
+        String cpassword=AuthUtils.encryptPassword(signupRequest.getPassword());
         if (signupRequest.getIs_admin() != null && signupRequest.getIs_admin()) {
             AdminUser user = userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(signupRequest.getEmail()));
             user.setFirst_name(signupRequest.getFirstname());
             user.setLast_name(signupRequest.getLastname());
-            user.setPassword(signupRequest.getPassword());
+            user.setPassword(cpassword);
             userAndRoomManagementRequest.updateAdminUser(user);
             return ResponseEntity.ok(user);
         } else {
             NormalUser user = userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(signupRequest.getEmail()));
             user.setFirst_name(signupRequest.getFirstname());
             user.setLast_name(signupRequest.getLastname());
-            user.setPassword(signupRequest.getPassword());
+            user.setPassword(cpassword);
             userAndRoomManagementRequest.updateNormalUser(user);
             return ResponseEntity.ok(user);
         }
@@ -291,5 +318,14 @@ public class AppController {
         //to get one chatroom by id
         ChatRoom cr = userAndRoomManagementRequest.getOneChatRoom(roomId);
         return ResponseEntity.ok().body(cr);
+    }
+
+    @GetMapping("/generateImageCode")
+    public void generateImageCode(HttpSession session, HttpServletResponse response) throws IOException {
+        String code = VerifyCodeUtils.generateVerifyCode(4);
+        session.setAttribute("code", code);
+        response.setContentType("image/png");
+        ServletOutputStream os = response.getOutputStream();
+        VerifyCodeUtils.outputImage(130, 60, os, code);
     }
 }

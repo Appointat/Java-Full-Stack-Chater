@@ -3,6 +3,7 @@ package full.stack.chatter.controller;
 import full.stack.chatter.model.AdminUser;
 import full.stack.chatter.model.ChatRoom;
 import full.stack.chatter.model.NormalUser;
+import full.stack.chatter.utils.AuthUtils;
 import full.stack.chatter.services.EmailService;
 import full.stack.chatter.services.UserAndRoomManagementRequest;
 import jakarta.annotation.Resource;
@@ -35,7 +36,12 @@ public class UserController {
 
     //for springboot signup
     @RequestMapping("signup")
-    public String signup(String first_name, String last_name, String email, String password, Boolean is_admin) {
+    public String signup(String first_name, String last_name, String email, String password, String code, Boolean is_admin, HttpSession session) {
+        String sessionCode = (String) session.getAttribute("code");
+        if(!sessionCode.equals(code)) {
+            return "redirect:/signup";
+        }
+        password= AuthUtils.encryptPassword(password);
         try {
             if (is_admin != null && is_admin) {
                 AdminUser user = new AdminUser(first_name, last_name, email, password);
@@ -56,14 +62,15 @@ public class UserController {
     public String admin_create(String email, Boolean is_admin, String password, HttpSession session) {
         session.removeAttribute("notice");
         session.setAttribute("notice", "success");
+        String cpassword= AuthUtils.encryptPassword(password);
         try {
             if (is_admin != null && is_admin) {
-                AdminUser user = new AdminUser("temp", "temp", email, password);
+                AdminUser user = new AdminUser("temp", "temp", email, cpassword);
                 user.setIs_new(true);
                 userAndRoomManagementRequest.addAdminUser(user);
                 emailService.sendConfirmationEmail(email, password);
             } else {
-                NormalUser user = new NormalUser("temp", "temp", email, password);
+                NormalUser user = new NormalUser("temp", "temp", email, cpassword);
                 user.setIs_new(true);
                 userAndRoomManagementRequest.addNormalUser(user);
                 emailService.sendConfirmationEmail(email, password);
@@ -86,7 +93,7 @@ public class UserController {
                 Long admin_user_id = userAndRoomManagementRequest.findAdminUserIdByEmail(email);
                 AdminUser admin_user = userAndRoomManagementRequest.getOneAdminUser(admin_user_id);
                 if (admin_user != null && admin_user.getIsActive()) {
-                    if (admin_user.getPassword().equals(password)) {    //password correct
+                    if (AuthUtils.matchesPassword(password,admin_user.getPassword())) {    //password correct
                         admin_user.setFailed_attempt(0);                //reset attempt
                         userAndRoomManagementRequest.updateAdminUser(admin_user);   //update attempt to database
                         session.setAttribute("user", admin_user);
@@ -118,7 +125,7 @@ public class UserController {
                 Long normal_user_id = userAndRoomManagementRequest.findNormalUserIdByEmail(email);
                 NormalUser normal_user = userAndRoomManagementRequest.getOneNormalUser(normal_user_id);
                 if (normal_user != null && normal_user.getIsActive()) {
-                    if (normal_user.getPassword().equals(password)) {
+                    if (AuthUtils.matchesPassword(password,normal_user.getPassword())) {
                         normal_user.setFailed_attempt(0);
                         userAndRoomManagementRequest.updateNormalUser(normal_user);
                         session.setAttribute("user", normal_user);
@@ -152,6 +159,7 @@ public class UserController {
     //for springboot update information after first login of a user created by an admin with email
     @RequestMapping("first_login")
     public String first_login(String first_name, String last_name, String email, String password, Boolean is_admin, HttpSession session) {
+        password= AuthUtils.encryptPassword(password);
         if (is_admin != null && is_admin) {
             AdminUser user = userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
             user.setIs_new(false);
@@ -176,6 +184,7 @@ public class UserController {
     //for springboot edit an account and update to database
     @RequestMapping("edit")
     public String edit(String first_name, String last_name, String email, String password, Boolean is_admin) {
+        password= AuthUtils.encryptPassword(password);
         if (is_admin != null && is_admin) {
             AdminUser user = userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
             user.setFirst_name(first_name);
@@ -238,12 +247,22 @@ public class UserController {
 
     //for springboot send email with password
     @RequestMapping("forget")
-    public String forget(String email, Boolean is_admin, HttpSession session) {
+    public String forget(String email, Boolean is_admin, HttpSession session,String code) {
         session.removeAttribute("email");
+        String password=AuthUtils.generateRandomPassword(9);
+        String cpassword= AuthUtils.encryptPassword(password);
+        String sessionCode = (String) session.getAttribute("code");
+
+        if(!sessionCode.equals(code)) {
+            session.setAttribute("email", "code wrong");
+            return "redirect:/forget";
+        }
         if (is_admin != null && is_admin) {
             try {
                 AdminUser user = userAndRoomManagementRequest.getOneAdminUser(userAndRoomManagementRequest.findAdminUserIdByEmail(email));
-                emailService.sendConfirmationEmail(email, user.getPassword());
+                user.setPassword(cpassword);
+                userAndRoomManagementRequest.updateAdminUser(user);
+                emailService.sendConfirmationEmail(email, password);
                 return "redirect:/signin";
             } catch (Exception e) {
                 e.printStackTrace();
@@ -253,7 +272,9 @@ public class UserController {
         } else {
             try {
                 NormalUser user = userAndRoomManagementRequest.getOneNormalUser(userAndRoomManagementRequest.findNormalUserIdByEmail(email));
-                emailService.sendConfirmationEmail(email, user.getPassword());
+                user.setPassword(cpassword);
+                userAndRoomManagementRequest.updateNormalUser(user);
+                emailService.sendConfirmationEmail(email, password);
                 return "redirect:/signin";
             } catch (Exception e) {
                 e.printStackTrace();

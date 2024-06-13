@@ -15,7 +15,7 @@ public class EmailService {
     public void sendConfirmationEmail(String email, String password) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject("New User Confirmation");
+        message.setSubject("Chatter User Information");
         message.setText("Your password: " + password + " \nPlease change after Sign In");
         try {
             mailSender.send(message);

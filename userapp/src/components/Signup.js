@@ -1,5 +1,5 @@
 import axios from "axios";
-import {useState} from "react";
+import {useState,useEffect} from "react";
 import './styles/Signup.css'
 import {Link, useNavigate} from "react-router-dom";
 
@@ -14,6 +14,20 @@ const Signup=()=>{
     const navigate = useNavigate();
     const [passwordType, setPasswordType] = useState('password');
     const [buttonClass, setButtonClass] = useState('');
+    const [captchaUrl, setCaptchaUrl] = useState('http://localhost:8080/app/generateImageCode');
+    const [code,setCode]=useState('');
+
+    useEffect(() => {
+        const img = new Image();
+        img.src = captchaUrl;
+        img.onload = () => {
+            document.getElementById('captchaImage').src = captchaUrl;
+        };
+    }, [captchaUrl]);
+
+    const refreshCaptcha = () => {
+        setCaptchaUrl(`http://localhost:8080/app/generateImageCode?${Math.random()}`);
+    };
 
     const handleSignup=async(event)=>{
         event.preventDefault();
@@ -34,7 +48,10 @@ const Signup=()=>{
                 lastname:lastname,
                 email: email,
                 password:password,
-                is_admin:is_admin
+                is_admin:is_admin,
+                code:code
+        }, {
+            withCredentials: true
         })
             .then(res => {
                 window.location.reload();
@@ -48,6 +65,8 @@ const Signup=()=>{
             });
 
     }
+
+
 
     const randomPassword = (length) => {
         const chars = "abcdefghijklmnopqrstuvwxyz!@#$%^&*()-+<>ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -123,7 +142,7 @@ const Signup=()=>{
                            name="email"
                            placeholder="email"
                            value={email}
-                           onChange={e =>setEmail(e.target.value)}
+                           onChange={e => setEmail(e.target.value)}
                            required
                     />
                 </div>
@@ -131,21 +150,22 @@ const Signup=()=>{
                 <div className="mb-2 box">
                     <label htmlFor="password">Password:</label>
                     <input
-                           type={passwordType}
-                           className="form-control mb-1"
-                           id="password"
-                           name="password"
-                           placeholder="Password"
-                           value={password}
-                           onChange={e => setPassword(e.target.value)}
-                           required
+                        type={passwordType}
+                        className="form-control mb-1"
+                        id="password"
+                        name="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        required
                     />
-                    <button type="button" className="btn-signup" onClick={handleGeneratePassword}>Generate Password</button>
+                    <button type="button" className="btn-signup" onClick={handleGeneratePassword}>Generate Password
+                    </button>
                     <div className={`conceal ${buttonClass}`} onClick={togglePasswordVisibility}></div>
                 </div>
 
                 <div className="mb-2">
-                <label htmlFor="passwordConfirm">Confirm Password:</label>
+                    <label htmlFor="passwordConfirm">Confirm Password:</label>
                     <input type={passwordType}
                            className="form-control"
                            id="passwordConfirm"
@@ -163,7 +183,25 @@ const Signup=()=>{
                            id="admin"
                            name="is_admin"
                            checked={is_admin}
-                           onChange={e=>setIs_admin(e.target.checked)}
+                           onChange={e => setIs_admin(e.target.checked)}
+                    />
+                </div>
+
+                <div className="mb-3">
+                    <img id="captchaImage"
+                         src={captchaUrl}
+                         alt="Verify code"
+                         onClick={refreshCaptcha}
+                         style={{cursor: 'pointer'}}
+                    />
+                    <input type="text"
+                           id="code"
+                           name="code"
+                           className="form-control"
+                           placeholder="Verify code"
+                           value={code}
+                           onChange={e => setCode(e.target.value)}
+                           required
                     />
                 </div>
 
