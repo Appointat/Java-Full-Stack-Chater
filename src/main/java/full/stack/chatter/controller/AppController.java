@@ -11,6 +11,7 @@ import full.stack.chatter.utils.AuthUtils;
 import full.stack.chatter.services.EmailService;
 import full.stack.chatter.services.UserAndRoomManagementRequest;
 import full.stack.chatter.utils.VerifyCodeUtils;
+import full.stack.chatter.websocket.WebSocketConfig;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,6 +32,7 @@ public class AppController {
 
     @Resource
     private UserAndRoomManagementRequest userAndRoomManagementRequest;
+
 
     @Resource
     private final EmailService emailService;
@@ -136,6 +138,7 @@ public class AppController {
             creator.addCreatedChatRoom(chat_room.getId());
             userAndRoomManagementRequest.updateNormalUser(creator); //upload normal user
         }
+        //WebSocketConfig.registerWebSocketForRoom(chat_room);
         return ResponseEntity.status(HttpStatus.CREATED).body("success");
     }
 

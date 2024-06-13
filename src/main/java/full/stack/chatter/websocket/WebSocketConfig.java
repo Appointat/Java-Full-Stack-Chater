@@ -10,26 +10,62 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 
 import java.util.List;
 
-
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
     @Autowired
     private UserAndRoomManagementRequest userAndRoomManagementRequest;
 
+    private static WebSocketHandlerRegistry sharedRegistry;
+
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        // Establish the websocket for each existing chat room
-        List<ChatRoom> chat_rooms = userAndRoomManagementRequest.getChatRooms();
+        sharedRegistry = registry;
+        initializeWebSockets();
+    }
 
+    private void initializeWebSockets() {
+        List<ChatRoom> chat_rooms = userAndRoomManagementRequest.getChatRooms();
         for (ChatRoom chat_room : chat_rooms) {
-            long chat_room_id = chat_room.getId();
+            registerWebSocketForRoom(chat_room);
+        }
+    }
+
+    public static void registerWebSocketForRoom(ChatRoom chatRoom) {
+        if (sharedRegistry != null) {
             try {
-                registry.addHandler(new WebSocketHandler(chat_room), "/ws/chatroom/" + chat_room_id)
+                sharedRegistry.addHandler(new WebSocketHandler(chatRoom), "/ws/chatroom/" + chatRoom.getId())
                         .setAllowedOrigins("*");
+
             } catch (Exception e) {
-                System.out.println("Error: Could not establish websocket for chat room with id: " + chat_room_id);
+                System.out.println("Error: Could not establish websocket for chat room with id: " + chatRoom.getId());
             }
         }
     }
 }
+
+
+
+
+//@Configuration
+//@EnableWebSocket
+//public class WebSocketConfig implements WebSocketConfigurer {
+//    @Autowired
+//    private UserAndRoomManagementRequest userAndRoomManagementRequest;
+//
+//    @Override
+//    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+//        // Establish the websocket for each existing chat room
+//        List<ChatRoom> chat_rooms = userAndRoomManagementRequest.getChatRooms();
+//
+//        for (ChatRoom chat_room : chat_rooms) {
+//            long chat_room_id = chat_room.getId();
+//            try {
+//                registry.addHandler(new WebSocketHandler(chat_room), "/ws/chatroom/" + chat_room_id)
+//                        .setAllowedOrigins("*");
+//            } catch (Exception e) {
+//                System.out.println("Error: Could not establish websocket for chat room with id: " + chat_room_id);
+//            }
+//        }
+//    }
+//}
