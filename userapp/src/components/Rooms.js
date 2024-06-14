@@ -93,7 +93,13 @@ const Rooms=()=>{
         }
     }
 
-    const handleEnter = (roomId) => {
+    const handleEnter = (roomId,expireDate) => {
+        const currentDate = new Date();
+        const expiredateObj = new Date(expireDate);
+        if (expiredateObj < currentDate) {
+            alert("This room has expired.");
+            return;
+        }
         localStorage.setItem('user', sessionStorage.getItem('user'));
         localStorage.setItem('is_admin',sessionStorage.getItem('is_admin'));
         window.open(`/chat/${roomId}`, '_blank', 'noopener,noreferrer');
@@ -179,7 +185,7 @@ const Rooms=()=>{
                                 <td>{createdroom.createdDate}</td>
                                 <td>{createdroom.expiredDate}</td>
                                 <td>
-                                    <a className="room-btn" onClick={() => handleEnter(createdroom.id)}>Enter</a>
+                                    <a className="room-btn" onClick={() => handleEnter(createdroom.id,createdroom.expiredDate)}>Enter</a>
                                     <a className="room-btn" onClick={() => handleDelete(createdroom.id)}>Delete</a>
                                     <Link to= "/invite" state={{ roomId: createdroom.id }} className="room-btn">Invite</Link>
                                 </td>
@@ -205,7 +211,7 @@ const Rooms=()=>{
                                 <td>{invitedroom.createdDate}</td>
                                 <td>{invitedroom.expiredDate}</td>
                                 <td>
-                                    <a className="room-btn" onClick={() => handleEnter(invitedroom.id)}>Enter</a>
+                                    <a className="room-btn" onClick={() => handleEnter(invitedroom.id,invitedroom.expiredDate)}>Enter</a>
                                     <a className="room-btn" onClick={() => handleQuit(invitedroom.id)}>Quit</a>
                                 </td>
                             </tr>
